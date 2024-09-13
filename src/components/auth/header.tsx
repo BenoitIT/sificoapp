@@ -9,7 +9,7 @@ export const Header = ({ label }: HeaderProps) => {
     return (
         <header className=" w-full flex flex-col gap-y-4 items-center">
             <Link href="/">
-                <Image src="/logo.jpg" width={100} height={100} alt="logo" />
+                <Image src="/images/logoo.png" width={100} height={100} alt="logo" />
             </Link>
             <p className="text-mute">
                 {label}
