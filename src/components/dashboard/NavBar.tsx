@@ -16,10 +16,10 @@ const Navbar = () => {
                     <IoIosNotifications className='w-5 h-5 text-gray-500' />
                 </div>
                 <div className='flex flex-col'>
-                    <span className="text-xs leading-3 font-medium">John Doe</span>
+                    <span className="text-sm leading-3 font-medium text-gray-700">John Doe</span>
                     <span className="text-[10px] text-gray-500 text-right">Admin</span>
                 </div>
-                <div className='bg-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer'>
+                <div className='bg-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer text-gray-600'>
                     JD
                 </div>
             </div>

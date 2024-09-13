@@ -77,6 +77,11 @@ const NavBar = ({
               {"Let's talk"}
             </Link>
           </p>
+          <p className="flex md:hidden hover:bg-blue-400 w-full md:hover:bg-transparent md:w-fit text-end md:text-start p-2 rounded-sm justify-end">
+            <Link className="text-base capitalize" href="/auth/login">
+              Login
+            </Link>
+          </p>
         </div>
         <div>
           <Button

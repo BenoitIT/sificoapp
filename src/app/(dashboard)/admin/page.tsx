@@ -11,7 +11,7 @@ const AdminPage = () => {
             <DashboardCardWrapper />
             <DashboardCardWrapper />
             </div>
-            <div className="h-[80vh] w-full flex">
+            <div className="h-[80vh] w-full flex gap-4">
             <RevenueChart />
             <SalesPanel />
             </div>

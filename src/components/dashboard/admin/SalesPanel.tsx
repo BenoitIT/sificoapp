@@ -12,7 +12,7 @@ const salesData = [
 
 const SalesPanel: React.FC = () => {
   return (
-    <div className=" -mt-3 p-4 w-[40%]">
+    <div className=" -mt-1 w-[40%]">
       <CardSales title="Recent Sales" subtitle="You made 265 sales this month.">
         <SalesList sales={salesData} />
       </CardSales>

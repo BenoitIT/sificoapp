@@ -27,8 +27,8 @@ const data = [
 
 const RevenueChart = () => {
   return (
-    <div className="RevenueChart flex flex-col h-full bg-white w-[60%] pb-2 rounded-md p-4">
-      <div className="flex justify-between items-center pb-4">
+    <div className="flex flex-col h-full bg-white w-[60%] pb-2 rounded-md text-sm">
+      <div className="flex justify-between items-center p-4">
         <h2 className="text-lg font-bold text-black">Revenue generated</h2>
       </div>
       <ResponsiveContainer width="100%">

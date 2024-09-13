@@ -73,12 +73,12 @@ const menuItems = [
 
 const Menu = () => {
     return (
-        <div className="h-[96vh] flex flex-col justify-between ">
+        <div className="h-[96vh] flex flex-col justify-between w-full">
             <Link
                 href="/"
                 className="flex absolute top-2 items-center justify-center lg:justify-start gap-2"
             >
-                <Image src="/logo.jpg" alt="logo" width={100} height={100} />
+                <Image src="/images/logoo.png" alt="logo" width={100} height={100} />
             </Link>
             <div className="mt-12 text-sm">
                 {menuItems[0].items.map((item) => {
