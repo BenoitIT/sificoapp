@@ -4,14 +4,14 @@ import SalesPanel from "@/components/dashboard/admin/SalesPanel";
 
 const AdminPage = () => {
     return (
-        <div className=" flex gap-4 flex-col  m-auto justify-center">
-            <div className="w-full gap-4 h-fit grid grid-cols-4">
+        <div className=" flex lg:gap-4 gap-2 flex-col  m-auto justify-center">
+            <div className="w-full lg:gap-4 gap-2 h-fit grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
             <DashboardCardWrapper />
             <DashboardCardWrapper />
             <DashboardCardWrapper />
             <DashboardCardWrapper />
             </div>
-            <div className="h-[80vh] w-full flex gap-4">
+            <div className="lg:h-[80vh] h-full w-full flex lg:flex-row flex-col lg:gap-4 gap-2">
             <RevenueChart />
             <SalesPanel />
             </div>

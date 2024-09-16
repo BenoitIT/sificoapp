@@ -27,7 +27,7 @@ const data = [
 
 const RevenueChart = () => {
   return (
-    <div className="flex flex-col h-full bg-white w-[60%] pb-2 rounded-md text-sm">
+    <div className="flex flex-col lg:h-full h-[80vh] bg-white lg:w-[60%] w-full pb-2 rounded-md text-sm">
       <div className="flex justify-between items-center p-4">
         <h2 className="text-lg font-bold text-black">Revenue generated</h2>
       </div>
@@ -37,7 +37,7 @@ const RevenueChart = () => {
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="patients" fill="#2CA58D" />
+          <Bar dataKey="patients" fill="#003472" />
         </BarChart>
       </ResponsiveContainer>
     </div>
