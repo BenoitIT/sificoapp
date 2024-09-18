@@ -1,9 +1,9 @@
 "use client";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import StaffingReports from "@/components/dashboard/pages/staffingReports";
-import { staffingReports } from "@/app/dummyData/staffingReport";
-import { headers } from "@/app/tableHeaders/staffingReports";
+import StaffingReportsItems from "@/components/dashboard/pages/reportItems";
+import { headers } from "@/app/tableHeaders/staffingItems";
 import { useRouter, usePathname } from "next/navigation";
+import { dummyItemsData } from "@/app/dummyData/staffingItem";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -22,9 +22,9 @@ const Page = () => {
     { icon: <FaTrash />, Click: handleDelete, name: "delete" },
   ];
   return (
-    <StaffingReports
+    <StaffingReportsItems
       headers={headers}
-      data={staffingReports}
+      data={dummyItemsData}
       action={actions}
     />
   );

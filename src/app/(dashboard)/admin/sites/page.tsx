@@ -1,8 +1,8 @@
 "use client";
-import { Users } from "@/app/dummyData/users";
-import { headers } from "@/app/tableHeaders/users";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Sites from "@/components/dashboard/pages/sites";
+import { headers } from "@/app/tableHeaders/sites";
+import { locations } from "@/app/dummyData/locations";
 const Page = () => {
   const handleEdit = (id: number | string) => {
     console.log("Edit clicked", id);
@@ -14,7 +14,7 @@ const Page = () => {
     { icon: <FaEdit />, Click: handleEdit },
     { icon: <FaTrash />, Click: handleDelete, name: "delete" },
   ];
-  return <Sites headers={headers} data={Users} action={actions} />;
+  return <Sites headers={headers} data={locations} action={actions} />;
 };
 
 export default Page;

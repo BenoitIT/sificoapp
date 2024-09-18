@@ -34,8 +34,8 @@ const menuItems = [
             },
             {
                 icon: <FaLocationArrow />,
-                label: "Agents",
-                href: "/admin/agents",
+                label: "Sites",
+                href: "/admin/sites",
                 visible: ["admin"],
             },
             {
