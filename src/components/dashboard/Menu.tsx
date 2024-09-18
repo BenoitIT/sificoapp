@@ -16,9 +16,15 @@ const menuItems = [
             },
             {
                 icon: <FaTruck />,
-                label: "Continers",
-                href: "/admin/containers",
+                label: "Staffing Report",
+                href: "/admin/staffing-reports",
                 visible: ["admin", "transimitter"],
+            },
+            {
+                icon: <FaTruck />,
+                label: "Staffing Report",
+                href: "/agent/staffing-reports",
+                visible: ["agent"],
             },
             {
                 icon: <FaUsers />,
@@ -39,11 +45,24 @@ const menuItems = [
                 visible: ["admin"],
             },
             {
+                icon: <FaMoneyBill />,
+                label: "Invoices",
+                href: "/agent/invoices",
+                visible: ["agent"],
+            },
+            {
                 icon: <FilePlusIcon />,
                 label: "Reports",
                 href: "/admin/reports",
                 visible: ["admin"],
             },
+            {
+                icon: <FilePlusIcon />,
+                label: "Reports",
+                href: "/agent/reports",
+                visible: ["agent"],
+            },
+
         ]
     },
     {
