@@ -9,10 +9,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TableProps } from "@/interfaces/table";
+import { ItemsSummationTableFooter } from "./summationTFooter";
 const DynamicTable = <T extends Record<string, string | number>>({
   headers,
   data,
   action,
+  allowItemsSummationFooter,
 }: TableProps<T>) => {
   return (
     <Table className="bg-white shadow rounded">
@@ -64,6 +66,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
           </TableRow>
         ))}
       </TableBody>
+      {allowItemsSummationFooter? <ItemsSummationTableFooter />:""}
     </Table>
   );
 };

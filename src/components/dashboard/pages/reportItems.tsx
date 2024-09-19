@@ -28,7 +28,7 @@ const StaffingReportsItems = () => {
         </p>
         </div>
         <div className="flex gap-2 justify-end w-full">
-        <Button>Export items</Button>
+        <Button className="hover:bg-[#003472] bg-[#189bcc]">Export items</Button>
           <Button onClick={handleAddNew}>Add new item</Button>
         </div>
       </div>

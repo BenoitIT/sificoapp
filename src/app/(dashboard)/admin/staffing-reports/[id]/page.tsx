@@ -26,6 +26,7 @@ const Page = () => {
       headers={headers}
       data={dummyItemsData}
       action={actions}
+      allowItemsSummationFooter={true}
     />
   );
 };

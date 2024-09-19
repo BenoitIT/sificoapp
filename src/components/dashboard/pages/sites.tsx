@@ -12,7 +12,7 @@ const Sites = () => {
     <div>
       <div className="w-full flex justify-between mb-4">
         <div className="flex gap-2 justify-end w-full">
-          <Button>Export</Button>
+          <Button className="hover:bg-[#003472] bg-[#189bcc]">Export</Button>
           <Button onClick={handleAddNew}>Add new</Button>
         </div>
       </div>

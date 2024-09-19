@@ -9,4 +9,5 @@ export interface TableProps<T> {
       Click: (id: string | number) => void;
       name?: string;
     }[];
+    allowItemsSummationFooter?:boolean;
   }
