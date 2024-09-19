@@ -1,3 +1,4 @@
+
 export interface NewStuffingItem {
   shipper?: number | string;
   consignee?: number | string;
@@ -5,7 +6,7 @@ export interface NewStuffingItem {
   mark?: string;
   salesAgent?: number | string;
   noOfPkgs?: number;
-  typeOfPkgs?: string;
+  typeOfPkg?: string;
   weight?: number;
   line?: number;
   handling?: number;
@@ -24,7 +25,7 @@ export interface NewStuffingItemErrors {
   mark?: string | null;
   salesAgent?: string | null;
   noOfPkgs?: number;
-  typeOfPkgs?: string | null;
+  typeOfPkg?: string | null;
   weight?: number;
   line?: number;
   handling?: number;
@@ -36,3 +37,21 @@ export interface NewStuffingItemErrors {
   jb?: string | null;
   others?: string | null;
 }
+
+export interface StepFormProps {
+  setItemsData: (
+    value:
+      | Partial<NewStuffingItem>
+      | ((prevState: NewStuffingItem) => Partial<NewStuffingItem>)
+  ) => void;
+  setValidationErrors: (
+    value:
+      | Partial<NewStuffingItemErrors>
+      | ((prevState: NewStuffingItemErrors) => Partial<NewStuffingItemErrors>)
+  ) => void;
+  errors: NewStuffingItemErrors;
+  ErrorLogger: (key: string, message: string | null) => void;
+  newItemPayload: NewStuffingItem;
+  setActiveForm:(val:number)=>void;
+}
+

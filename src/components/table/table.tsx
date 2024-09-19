@@ -19,15 +19,17 @@ const DynamicTable = <T extends Record<string, string | number>>({
   return (
     <Table className="bg-white shadow rounded">
       <TableHeader>
-        <TableRow className="bg-gray-100">
-          <TableHead className="font-semibold text-sm">#</TableHead>
+        <TableRow className="bg-gray-50 text-gray-700">
+          <TableHead className="font-semibold text-xs md:text-sm">#</TableHead>
           {headers.map((header, index) => (
-            <TableHead key={index} className="font-semibold text-sm">
+            <TableHead key={index} className="font-semibold text-xs md:text-sm">
               {header.header}
             </TableHead>
           ))}
           {action ? (
-            <TableHead className="font-semibold text-sm">Action</TableHead>
+            <TableHead className="font-semibold text-xs md:text-sm">
+              Action
+            </TableHead>
           ) : (
             ""
           )}
@@ -36,15 +38,15 @@ const DynamicTable = <T extends Record<string, string | number>>({
       <TableBody>
         {data.map((row, rowIndex) => (
           <TableRow key={rowIndex} className="text-gray-700">
-            <TableCell className="text-sm  text-gray-700">
+            <TableCell className="text-xs md:text-sm  text-gray-700">
               {rowIndex + 1}
             </TableCell>
             {headers.map((header, colIndex) => (
-              <TableCell key={colIndex} className="text-sm">
+              <TableCell key={colIndex} className="text-xs md:text-sm">
                 {row[header.field] as string | number}
               </TableCell>
             ))}
-            <TableCell className="text-sm">
+            <TableCell className="text-xs md:text-sm">
               <div className={`flex w-fit gap-2`}>
                 {action
                   ? action.map((action, index) => (
@@ -66,7 +68,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
           </TableRow>
         ))}
       </TableBody>
-      {allowItemsSummationFooter? <ItemsSummationTableFooter />:""}
+      {allowItemsSummationFooter ? <ItemsSummationTableFooter /> : ""}
     </Table>
   );
 };

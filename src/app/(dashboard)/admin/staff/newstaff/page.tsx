@@ -16,13 +16,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewStaff, newStaffErrors } from "@/interfaces/staff";
+import { useDispatch } from "react-redux";
+import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 const Page = () => {
   const [newStaffPyaload, setStaffData] = useState<NewStaff>({});
   const [errors, setValidationErrors] = useState<newStaffErrors>({});
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setPageTitle("Admin - New staff"));
+  }, [dispatch]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: newStaffErrors) => ({
       ...prevState,
@@ -72,7 +78,7 @@ const Page = () => {
     }
   };
   return (
-    <Card className="mx-auto w-sm md:w-[700px] py-3">
+    <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
       <CardHeader>
         <CardTitle className="text-xl text-center">New staff</CardTitle>
         <CardDescription className="text-center">
@@ -175,10 +181,10 @@ const Page = () => {
                 placeholder="mail@example.com"
                 onChange={handleChange}
                 className={
-                    errors["email"]
-                      ? "text-xs text-red-500 border-red-500"
-                      : "placeholder:text-gray-400"
-                  }
+                  errors["email"]
+                    ? "text-xs text-red-500 border-red-500"
+                    : "placeholder:text-gray-400"
+                }
               />
               <span
                 className={errors?.email ? "text-xs text-red-500" : "hidden"}
@@ -197,10 +203,10 @@ const Page = () => {
                 placeholder="Ex:0788888888"
                 onChange={handleChange}
                 className={
-                    errors["phone"]
-                      ? "text-xs text-red-500 border-red-500"
-                      : "placeholder:text-gray-400"
-                  }
+                  errors["phone"]
+                    ? "text-xs text-red-500 border-red-500"
+                    : "placeholder:text-gray-400"
+                }
               />
               <span
                 className={errors?.phone ? "text-xs text-red-500" : "hidden"}

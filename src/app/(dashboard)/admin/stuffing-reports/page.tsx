@@ -4,7 +4,14 @@ import StaffingReports from "@/components/dashboard/pages/stuffingReports";
 import { staffingReports } from "@/app/dummyData/staffingReport";
 import { headers } from "@/app/tableHeaders/staffingReports";
 import { useRouter, usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
+import { useEffect } from "react";
 const Page = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setPageTitle("Admin - Stuffing reports"));
+  }, [dispatch]);
   const router = useRouter();
   const currentPath = usePathname();
   const handleEdit = (id: number | string) => {

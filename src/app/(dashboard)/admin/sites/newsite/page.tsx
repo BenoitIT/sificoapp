@@ -16,9 +16,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewSite, newSitesErrors } from "@/interfaces/sites";
+import { useDispatch } from "react-redux";
+import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 const Page = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setPageTitle("Admin - Delivery sites"));
+  }, [dispatch]);
   const [newSitePayload, setStaffData] = useState<NewSite>({});
   const [errors, setValidationErrors] = useState<newSitesErrors>({});
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
@@ -58,7 +64,7 @@ const Page = () => {
     }
   };
   return (
-    <Card className="mx-auto w-sm md:w-[700px] py-3">
+    <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
       <CardHeader>
         <CardTitle className="text-xl text-center">New site</CardTitle>
         <CardDescription className="text-center">
