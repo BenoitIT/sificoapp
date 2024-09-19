@@ -16,14 +16,14 @@ const menuItems = [
             },
             {
                 icon: <FaTruck />,
-                label: "Staffing Report",
-                href: "/admin/staffing-reports",
+                label: "Stuffing report",
+                href: "/admin/stuffing-reports",
                 visible: ["admin", "transimitter"],
             },
             {
                 icon: <FaTruck />,
-                label: "Staffing Report",
-                href: "/agent/staffing-reports",
+                label: "Stuffing report",
+                href: "/agent/stuffing-reports",
                 visible: ["agent"],
             },
             {

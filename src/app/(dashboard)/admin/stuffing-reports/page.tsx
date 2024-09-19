@@ -1,6 +1,6 @@
 "use client";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import StaffingReports from "@/components/dashboard/pages/staffingReports";
+import StaffingReports from "@/components/dashboard/pages/stuffingReports";
 import { staffingReports } from "@/app/dummyData/staffingReport";
 import { headers } from "@/app/tableHeaders/staffingReports";
 import { useRouter, usePathname } from "next/navigation";
