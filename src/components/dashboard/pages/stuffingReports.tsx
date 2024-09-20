@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SearchBox } from "@/components/ui/searchBox";
 import {
   Select,
   SelectContent,
@@ -17,7 +18,8 @@ import {
 const StaffingReports = () => {
   return (
     <div>
-      <div className="w-full flex justify-between mb-4">
+      <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4">
+        <SearchBox />
         <div className="flex gap-2 justify-end w-full">
           <Popover>
             <PopoverTrigger asChild>

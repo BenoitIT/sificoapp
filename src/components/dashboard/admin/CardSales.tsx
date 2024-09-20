@@ -9,7 +9,7 @@ interface CardProps {
 const CardSales: React.FC<CardProps> = ({ title, subtitle, children }) => {
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-lg font-bold text-gray-700">{title}</h2>
+      <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
       <p className="text-sm text-gray-500 mb-4">{subtitle}</p>
       {children}
     </div>

@@ -19,15 +19,15 @@ const DynamicTable = <T extends Record<string, string | number>>({
   return (
     <Table className="bg-white shadow rounded">
       <TableHeader>
-        <TableRow className="bg-gray-50 text-gray-700">
+        <TableRow className="bg-gray-50 text-gray-900">
           <TableHead className="font-semibold text-xs md:text-sm">#</TableHead>
           {headers.map((header, index) => (
-            <TableHead key={index} className="font-semibold text-xs md:text-sm">
+            <TableHead key={index} className="font-medium text-xs md:text-sm">
               {header.header}
             </TableHead>
           ))}
           {action ? (
-            <TableHead className="font-semibold text-xs md:text-sm">
+            <TableHead className="font-medium  text-xs md:text-sm">
               Action
             </TableHead>
           ) : (

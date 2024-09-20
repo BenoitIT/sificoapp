@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Admin - Delivery sites"));
+    dispatch(setPageTitle("Delivery sites"));
   }, [dispatch]);
   const handleEdit = (id: number | string) => {
     console.log("Edit clicked", id);

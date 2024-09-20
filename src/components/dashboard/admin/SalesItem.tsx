@@ -1,5 +1,5 @@
-import React from 'react';
-import Avatar from './AvatarCard';
+import React from "react";
+import Avatar from "./AvatarCard";
 
 interface SalesItemProps {
   name: string;
@@ -8,11 +8,16 @@ interface SalesItemProps {
   amount: string;
 }
 
-const SalesItem: React.FC<SalesItemProps> = ({ name, email, avatarUrl, amount }) => {
+const SalesItem: React.FC<SalesItemProps> = ({
+  name,
+  email,
+  avatarUrl,
+  amount,
+}) => {
   return (
     <div className="flex justify-between items-center py-2">
       <Avatar name={name} email={email} avatarUrl={avatarUrl} />
-      <p className="font-medium text-[#003472] text-sm font-medium">+{amount}</p>
+      <p className="font-medium text-[#003472] text-sm">+{amount}</p>
     </div>
   );
 };

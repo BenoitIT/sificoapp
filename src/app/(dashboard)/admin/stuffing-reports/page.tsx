@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Admin - Stuffing reports"));
+    dispatch(setPageTitle("Stuffing reports"));
   }, [dispatch]);
   const router = useRouter();
   const currentPath = usePathname();

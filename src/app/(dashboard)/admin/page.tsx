@@ -10,7 +10,7 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 const AdminPage = () => {
 const dispatch=useDispatch();
 useEffect(()=>{
- dispatch(setPageTitle("Admin"))
+ dispatch(setPageTitle("Home"))
 },[dispatch]);
   return (
     <div className=" flex lg:gap-4 gap-2 flex-col  m-auto justify-center">
@@ -22,20 +22,20 @@ useEffect(()=>{
           icon={<FaDollarSign className="flex my-auto" />}
         />
         <DashboardCardWrapper
-          header="Total Users"
-          amount="1000"
+          header="Total Consignees"
+          amount="1,000"
           perMonth="+20.1% from last month"
           icon={<FaUsersCog className="flex my-auto" />}
         />
         <DashboardCardWrapper
-          header="Total Staffing Reports"
-          amount="1000"
+          header="Total Stuffing Reports"
+          amount="1,000"
           perMonth="+20.1% from last month"
           icon={<FaTruck className="flex my-auto" />}
         />
         <DashboardCardWrapper
           header="Tatal Invoice"
-          amount="1000"
+          amount="1,000"
           perMonth="+20.1% from last month"
           icon={<FaMoneyBill className="flex my-auto" />}
         />

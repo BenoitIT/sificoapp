@@ -23,7 +23,7 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Admin - Delivery sites"));
+    dispatch(setPageTitle("New delivery sites"));
   }, [dispatch]);
   const [newSitePayload, setStaffData] = useState<NewSite>({});
   const [errors, setValidationErrors] = useState<newSitesErrors>({});

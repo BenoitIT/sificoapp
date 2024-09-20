@@ -18,13 +18,13 @@ export const menuItems = [
       },
       {
         icon: <BsListUl />,
-        label: "Stuffing report",
+        label: "Stuffing reports",
         href: "/admin/stuffing-reports",
         visible: ["admin", "transimitter"],
       },
       {
         icon: <BsListUl />,
-        label: "Stuffing report",
+        label: "Stuffing reports",
         href: "/agent/stuffing-reports",
         visible: ["agent"],
       },

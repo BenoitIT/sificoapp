@@ -9,7 +9,7 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Admin - staff"));
+    dispatch(setPageTitle("Staff"));
   }, [dispatch]);
   const handleEdit = (id: number | string) => {
     console.log("Edit clicked", id);

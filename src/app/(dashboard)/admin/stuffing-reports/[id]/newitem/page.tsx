@@ -21,7 +21,7 @@ const Page = () => {
   const [activeForm, setActiveForm] = useState<number>(1);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Admin - Stuffing report - New stuff"));
+    dispatch(setPageTitle("New stuff"));
   }, [dispatch]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: NewStuffingItemErrors) => ({
