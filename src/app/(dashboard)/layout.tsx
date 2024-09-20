@@ -12,7 +12,9 @@ export default function DashboardLayout({
                 <SideBar />
             </div>
             <div className="w-[80%] md:w-[85%] lg:w-[84%]  bg-gray-100 min-h-[100vh] h-full">
+                <div className="w-full sticky top-0 z-30">
                 <Navbar />
+                </div>
                 <div className="p-4 border rounded border-gray-200 min-h-[88vh]">
                     {children}
                 </div>

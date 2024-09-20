@@ -18,15 +18,6 @@ export const shippingInvoices = [
       totalEud: 8300,
     },
     {
-      consigneeName: "Mediterranean Goods Inc.",
-      containerId: "C123789456",
-      origin: "Athens, Greece",
-      destination: "Buenos Aires, Argentina",
-      invoiceNo: "INV-1003",
-      totalUsd: 13700,
-      totalEud: 12850,
-    },
-    {
       consigneeName: "Atlantic Cargo Services",
       containerId: "C456123789",
       origin: "Cape Town, South Africa",

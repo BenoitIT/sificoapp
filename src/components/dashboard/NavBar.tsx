@@ -4,7 +4,7 @@ import { useAppSelector } from "@/redux/store";
 const Navbar = () => {
   const pageTitle = useAppSelector((state) => state.pageTitle.pageTitle);
   return (
-    <div className="flex items-center justify-between p-4 bg-white shadow-sm">
+    <div className="flex items-center justify-between p-4 bg-white shadow-sm w-full">
       <div className=" flex flex-shrink w-full items-left gap-2  [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] font-normal uppercase text-gray-800 text-sm md:text-lg">
         {pageTitle}
       </div>
