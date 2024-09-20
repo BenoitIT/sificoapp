@@ -119,7 +119,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="w-full flex justify-center items-center text-gray-300 bg-gray-950 py-2">
-        <p className="text-sm font-light">
+        <p className="text-sm font-light text-center mx-4">
           &copy;Copyright 2024 Sifco | powered by{" "}
           <a href="https://karisimbitech.rw" className="text-[#93b6e0]">
             Karisimbi Technology Solution
