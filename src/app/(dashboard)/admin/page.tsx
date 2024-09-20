@@ -14,7 +14,7 @@ useEffect(()=>{
 },[dispatch]);
   return (
     <div className=" flex lg:gap-4 gap-2 flex-col  m-auto justify-center">
-      <div className="w-full lg:gap-4 gap-2 h-fit grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
+      <div className="w-full lg:gap-4 gap-2 h-fit grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1">
         <DashboardCardWrapper
           header="Total Revenue"
           amount="$ 1,000,000"

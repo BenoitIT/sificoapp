@@ -14,14 +14,14 @@ interface SalesListProps {
 
 const SalesList: React.FC<SalesListProps> = ({ sales }) => {
   return (
-    <div>
+    <div className='w-full overflow-auto'>
       {sales.map((sale, index) => (
-        <SalesItem 
-          key={index} 
-          name={sale.name} 
-          email={sale.email} 
-          avatarUrl={sale.avatarUrl} 
-          amount={sale.amount} 
+        <SalesItem
+          key={index}
+          name={sale.name}
+          email={sale.email}
+          avatarUrl={sale.avatarUrl}
+          amount={sale.amount}
         />
       ))}
     </div>

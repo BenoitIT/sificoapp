@@ -1,10 +1,12 @@
-import { FaMoneyBill, FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BsListUl } from "react-icons/bs";
 import { GearIcon } from "@radix-ui/react-icons";
-import { LiaSitemapSolid } from "react-icons/lia";
+import { LiaShippingFastSolid, LiaSitemapSolid } from "react-icons/lia";
 import { TbReport, TbUsersGroup } from "react-icons/tb";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { MdMoveDown } from "react-icons/md";
+import { BsCashCoin } from "react-icons/bs";
 
 export const menuItems = [
   {
@@ -41,13 +43,25 @@ export const menuItems = [
         visible: ["admin"],
       },
       {
-        icon: <FaMoneyBill />,
+        icon: <LiaShippingFastSolid />,
+        label: "Shippers",
+        href: "/admin/shippers",
+        visible: ["admin"],
+      },
+      {
+        icon: <MdMoveDown />,
+        label: "Consignees",
+        href: "/admin/Consignees",
+        visible: ["admin"],
+      },
+      {
+        icon: <BsCashCoin />,
         label: "Invoices",
         href: "/admin/invoices",
         visible: ["admin"],
       },
       {
-        icon: <FaMoneyBill />,
+        icon: <BsCashCoin />,
         label: "Invoices",
         href: "/agent/invoices",
         visible: ["agent"],
