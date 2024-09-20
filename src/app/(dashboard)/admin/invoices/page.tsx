@@ -1,9 +1,8 @@
 "use client";
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { FaEye} from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import Shippers from "@/components/dashboard/pages/shippers";
 import { headers } from "@/app/tableHeaders/invoices";
 import { shippingInvoices } from "@/app/dummyData/invoices";
 import Invoices from "@/components/dashboard/pages/invoices";
