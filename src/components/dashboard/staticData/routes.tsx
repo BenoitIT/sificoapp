@@ -38,7 +38,7 @@ export const menuItems = [
       },
       {
         icon: <LiaSitemapSolid />,
-        label: "Delivery Sites",
+        label: "Delivery sites",
         href: "/admin/sites",
         visible: ["admin"],
       },
