@@ -20,7 +20,9 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewStaff, newStaffErrors } from "@/interfaces/staff";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
+import { useRouter } from "next/navigation";
 const Page = () => {
+  const router=useRouter();
   const [newStaffPyaload, setStaffData] = useState<NewStaff>({});
   const [errors, setValidationErrors] = useState<newStaffErrors>({});
   const phoneRegx =
@@ -78,6 +80,7 @@ const Page = () => {
     }
   };
   return (
+    <div className="w-full min-h-[88vh] flex justify-center items-center">
     <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
       <CardHeader>
         <CardTitle className="text-xl text-center">New staff</CardTitle>
@@ -215,7 +218,7 @@ const Page = () => {
               </span>
             </div>
             <div className="flex justify-between gap-4">
-              <Button type="button" className="w-fit" variant="destructive">
+              <Button type="button" className="w-fit" variant="destructive" onClick={()=>router.back()}>
                 Cancel
               </Button>
               <Button type="submit" className="w-fit">
@@ -226,6 +229,7 @@ const Page = () => {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };
 export default Page;

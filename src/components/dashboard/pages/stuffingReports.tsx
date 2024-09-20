@@ -18,7 +18,7 @@ import {
 const StaffingReports = () => {
   return (
     <div>
-      <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4">
+      <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4 gap-2">
         <SearchBox />
         <div className="flex gap-2 justify-end w-full">
           <Popover>

@@ -51,7 +51,7 @@ export const menuItems = [
       {
         icon: <MdMoveDown />,
         label: "Consignees",
-        href: "/admin/Consignees",
+        href: "/admin/consignees",
         visible: ["admin"],
       },
       {

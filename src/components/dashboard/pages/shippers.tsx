@@ -3,11 +3,11 @@ import TabularSection from "@/appComponents/pageBlocks/tabularSection";
 import { Button } from "@/components/ui/button";
 import { SearchBox } from "@/components/ui/searchBox";
 import { useRouter, usePathname } from "next/navigation";
-const Staff = () => {
+const Shippers = () => {
   const router = useRouter();
   const currentPath: string = usePathname();
   const handleAddNew = () => {
-    router.push(`${currentPath}/newstaff`);
+    router.push(`${currentPath}/newshipper`);
   };
   return (
     <div>
@@ -21,4 +21,4 @@ const Staff = () => {
     </div>
   );
 };
-export default TabularSection(Staff);
+export default TabularSection(Shippers);

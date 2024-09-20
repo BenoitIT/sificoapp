@@ -11,7 +11,7 @@ const Sites = () => {
   };
   return (
     <div>
-      <div className="w-full flex flex-col-reverse md:flex-row  justify-between mb-4">
+      <div className="w-full flex flex-col-reverse md:flex-row  justify-between mb-4 gap-2">
         <SearchBox />
         <div className="flex gap-2 justify-end w-full">
           <Button className="hover:bg-[#003472] bg-[#189bcc]">Export</Button>

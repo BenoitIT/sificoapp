@@ -20,8 +20,10 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewSite, newSitesErrors } from "@/interfaces/sites";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
+import { useRouter } from "next/navigation";
 const Page = () => {
   const dispatch = useDispatch();
+  const router=useRouter();
   useEffect(() => {
     dispatch(setPageTitle("New delivery sites"));
   }, [dispatch]);
@@ -64,6 +66,7 @@ const Page = () => {
     }
   };
   return (
+    <div className="w-full min-h-[88vh] flex justify-center items-center">
     <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
       <CardHeader>
         <CardTitle className="text-xl text-center">New site</CardTitle>
@@ -131,7 +134,7 @@ const Page = () => {
             </div>
 
             <div className="flex justify-between gap-4">
-              <Button type="button" className="w-fit" variant="destructive">
+              <Button type="button" className="w-fit" variant="destructive" onClick={()=>router.back()}>
                 Cancel
               </Button>
               <Button type="submit" className="w-fit">
@@ -142,6 +145,7 @@ const Page = () => {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };
 export default Page;

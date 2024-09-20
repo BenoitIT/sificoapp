@@ -31,39 +31,41 @@ const Page = () => {
   };
 
   return (
-    <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
-      <CardHeader>
-        <CardTitle className="text-xl text-center">New item</CardTitle>
-        <CardDescription className="text-center">
-          Enter all details in provided fields. Note that all fields with
-          <br />
-          <span className="text-sm">
-            (<span className="text-red-500 text-base">*</span>) are mandatory
-          </span>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {activeForm < 2 ? (
-          <SetpOneForm
-            setItemsData={setItemsData}
-            setValidationErrors={setValidationErrors}
-            errors={errors}
-            ErrorLogger={ErrorLogger}
-            newItemPayload={newItemPayload}
-            setActiveForm={setActiveForm}
-          />
-        ) : (
-          <StepTwoForm
-            setItemsData={setItemsData}
-            setValidationErrors={setValidationErrors}
-            errors={errors}
-            ErrorLogger={ErrorLogger}
-            newItemPayload={newItemPayload}
-            setActiveForm={setActiveForm}
-          />
-        )}
-      </CardContent>
-    </Card>
+    <div className="w-full min-h-[88vh] flex justify-center items-center">
+      <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
+        <CardHeader>
+          <CardTitle className="text-xl text-center">New item</CardTitle>
+          <CardDescription className="text-center">
+            Enter all details in provided fields. Note that all fields with
+            <br />
+            <span className="text-sm">
+              (<span className="text-red-500 text-base">*</span>) are mandatory
+            </span>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {activeForm < 2 ? (
+            <SetpOneForm
+              setItemsData={setItemsData}
+              setValidationErrors={setValidationErrors}
+              errors={errors}
+              ErrorLogger={ErrorLogger}
+              newItemPayload={newItemPayload}
+              setActiveForm={setActiveForm}
+            />
+          ) : (
+            <StepTwoForm
+              setItemsData={setItemsData}
+              setValidationErrors={setValidationErrors}
+              errors={errors}
+              ErrorLogger={ErrorLogger}
+              newItemPayload={newItemPayload}
+              setActiveForm={setActiveForm}
+            />
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 export default Page;
