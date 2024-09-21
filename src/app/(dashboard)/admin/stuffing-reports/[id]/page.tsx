@@ -14,7 +14,7 @@ const Page = () => {
     console.log("Delete clicked", id);
   };
   const handleOpenStaffingReport = (id: number | string) => {
-    router.push(`${currentPath}/${id}`);
+    router.push(`${currentPath}/invoice/${id}`);
   };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
