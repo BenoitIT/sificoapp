@@ -1,6 +1,7 @@
 "use client";
 import TabularSection from "@/appComponents/pageBlocks/tabularSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Popover,
@@ -32,15 +33,23 @@ const StaffingReports = () => {
                     New stuffing report
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Set the targeted delivery of stuffs
+                    Fill delivery information for the stuffs
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <div className="grid grid-cols-3 items-center gap-2 mr-4">
-                    <Label>Location</Label>
+                  <div className="grid gap-2 text-sm text-gray-700">
+                    <Label>Origin</Label>
+                    <Input
+                      type="text"
+                      placeholder="Ex: Dubai"
+                      className="w-full border border-gray-300 placeholder:text-gray-400"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                    <Label>Delivery Destination</Label>
                     <Select>
-                      <SelectTrigger className="w-full col-span-2 placeholder:text-gray-300">
-                        <SelectValue placeholder="Select..." />
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select..."  className="placeholder:text-gray-300"/>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">Kigali, Rwanda</SelectItem>

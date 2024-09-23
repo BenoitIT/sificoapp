@@ -19,8 +19,8 @@ export const dummyItemsData = [
     blFee: "50",
     jb: "0",
     others: "20",
-    totalUSD: "570 USD",
-    totalAED: "2093 AED",
+    totalUSD: "570",
+    totalAED: "2093",
     invoiceNo: "INV2024091801",
   },
   {
@@ -43,8 +43,8 @@ export const dummyItemsData = [
     blFee: "70",
     jb: "0",
     others: "15",
-    totalUSD: "915 USD",
-    totalAED: "3360 AED",
+    totalUSD: "915",
+    totalAED: "3360",
     invoiceNo: "INV2024091802",
   },
   {
@@ -67,8 +67,8 @@ export const dummyItemsData = [
     blFee: "40",
     jb: "0",
     others: "10",
-    totalUSD: "650 USD",
-    totalAED: "2386 AED",
+    totalUSD: "650",
+    totalAED: "2386",
     invoiceNo: "INV2024091803",
   },
   {
@@ -91,8 +91,8 @@ export const dummyItemsData = [
     blFee: "100",
     jb: "50",
     others: "30",
-    totalUSD: "1180 USD",
-    totalAED: "4329 AED",
+    totalUSD: "1180",
+    totalAED: "4329",
     invoiceNo: "INV2024091804",
   },
 

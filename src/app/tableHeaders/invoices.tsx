@@ -5,5 +5,5 @@ export const headers = [
   { header: "Destination", field: "destination" },
   { header: "Invoice No.", field: "invoiceNo" },
   { header: "Total (USD)", field: "totalUsd" },
-  { header: "Total (EUD)", field: "totalEud" },
+  { header: "Total (AED)", field: "totalEud" },
 ];
