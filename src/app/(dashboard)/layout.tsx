@@ -15,7 +15,7 @@ export default function DashboardLayout({
                 <div className="w-full sticky top-0 z-30">
                 <Navbar />
                 </div>
-                <div className="p-4 border rounded border-gray-200 min-h-[88vh]">
+                <div className="p-0 md:p-4 border rounded border-gray-200 min-h-[88vh]">
                     {children}
                 </div>
             </div>

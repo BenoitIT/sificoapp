@@ -18,25 +18,25 @@ const AdminPage = () => {
     <div className=" flex lg:gap-4 gap-2 flex-col  m-auto justify-center">
       <div className="w-full lg:gap-4 gap-2 h-fit grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1">
         <DashboardCardWrapper
-          header="Total Revenue"
+          header="Total revenue"
           amount="$ 1,000,000"
           perMonth="+20.1% from last month"
           icon={<GiTakeMyMoney className="flex my-auto text-lg" />}
         />
         <DashboardCardWrapper
-          header="Total Consignees"
+          header="Total consignees"
           amount="1,000"
           perMonth="+20.1% from last month"
           icon={<TbUsersGroup className="flex my-auto text-lg" />}
         />
         <DashboardCardWrapper
-          header="Total Stuffing Reports"
+          header="Total stuffing reports"
           amount="1,000"
           perMonth="+20.1% from last month"
           icon={<BsListUl className="flex my-auto text-lg" />}
         />
         <DashboardCardWrapper
-          header="Tatal Invoice"
+          header="Invoices count"
           amount="1,000"
           perMonth="+20.1% from last month"
           icon={<BsCashCoin className="flex my-auto text-lg" />}

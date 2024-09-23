@@ -53,8 +53,11 @@ const Menu = () => {
               <Link
                 href={item.href}
                 key={item.label}
-                className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
-              >
+                className={`${
+                  item.href == pathname
+                    ? "text-[#003472] font-semibold"
+                    : "text-gray-500 "
+                } flex items-center justify-center lg:justify-start gap-4 opacity-95 py-2 md:px-2 rounded-md hover:text-[#003472] hover:font-semibold`}>
                 {typeof item.icon === "string" ? (
                   <Image
                     src={item.icon}

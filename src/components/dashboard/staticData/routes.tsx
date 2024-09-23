@@ -86,13 +86,13 @@ export const menuItems = [
       {
         icon: <FaRegCircleUser />,
         label: "Profile",
-        href: "/profile",
+        href: "/admin/profile",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: <GearIcon />,
         label: "Settings",
-        href: "/settings",
+        href: "/admin/settings",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
