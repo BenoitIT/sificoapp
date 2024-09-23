@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { CardWrapper } from './card-wrapper'
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import { FormError } from "../form-error"
-import { FormSuccess } from "../form-success"
-import { ErrorProps, LoginProps } from "@/interfaces/authForm"
-import { useState } from "react"
-import { Label } from '../ui/label'
-import Link from 'next/link'
-import { InputError } from '../input-error'
+import { CardWrapper } from "./card-wrapper";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
+import { ErrorProps, LoginProps } from "@/interfaces/authForm";
+import { useState } from "react";
+import { Label } from "../ui/label";
+import Link from "next/link";
+import { InputError } from "../input-error";
 
 export const LoginForm = () => {
   const [errors, setErrors] = useState<ErrorProps>({});
@@ -44,14 +44,13 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel='Welcome Back'
-      backButtonLabel='Back'
-      backButtonHref='/'
-      showSocial={true}
+      headerLabel="Welcome Back"
+      backButtonLabel="Back"
+      backButtonHref="/"
+      showSocial={false}
       showFooter={false}
     >
-      <form onSubmit={handleSubmit}
-        className="space-y-2">
+      <form onSubmit={handleSubmit} className="space-y-2">
         <div className="space-y-2">
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
@@ -84,25 +83,17 @@ export const LoginForm = () => {
             <InputError errors={errors} fieldName="password" />
           </div>
         </div>
-        <Button
-          size={"sm"}
-          variant={"link"}
-          className="px-0 font-normal"
-        >
-          <Link href="/auth/reset" className='text-xs'>
+        <Button size={"sm"} variant={"link"} className="px-0 font-normal">
+          <Link href="/auth/reset" className="text-xs">
             Forgot Password?
           </Link>
         </Button>
         <FormError message="" />
         <FormSuccess message="" />
-        <Button
-          type="submit"
-          variant={'default'}
-          className="w-full"
-        >
+        <Button type="submit" variant={"default"} className="w-full">
           Login
         </Button>
       </form>
     </CardWrapper>
-  )
-}
+  );
+};
