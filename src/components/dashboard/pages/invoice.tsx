@@ -8,34 +8,61 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import jsPdf from "jspdf";
+import html2Canvas from "html2canvas";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { InvoiceGenerationDetails } from "@/app/(dashboard)/admin/stuffing-reports/[id]/invoice/[invId]/(invoicedetails)/generationdetails";
 
-const Invoice= () => {
+const Invoice = () => {
   const dispatch = useDispatch();
+  const invoiceRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     dispatch(setPageTitle("Invoice"));
   }, [dispatch]);
+
+  const ExportInvoicePDf = async () => {
+    const invoice = invoiceRef?.current;
+    try {
+      if (invoice) {
+        const canvas = await html2Canvas(invoice);
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPdf({
+          orientation: "portrait",
+          unit: "px",
+          format: "a4",
+        });
+        const width = pdf.internal.pageSize.getWidth();
+        const height = (canvas.height * width) / canvas.width;
+        pdf.addImage(imgData, "PNG", 0, 0, width, height);
+        pdf.save("invoice.pdf");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="w-full">
       <div className="m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded">
         <h1 className="font-semibold uppercase text-xs md:text-base">
           Invoice preview
         </h1>
-        <InvoiceGenerationDetails/>
+        <InvoiceGenerationDetails ExportInvoicePDf={ExportInvoicePDf}/>
       </div>
-      <div className="m-1 md:m-2 bg-white text-gray-700 p-6 flex flex-col gap-2 max-w-[1200px] border border-gray-300 shadow-xl">
+      <div
+        className="m-1 md:m-2 bg-white text-gray-700 p-6 flex flex-col gap-2 max-w-[1200px] border border-gray-300 shadow-xl"
+        ref={invoiceRef}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:w-[80%] w-full">
           <Image src="/images/logoo.png" alt="logo" width={300} height={250} />
-          <div className="md:text-sm text-xs overflow-x-auto w-full">
+          <div className="md:text-sm text-xs w-full">
             <div className=" mb-2">
               <h1 className="text-xs md:text-base font-bold uppercase">
                 Super International Freight Services LLC
               </h1>
             </div>
-            <div>
+            <div className="flex flex-col gap-1">
               <p className="uppercase">
                 Makuza Peace Plaza - 4<sup>th</sup> Floor/ Kigali - Rwanda
               </p>
@@ -53,7 +80,7 @@ const Invoice= () => {
             </div>
           </div>
         </div>
-        <div className="w-full text-base font-semibold py-3">
+        <div className="w-full text-base font-semibold py-3 mt-2">
           <p className="text-center uppercase">
             <span className="ml-0 lg:-ml-[250px]">Invoice</span>
           </p>

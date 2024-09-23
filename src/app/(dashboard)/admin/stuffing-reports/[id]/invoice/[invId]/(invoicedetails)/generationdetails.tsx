@@ -7,7 +7,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const InvoiceGenerationDetails = () => {
+export const InvoiceGenerationDetails = ({
+  ExportInvoicePDf,
+}: {
+  ExportInvoicePDf: () => void;
+}) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,7 +49,7 @@ export const InvoiceGenerationDetails = () => {
             />
           </div>
           <div className="w-full flex justify-between">
-            <Button>Export invoice in PDF</Button>
+            <Button onClick={ExportInvoicePDf}>Export invoice in PDF</Button>
           </div>
         </div>
       </PopoverContent>
