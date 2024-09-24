@@ -1,9 +1,11 @@
 import prisma from "../../../../prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import userValidationSchema from "../validations/user";
 import bcrypt from "bcrypt";
+import { EmailTemplate } from "@/appComponents/emailTemplates/userCreation";
 export const revalidate = 0;
-
+const resend = new Resend(process.env.NEXT_RESEND_API_KEY);
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const userDataValidation = userValidationSchema.safeParse(body);
@@ -39,10 +41,23 @@ export const POST = async (req: NextRequest) => {
     body.firstName[0] + body.lastName[0] + body.phone.slice(0, 6);
   body.password = await bcrypt.hash(unIncryptedPassword, 10);
   const user = await prisma.user.create({ data: body });
+  const { data, error } = await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: user.email,
+    subject: "User account creation",
+    react: EmailTemplate({
+      firstName: user.firstName,
+      email: user.email,
+      password: unIncryptedPassword,
+    }),
+    html: ``,
+  });
+  if (error) console.error(error);
   return NextResponse.json({
     status: 201,
     message: "New staff is successfully registred!",
     data: user,
+    email: data,
   });
 };
 
