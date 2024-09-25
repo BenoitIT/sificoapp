@@ -1,17 +1,19 @@
-'use client'
+"use client";
 
-import { CardWrapper } from './card-wrapper'
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import { FormError } from "../form-error"
-import { FormSuccess } from "../form-success"
-import { useState } from 'react'
-import { ErrorProps,LoginProps } from '@/interfaces/authForm'
-import { Label } from '../ui/label'
-import { InputError } from '../input-error'
+import { CardWrapper } from "./card-wrapper";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
+import { useState } from "react";
+import { ErrorProps, LoginProps } from "@/interfaces/authForm";
+import { Label } from "../ui/label";
+import { InputError } from "../input-error";
+import { sendPasswordResetLink } from "@/app/http/users";
+import { toast } from "react-toastify";
 export const ResetForm = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorProps>({});
-  const [payload, setPayload] = useState<LoginProps>({});
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setErrors((prevState: LoginProps) => ({
       ...prevState,
@@ -20,10 +22,6 @@ export const ResetForm = () => {
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setPayload((prevState: LoginProps) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
     ErrorLogger(e.target.name, null);
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,20 +31,27 @@ export const ResetForm = () => {
     if (email.value == "") {
       ErrorLogger("email", "Email address is required.");
     } else {
-      console.log("payload", payload);
+      try {
+        setLoading(true)
+        const message = await sendPasswordResetLink({ email: email.value });
+        toast.success(message);
+        form.reset();
+        setLoading(false)
+      } catch (err) {
+        toast.error("Could not send password link");
+      }
     }
   };
 
   return (
     <CardWrapper
-    headerLabel='Forgot Password?'
-    backButtonLabel='Back to Login'
-    backButtonHref='/auth/login'
-    showSocial={false}
-    showFooter={true}
+      headerLabel="Forgot Password?"
+      backButtonLabel="Back to Login"
+      backButtonHref="/auth/login"
+      showSocial={false}
+      showFooter={true}
     >
-      <form onSubmit={handleSubmit}
-        className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -61,18 +66,15 @@ export const ResetForm = () => {
               }
               onChange={handleChange}
             />
-            <InputError errors={errors} fieldName='email' />
+            <InputError errors={errors} fieldName="email" />
           </div>
         </div>
-          <FormError message="" />
-          <FormSuccess message="" />
-          <Button
-          type="submit"
-          className="w-full"
-          >
-            Send reset email
-          </Button>
-        </form>
+        <FormError message="" />
+        <FormSuccess message="" />
+        <Button type="submit" className="w-full" disabled={loading}>
+          Send reset email
+        </Button>
+      </form>
     </CardWrapper>
-  )
-}
+  );
+};

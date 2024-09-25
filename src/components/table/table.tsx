@@ -57,7 +57,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
                             ? "text-red-400 hover:cursor-pointer"
                             : "cursor-pointer"
                         }
-                        onClick={() => action.Click(row.id)}
+                        onClick={() => action.Click(row.id as number)}
                       >
                         {action.icon}
                       </Label>

@@ -4,8 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { menuItems } from "./staticData/routes";
 import { usePathname } from "next/navigation";
+import { FaSignOutAlt } from "react-icons/fa";
+import { signOut } from "next-auth/react";
 const Menu = () => {
-  const pathname: string = usePathname();
+  const pathname: string | null = usePathname();
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/auth/login";
+  };
   return (
     <div className="h-[96vh] flex flex-col justify-between w-full">
       <Link
@@ -57,7 +63,8 @@ const Menu = () => {
                   item.href == pathname
                     ? "text-[#003472] font-semibold"
                     : "text-gray-500 "
-                } flex items-center justify-center lg:justify-start gap-4 opacity-95 py-2 md:px-2 rounded-md hover:text-[#003472] hover:font-semibold`}>
+                } flex items-center justify-center lg:justify-start gap-4 opacity-95 py-2 md:px-2 rounded-md hover:text-[#003472] hover:font-semibold`}
+              >
                 {typeof item.icon === "string" ? (
                   <Image
                     src={item.icon}
@@ -73,6 +80,15 @@ const Menu = () => {
             );
           }
         })}
+        <button
+          className={`text-gray-500  flex items-center justify-center lg:justify-start gap-4 opacity-95 py-2 md:px-2 rounded-md hover:text-[#003472] hover:font-semibold bg-transparent border-none`}
+          onClick={handleSignOut}
+        >
+          <span>
+            <FaSignOutAlt />
+          </span>
+          <span>Logout</span>
+        </button>
       </div>
     </div>
   );

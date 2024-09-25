@@ -8,12 +8,15 @@ import { FormSuccess } from "../form-success";
 import { ErrorProps, LoginProps } from "@/interfaces/authForm";
 import { useState } from "react";
 import { Label } from "../ui/label";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { InputError } from "../input-error";
+import { toast } from "react-toastify";
 
 export const LoginForm = () => {
   const [errors, setErrors] = useState<ErrorProps>({});
   const [payload, setPayload] = useState<LoginProps>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setErrors((prevState: LoginProps) => ({
       ...prevState,
@@ -38,7 +41,28 @@ export const LoginForm = () => {
     } else if (password.value == "") {
       ErrorLogger("password", "Password is required.");
     } else {
-      console.log("payload", payload);
+      try {
+        setLoading(true);
+        const isLoggedIn = await signIn("credentials", {
+          email: payload.email,
+          password: payload.password,
+          redirect: false,
+        });
+        if (isLoggedIn?.status == 401) {
+          toast.error("Invalid email and password!");
+          setLoading(false);
+        } else if (isLoggedIn?.ok) {
+          toast.success("Welcome back.");
+          setLoading(false);
+          form.reset();
+        } else {
+          toast.error("Check internet connection!");
+          setLoading(false);
+        }
+      } catch (err) {
+        setLoading(false);
+        return toast.error("Check internet connection!");
+      }
     }
   };
 
@@ -90,7 +114,12 @@ export const LoginForm = () => {
         </Button>
         <FormError message="" />
         <FormSuccess message="" />
-        <Button type="submit" variant={"default"} className="w-full">
+        <Button
+          type="submit"
+          variant={"default"}
+          className="w-full"
+          disabled={loading}
+        >
           Login
         </Button>
       </form>

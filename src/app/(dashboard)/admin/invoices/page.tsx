@@ -14,7 +14,7 @@ const Page = () => {
   useEffect(() => {
     dispatch(setPageTitle("Invoices"));
   }, [dispatch]);
-  const handleOpenInvoice = (id: number | string) => {
+  const handleOpenInvoice = async(id: number | string) => {
     router.push(`${currentPath}/${id}`);
   };
   const actions = [{ icon: <FaEye />, Click: handleOpenInvoice, name: "view" }];

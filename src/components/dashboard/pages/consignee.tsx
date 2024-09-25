@@ -5,7 +5,7 @@ import { SearchBox } from "@/components/ui/searchBox";
 import { useRouter, usePathname } from "next/navigation";
 const Consignee = () => {
   const router = useRouter();
-  const currentPath: string = usePathname();
+  const currentPath: string|null = usePathname();
   const handleAddNew = () => {
     router.push(`${currentPath}/newconsignee`);
   };

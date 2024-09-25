@@ -7,7 +7,7 @@ interface EmailTemplateProps {
 
 export const resetPasswordEmailTemplate: React.FC<
   Readonly<EmailTemplateProps>
-> = ({ token, appUrl }) => {
+> = ({ token }) => {
   return (
     <div style={{ width: "95%", maxWidth: "600px", margin: "auto" }}>
       <main

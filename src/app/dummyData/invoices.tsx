@@ -1,5 +1,6 @@
 export const shippingInvoices = [
     {
+      id:1,
       consigneeName: "Global Traders Ltd.",
       containerId: "C123456789",
       origin: "Shanghai, China",
@@ -9,6 +10,7 @@ export const shippingInvoices = [
       totalEud: 11700,
     },
     {
+      id:2,
       consigneeName: "Eastern Imports Co.",
       containerId: "C987654321",
       origin: "Tokyo, Japan",
@@ -18,6 +20,7 @@ export const shippingInvoices = [
       totalEud: 8300,
     },
     {
+      id:3,
       consigneeName: "Atlantic Cargo Services",
       containerId: "C456123789",
       origin: "Cape Town, South Africa",
@@ -27,6 +30,7 @@ export const shippingInvoices = [
       totalEud: 14600,
     },
     {
+      id:4,
       consigneeName: "North Sea Logistics",
       containerId: "C789456123",
       origin: "Rotterdam, Netherlands",
@@ -36,6 +40,7 @@ export const shippingInvoices = [
       totalEud: 16200,
     },
     {
+      id:5,
       consigneeName: "Southern Exports Ltd.",
       containerId: "C654321987",
       origin: "Sydney, Australia",
@@ -45,6 +50,7 @@ export const shippingInvoices = [
       totalEud: 8800,
     },
     {
+      id:6,
       consigneeName: "Pacific Rim Co.",
       containerId: "C321654987",
       origin: "Los Angeles, USA",
@@ -54,6 +60,7 @@ export const shippingInvoices = [
       totalEud: 9600,
     },
     {
+      id:7,
       consigneeName: "Baltic Freight Forwarders",
       containerId: "C159753456",
       origin: "Riga, Latvia",

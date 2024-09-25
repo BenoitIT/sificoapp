@@ -7,13 +7,13 @@ import { dummyItemsData } from "@/app/dummyData/staffingItem";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
-  const handleEdit = (id: number | string) => {
+  const handleEdit = async(id: number | string) => {
     console.log("Edit clicked", id);
   };
-  const handleDelete = (id: number | string) => {
+  const handleDelete = async(id: number | string) => {
     console.log("Delete clicked", id);
   };
-  const handleOpenStaffingReport = (id: number | string) => {
+  const handleOpenStaffingReport = async(id: number | string) => {
     router.push(`${currentPath}/invoice/${id}`);
   };
   const actions = [

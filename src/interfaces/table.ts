@@ -5,8 +5,8 @@ export interface TableProps<T> {
     }[];
     data: T[];
     action?: {
-      icon: React.ReactNode;
-      Click: (id: string | number) => void;
+      icon: React.ReactNode|JSX.Element;
+      Click:((id: number) => Promise<any>);
       name?: string;
     }[];
     allowItemsSummationFooter?:boolean;

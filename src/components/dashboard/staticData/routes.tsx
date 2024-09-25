@@ -1,4 +1,4 @@
-import { FaSignOutAlt } from "react-icons/fa";
+
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BsListUl } from "react-icons/bs";
 import { GearIcon } from "@radix-ui/react-icons";
@@ -93,12 +93,6 @@ export const menuItems = [
         icon: <GearIcon />,
         label: "Settings",
         href: "/admin/settings",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: <FaSignOutAlt />,
-        label: "Logout",
-        href: "/auth/login",
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],

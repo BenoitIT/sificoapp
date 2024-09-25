@@ -7,7 +7,7 @@ const StaffingReportsItems = () => {
   const router = useRouter();
   const params = useParams();
   const staffReportId = params?.id;
-  const currentPath: string = usePathname();
+  const currentPath: string|null = usePathname();
   const handleAddNew = () => {
     router.push(`${currentPath}/newitem`);
   };
