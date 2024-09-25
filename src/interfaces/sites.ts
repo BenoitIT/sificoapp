@@ -1,4 +1,5 @@
 export interface NewSite {
+  id?:number;
   country?: string;
   name?: string;
   agent?: string | number;

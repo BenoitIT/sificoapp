@@ -14,12 +14,21 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String @unique
-  phone     String @unique
-  role      String
-  gender    String
-  password  String
+  id           Int            @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String         @unique
+  phone        String         @unique
+  role         String
+  gender       String
+  password     String
+  deliverySite deliverySite[]
+}
+
+model deliverySite {
+  id           Int    @id @default(autoincrement())
+  country      String
+  locationName String
+  user         User   @relation(fields: [agent], references: [id])
+  agent        Int
 }
