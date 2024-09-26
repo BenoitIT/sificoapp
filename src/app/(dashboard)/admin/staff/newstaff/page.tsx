@@ -16,13 +16,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { usersBaseEndpoint as cacheKey } from "@/app/http/axios";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewStaff, newStaffErrors } from "@/interfaces/staff";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useRouter } from "next/navigation";
-import { mutate } from "swr";
 import { addNewUser } from "@/app/http/users";
 import { toast } from "react-toastify";
 const Page = () => {
@@ -85,7 +83,6 @@ const Page = () => {
         const message = await addNewUser(newStaffPyaload);
         form.reset()
         toast.success(message);
-        mutate(cacheKey);
         router.back();
       } catch (err) {
         toast.error("Failed to add new staff");

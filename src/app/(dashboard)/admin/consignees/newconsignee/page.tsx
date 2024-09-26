@@ -12,9 +12,14 @@ import { Label } from "@/components/ui/label";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
 import { useRouter } from "next/navigation";
+import { createNewConsignee } from "@/app/http/consignee";
+import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
-  const [newConsigneepayload, setStaffData] = useState<NewShipper>({});
+  const [newConsigneepayload, setStaffData] = useState<NewShipper>({
+    email: "",
+  });
+  const [loading, setLoading] = useState<boolean>(false);
   const [errors, setValidationErrors] = useState<newShipperErrors>({});
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
@@ -32,19 +37,29 @@ const Page = () => {
     }));
     ErrorLogger(e.target.name, null);
   };
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const shipperName = form.elements.namedItem("name") as HTMLInputElement;
-    if (shipperName.value === "") {
+    const consigneeName = form.elements.namedItem("name") as HTMLInputElement;
+    const consigneePhone = form.elements.namedItem("phone") as HTMLInputElement;
+    if (consigneeName.value === "") {
       ErrorLogger("name", "Consignee name is required.");
     } else if (
-      newConsigneepayload.phone &&
-      !phoneRegx.test(newConsigneepayload.phone)
+      consigneePhone.value == "" ||
+      !phoneRegx.test(consigneePhone.value)
     ) {
       ErrorLogger("phone", "Valid phone number is required.");
     } else {
-      console.log("payload", newConsigneepayload);
+      try {
+        setLoading(true);
+        const message = await createNewConsignee(newConsigneepayload);
+        toast.success(message);
+        setLoading(false);
+        router.back();
+        form.reset();
+      } catch (error) {
+        toast.success("Failed to add a new shipper");
+      }
     }
   };
   return (
@@ -135,7 +150,7 @@ const Page = () => {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="w-fit">
+                <Button type="submit" className="w-fit" disabled={loading}>
                   Register
                 </Button>
               </div>

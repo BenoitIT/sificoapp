@@ -31,3 +31,8 @@ export const setNewPassword = async ({
   });
   return response.data.message;
 };
+
+export const getAllAgents = async () => {
+  const response = await sifcoApi.get(usersBaseEndpoint+`/agents`);
+  return response.data.data;
+};

@@ -11,6 +11,7 @@ import { deleteUser, getAllUsers } from "@/app/http/users";
 import { NewStaff } from "@/interfaces/staff";
 import { toast } from "react-toastify";
 import Loader from "@/appComponents/pageBlocks/loader";
+import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
   const {
@@ -47,7 +48,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    console.log("error", error);
+    return <ErrorSection />;
   }
 };
 

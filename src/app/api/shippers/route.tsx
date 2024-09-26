@@ -1,0 +1,53 @@
+import prisma from "../../../../prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import shipperValidationSchema from "../validations/shipper";
+export const revalidate = 0;
+export const POST = async (req: NextRequest) => {
+  const body = await req.json();
+  const shipperValidation = shipperValidationSchema.safeParse(body);
+  if (!shipperValidation.success)
+    return NextResponse.json({
+      message:
+        shipperValidation.error.errors[0].path +
+        " " +
+        shipperValidation.error.errors[0].message,
+      status: 400,
+    });
+  if (body.email != "") {
+    const checkShipperEmailExistance = await prisma.shipper.findFirst({
+      where: {
+        email: body.email,
+      },
+    });
+    if (checkShipperEmailExistance)
+      return NextResponse.json({
+        status: 400,
+        message: "A shipper with this email already exist.",
+      });
+  }
+  const checkshipperPhoneExistance = await prisma.shipper.findFirst({
+    where: {
+      phone: body.phone,
+    },
+  });
+  if (checkshipperPhoneExistance)
+    return NextResponse.json({
+      status: 400,
+      message: "A shipper with this phone number already exist.",
+    });
+
+  const shipper = await prisma.shipper.create({ data: body });
+  return NextResponse.json({
+    status: 201,
+    message: "New shipper is successfully registred!",
+    data: shipper,
+  });
+};
+
+export const GET = async () => {
+  const shippers = await prisma.shipper.findMany({});
+  return NextResponse.json({
+    status: 200,
+    data: shippers,
+  });
+};
