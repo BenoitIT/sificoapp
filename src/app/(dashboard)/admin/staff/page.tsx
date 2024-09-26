@@ -1,13 +1,13 @@
 "use client";
 import useSWR, { mutate } from "swr";
-import { usersBaseEndpoint as cacheKey } from "@/app/http/axios";
+import { usersBaseEndpoint as cacheKey } from "@/app/httpservices/axios";
 import { headers } from "@/app/tableHeaders/users";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { deleteUser, getAllUsers } from "@/app/http/users";
+import { deleteUser, getAllUsers } from "@/app/httpservices/users";
 import { NewStaff } from "@/interfaces/staff";
 import { toast } from "react-toastify";
 import Loader from "@/appComponents/pageBlocks/loader";

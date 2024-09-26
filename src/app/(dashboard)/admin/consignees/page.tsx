@@ -10,7 +10,7 @@ import {
   getAllconsignees,
   consigneesEndpoint,
   deleteConsignee,
-} from "@/app/http/consignee";
+} from "@/app/httpservices/consignee";
 import { NewShipper } from "@/interfaces/shipper";
 import Loader from "@/appComponents/pageBlocks/loader";
 import { toast } from "react-toastify";

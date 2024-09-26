@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
 import { useRouter } from "next/navigation";
-import { createNewConsignee } from "@/app/http/consignee";
+import { createNewConsignee } from "@/app/httpservices/consignee";
 import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();

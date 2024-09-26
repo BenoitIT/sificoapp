@@ -9,7 +9,7 @@ import { useState } from "react";
 import { ErrorProps, LoginProps } from "@/interfaces/authForm";
 import { Label } from "../ui/label";
 import { InputError } from "../input-error";
-import { sendPasswordResetLink } from "@/app/http/users";
+import { sendPasswordResetLink } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
 export const ResetForm = () => {
   const [loading, setLoading] = useState<boolean>(false);

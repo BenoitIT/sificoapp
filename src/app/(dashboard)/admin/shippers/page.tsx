@@ -9,7 +9,7 @@ import {
   deleteShipper,
   getAllshippers,
   shippersEndpoint,
-} from "@/app/http/shipper";
+} from "@/app/httpservices/shipper";
 import Shippers from "@/components/dashboard/pages/shippers";
 import { NewShipper } from "@/interfaces/shipper";
 import Loader from "@/appComponents/pageBlocks/loader";

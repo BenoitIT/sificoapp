@@ -4,7 +4,7 @@ import {
   getAllsites,
   deliverySitesEndpoint,
   deleteSite,
-} from "@/app/http/deliverySites";
+} from "@/app/httpservices/deliverySites";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Sites from "@/components/dashboard/pages/sites";
 import { headers } from "@/app/tableHeaders/sites";

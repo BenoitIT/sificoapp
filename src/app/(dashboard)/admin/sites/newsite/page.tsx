@@ -22,10 +22,10 @@ import { NewSite, newSitesErrors } from "@/interfaces/sites";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useRouter } from "next/navigation";
-import { getAllAgents } from "@/app/http/users";
-import { usersBaseEndpoint } from "@/app/http/axios";
+import { getAllAgents } from "@/app/httpservices/users";
+import { usersBaseEndpoint } from "@/app/httpservices/axios";
 import { NewStaff } from "@/interfaces/staff";
-import { createNewSite } from "@/app/http/deliverySites";
+import { createNewSite } from "@/app/httpservices/deliverySites";
 import { toast } from "react-toastify";
 const Page = () => {
   const dispatch = useDispatch();

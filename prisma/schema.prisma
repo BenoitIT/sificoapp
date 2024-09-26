@@ -26,11 +26,12 @@ model User {
 }
 
 model deliverySite {
-  id           Int    @id @default(autoincrement())
-  country      String
-  locationName String
-  user         User   @relation(fields: [agent], references: [id])
-  agent        Int
+  id             Int              @id @default(autoincrement())
+  country        String
+  locationName   String
+  user           User             @relation(fields: [agent], references: [id])
+  agent          Int
+  stuffingreport stuffingreport[]
 }
 
 model shipper {
@@ -47,4 +48,13 @@ model consignee {
   location String
   email    String @unique
   phone    String @unique
+}
+
+model stuffingreport {
+  id          Int          @id @default(autoincrement())
+  code        String
+  status      String
+  origin      String
+  user        deliverySite @relation(fields: [destination], references: [id])
+  destination Int
 }

@@ -21,7 +21,7 @@ import { NewStaff, newStaffErrors } from "@/interfaces/staff";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useRouter } from "next/navigation";
-import { addNewUser } from "@/app/http/users";
+import { addNewUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
