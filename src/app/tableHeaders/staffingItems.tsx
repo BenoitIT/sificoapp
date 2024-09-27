@@ -1,13 +1,12 @@
 export const headers = [
-    { header: "Delivery", field: "delivery" },
-    { header: "Shipper", field: "shipper" },
-    { header: "Consignee", field: "consignee" },
-    { header: "Phone Number", field: "phoneNumber" },
+    { header: "Shipper", field: "shipperId" },
+    { header: "Consignee", field: "consigneeId" },
+    { header: "Phone Number", field: "phone" },
     { header: "Code", field: "code" },
     { header: "Mark", field: "mark" },
     { header: "Sales Agent", field: "salesAgent" },
     { header: "No of Pkgs", field: "noOfPkgs" },
-    { header: "Type of Pkgs", field: "typeOfPkgs" },
+    { header: "Type of Pkgs", field: "typeOfPkg" },
     { header: "Wgt", field: "weight" },
     { header: "Line", field: "line" },
     { header: "Handling", field: "handling" },
@@ -18,7 +17,7 @@ export const headers = [
     { header: "BL Fee", field: "blFee" },
     { header: "JB", field: "jb" },
     { header: "Others", field: "others" },
-    { header: "Total $", field: "totalUSD" },
-    { header: "Total AED", field: "totalAED" },
+    { header: "Total $", field: "totalUsd" },
+    { header: "Total AED", field: "totalAed" },
     { header: "Invoice No.", field: "invoiceNo" }
   ];

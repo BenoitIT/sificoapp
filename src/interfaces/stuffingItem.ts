@@ -1,17 +1,18 @@
 
 export interface NewStuffingItem {
-  shipper?: number | string;
-  consignee?: number | string;
+  id?:number;
+  shipper?: number;
+  consignee?: number;
   code?: string;
   mark?: string;
-  salesAgent?: number | string;
+  salesAgent?: string;
   noOfPkgs?: number;
   typeOfPkg?: string;
   weight?: number;
   line?: number;
   handling?: number;
   type?: string;
-  cbm?: number | string;
+  cbm?: number;
   description?: string;
   freight?: number;
   blFee?: number;

@@ -1,3 +1,4 @@
+import { NewStuffingItem } from "@/interfaces/stuffingItem";
 import { sifcoApi } from "./axios";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 export const stuffingReportEndpoint = "/stuffingreports";
@@ -11,5 +12,17 @@ export const createStuffingReports = async (data: StuffingReport) => {
 };
 export const deleteStuffingReports = async (id: number) => {
   const response = await sifcoApi.delete(stuffingReportEndpoint + `/${id}`);
+  return response.data.message;
+};
+export const getStuffingReportsItems = async (id: number) => {
+  const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}`);
+  return response.data.data;
+};
+
+export const addStuffingReportsItems = async (
+  id: number,
+  data: NewStuffingItem
+) => {
+  const response = await sifcoApi.post(stuffingReportEndpoint + `/${id}`, data);
   return response.data.message;
 };

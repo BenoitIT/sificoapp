@@ -1,9 +1,12 @@
+import { addStuffingReportsItems } from "@/app/httpservices/stuffingReport";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { NewStuffingItem, StepFormProps } from "@/interfaces/stuffingItem";
+import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent } from "react";
+import { toast } from "react-toastify";
 
 const StepTwoForm = ({
   setItemsData,
@@ -12,12 +15,22 @@ const StepTwoForm = ({
   newItemPayload,
   errors,
 }: StepFormProps) => {
+  const params = useParams();
+  const router = useRouter();
+  const staffReportId = params?.id;
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setItemsData((prevState: NewStuffingItem) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+    if (e.target.type == "number") {
+      setItemsData((prevState: NewStuffingItem) => ({
+        ...prevState,
+        [e.target.name]: Number(e.target.value),
+      }));
+    } else {
+      setItemsData((prevState: NewStuffingItem) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
     ErrorLogger(e.target.name, null);
   };
   const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -28,7 +41,7 @@ const StepTwoForm = ({
     }));
     ErrorLogger(e.target.name, null);
   };
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const description = form.elements.namedItem(
@@ -38,8 +51,6 @@ const StepTwoForm = ({
     const Line = form.elements.namedItem("line") as HTMLInputElement;
     const freight = form.elements.namedItem("freight") as HTMLInputElement;
     const blFee = form.elements.namedItem("blFee") as HTMLInputElement;
-    const handling = form.elements.namedItem("handling") as HTMLInputElement;
-    const others = form.elements.namedItem("others") as HTMLInputElement;
     if (description.value === "") {
       ErrorLogger("description", "Description  is required.");
     } else if (Jb.value === "" || !Number(Jb.value)) {
@@ -50,12 +61,19 @@ const StepTwoForm = ({
       ErrorLogger("freight", "Numerical value for freight is required.");
     } else if (blFee.value == "" || !Number(blFee.value)) {
       ErrorLogger("blFee", "Numerical value for blFee is required.");
-    } else if (!Number(handling.value)) {
-      ErrorLogger("handling", "Numerical value for handling is required.");
-    } else if (!Number(others.value)) {
-      ErrorLogger("others", "Numerical value for others is required.");
     } else {
-      console.log("payload", newItemPayload);
+      try {
+        delete newItemPayload.id;
+        const message = await addStuffingReportsItems(
+          Number(staffReportId),
+          newItemPayload
+        );
+        toast.success(message);
+        router.back();
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to record shipment.");
+      }
     }
   };
   return (
@@ -87,6 +105,7 @@ const StepTwoForm = ({
             <Input
               id="line"
               name="line"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
@@ -104,6 +123,7 @@ const StepTwoForm = ({
             <Input
               id="handling"
               name="handling"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
@@ -123,6 +143,7 @@ const StepTwoForm = ({
             <Input
               id="cbm"
               name="cbm"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={"placeholder:text-gray-400"}
@@ -136,6 +157,7 @@ const StepTwoForm = ({
             <Input
               id="type"
               name="type"
+              type="text"
               placeholder="type.."
               onChange={handleChange}
               className={"placeholder:text-gray-400"}
@@ -149,6 +171,7 @@ const StepTwoForm = ({
               id="jb"
               name="jb"
               placeholder="type.."
+              type="number"
               onChange={handleChange}
               className={
                 errors?.jb
@@ -167,6 +190,7 @@ const StepTwoForm = ({
             <Input
               id="freight"
               name="freight"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
@@ -190,6 +214,7 @@ const StepTwoForm = ({
             <Input
               id="blFee"
               name="blFee"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
@@ -207,6 +232,7 @@ const StepTwoForm = ({
             <Input
               id="other"
               name="others"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={

@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 export const GET = async () => {
   const stuffingReports = await prisma.stuffingreport.findMany({
     include: {
-      user: true,
+      deliverysite: true,
     },
   });
   const processedData = stuffingReports.map((record) => {
@@ -44,7 +44,8 @@ export const GET = async () => {
       code: record.code,
       status: record.status,
       origin: record.origin,
-      destination: record.user.country + "," + record.user.locationName,
+      destination:
+        record.deliverysite.country + "," + record.deliverysite.locationName,
     };
   });
   return NextResponse.json({

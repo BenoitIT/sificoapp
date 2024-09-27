@@ -40,6 +40,8 @@ model shipper {
   location String
   email    String @unique
   phone    String @unique
+
+  stuffingreportItems stuffingreportItems[]
 }
 
 model consignee {
@@ -48,13 +50,43 @@ model consignee {
   location String
   email    String @unique
   phone    String @unique
+
+  stuffingreportItems stuffingreportItems[]
 }
 
 model stuffingreport {
-  id          Int          @id @default(autoincrement())
-  code        String
-  status      String
-  origin      String
-  user        deliverySite @relation(fields: [destination], references: [id])
-  destination Int
+  id                  Int                   @id @default(autoincrement())
+  code                String
+  status              String
+  origin              String
+  deliverysite        deliverySite          @relation(fields: [destination], references: [id])
+  destination         Int
+  stuffingreportItems stuffingreportItems[]
+}
+
+model stuffingreportItems {
+  id               Int            @id @default(autoincrement())
+  container        stuffingreport @relation(fields: [stuffingreportid], references: [id])
+  stuffingreportid Int
+  shipper          shipper        @relation(fields: [shipperId], references: [id])
+  shipperId        Int
+  consignee        consignee      @relation(fields: [consigneeId], references: [id])
+  consigneeId      Int
+  code             String
+  mark             String
+  salesAgent       String
+  noOfPkgs         Int
+  typeOfPkg        String
+  weight           Int
+  line             Int
+  handling         Int
+  type             String
+  cbm              Int
+  description      String
+  freight          Int
+  blFee            Int
+  jb               Int
+  others           Int
+  totalUsd         Int
+  totalAed         Int
 }

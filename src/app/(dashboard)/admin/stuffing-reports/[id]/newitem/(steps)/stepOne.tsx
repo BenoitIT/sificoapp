@@ -1,3 +1,8 @@
+import {
+  consigneesEndpoint,
+  getAllconsignees,
+} from "@/app/httpservices/consignee";
+import { getAllshippers, shippersEndpoint } from "@/app/httpservices/shipper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { NewShipper } from "@/interfaces/shipper";
 import {
   NewStuffingItem,
   NewStuffingItemErrors,
@@ -15,6 +21,7 @@ import {
 } from "@/interfaces/stuffingItem";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent } from "react";
+import useSWR from "swr";
 
 const SetpOneForm = ({
   setItemsData,
@@ -25,10 +32,18 @@ const SetpOneForm = ({
   setActiveForm,
 }: StepFormProps) => {
   const router = useRouter();
+  const { data: shippingCompanies } = useSWR(shippersEndpoint, getAllshippers, {
+    onSuccess: (data: NewShipper[]) =>
+      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+  });
+  const { data: consignees } = useSWR(consigneesEndpoint, getAllconsignees, {
+    onSuccess: (data: NewShipper[]) =>
+      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+  });
   const handleSelectShipperChange = (value: string | number) => {
     setItemsData((prevState: NewStuffingItem) => ({
       ...prevState,
-      shipper: value,
+      shipper: Number(value),
     }));
     setValidationErrors((prevState: NewStuffingItemErrors) => ({
       ...prevState,
@@ -38,29 +53,27 @@ const SetpOneForm = ({
   const handleSelectConsigneeChange = (value: string | number) => {
     setItemsData((prevState: NewStuffingItem) => ({
       ...prevState,
-      consignee: value,
+      consignee: Number(value),
     }));
     setValidationErrors((prevState: NewStuffingItemErrors) => ({
       ...prevState,
       consignee: null,
     }));
   };
-  const handleSelectAgentChange = (value: string | number) => {
-    setItemsData((prevState: NewStuffingItem) => ({
-      ...prevState,
-      consignee: value,
-    }));
-    setValidationErrors((prevState: NewStuffingItemErrors) => ({
-      ...prevState,
-      consignee: null,
-    }));
-  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setItemsData((prevState: NewStuffingItem) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+    if (e.target.type == "number") {
+      setItemsData((prevState: NewStuffingItem) => ({
+        ...prevState,
+        [e.target.name]: Number(e.target.value),
+      }));
+    } else {
+      setItemsData((prevState: NewStuffingItem) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
     ErrorLogger(e.target.name, null);
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -98,10 +111,11 @@ const SetpOneForm = ({
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">James</SelectItem>
-                <SelectItem value="2">Paul</SelectItem>
-                <SelectItem value="3">Emmanuel</SelectItem>
-                <SelectItem value="4">Jammy</SelectItem>
+                {shippingCompanies?.map((shipper: NewShipper) => (
+                  <SelectItem key={shipper.id} value={shipper.id!.toString()}>
+                    {shipper.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <span
@@ -119,9 +133,11 @@ const SetpOneForm = ({
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2">Paul</SelectItem>
-                <SelectItem value="3">Peter</SelectItem>
-                <SelectItem value="4">James</SelectItem>
+                {consignees?.map((consignee: NewShipper) => (
+                  <SelectItem key={consignee.id} value={consignee.id!.toString()}>
+                    {consignee.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <span
@@ -156,27 +172,13 @@ const SetpOneForm = ({
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Select onValueChange={handleSelectAgentChange}>
-              <Label htmlFor="salesAgent" className="mb-2">
-                Sales agent <span className="text-red-500">*</span>
-              </Label>
-              <SelectTrigger className="w-full placeholder:text-gray-300">
-                <SelectValue placeholder="Select..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">James</SelectItem>
-                <SelectItem value="2">Paul</SelectItem>
-                <SelectItem value="3">Emmanuel</SelectItem>
-                <SelectItem value="4">Jammy</SelectItem>
-              </SelectContent>
-            </Select>
-            <span
-              className={
-                errors["salesAgent"] ? "text-xs text-red-500" : "hidden"
-              }
-            >
-              {errors?.salesAgent}
-            </span>
+            <Label htmlFor="salesAgent">Sales agent</Label>
+            <Input
+              id="salesAgent"
+              name="salesAgent"
+              placeholder="type.."
+              onChange={handleChange}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="noOfPkgs">
@@ -185,6 +187,7 @@ const SetpOneForm = ({
             <Input
               id="noOfPkgs"
               name="noOfPkgs"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
@@ -229,6 +232,7 @@ const SetpOneForm = ({
             <Input
               id="weight"
               name="weight"
+              type="number"
               placeholder="type.."
               onChange={handleChange}
               className={
