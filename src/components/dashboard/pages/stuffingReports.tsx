@@ -130,7 +130,7 @@ const StaffingReports = () => {
                         <SelectContent>
                           {destinations &&
                             destinations.map((location: NewSite) => (
-                              <SelectItem value={location.id!.toString()}>
+                              <SelectItem key={location.id!} value={location.id!.toString()}>
                                 {location.country + "," + location.locationName}
                               </SelectItem>
                             ))}
