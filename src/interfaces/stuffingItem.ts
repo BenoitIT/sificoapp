@@ -1,6 +1,5 @@
-
 export interface NewStuffingItem {
-  id?:number;
+  id?: number;
   shipper?: number;
   consignee?: number;
   code?: string;
@@ -53,6 +52,18 @@ export interface StepFormProps {
   errors: NewStuffingItemErrors;
   ErrorLogger: (key: string, message: string | null) => void;
   newItemPayload: NewStuffingItem;
-  setActiveForm:(val:number)=>void;
+  setActiveForm: (val: number) => void;
 }
-
+export interface StuffingReportTotals {
+  noOfPkgs: number;
+  weight: number;
+  cbm: number;
+  line:number;
+  handling:number;
+  freight: number;
+  blFee: number;
+  jb: number;
+  others: number;
+  totalUsd: number;
+  totalAed: number;
+}

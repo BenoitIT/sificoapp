@@ -4,7 +4,7 @@ const TabularSection = (Component: React.FC) => {
   const modifiedSection = <T extends Record<string, string | number>>(
     props: TableProps<T>
   ) => {
-    const { headers, action, data, allowItemsSummationFooter } = props;
+    const { headers, action, data, allowItemsSummationFooter,summation } = props;
     return (
       <>
         <Component />
@@ -12,6 +12,7 @@ const TabularSection = (Component: React.FC) => {
           headers={headers}
           data={data}
           action={action}
+          summation={summation}
           allowItemsSummationFooter={allowItemsSummationFooter}
         />
       </>

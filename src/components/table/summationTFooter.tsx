@@ -1,29 +1,32 @@
-import { TableCell, TableFooter, TableRow } from "../ui/table"
-
-export const ItemsSummationTableFooter=()=>{
-    return(
-        <TableFooter className="bg-blue-400 text-white w-full uppercase font-semibold">
-        <TableRow>
-          <TableCell colSpan={8} className="text-center">
-            Total
-          </TableCell>
-          <TableCell>45</TableCell>
-          <TableCell>PKGS</TableCell>
-          <TableCell className="text-center">1550</TableCell>
-          <TableCell className="text-center">0.0</TableCell>
-          <TableCell className="text-center">0.0</TableCell>
-          <TableCell className="text-center">LINES</TableCell>
-          <TableCell className="text-center">0.00</TableCell>
-          <TableCell className="text-center"></TableCell>
-          <TableCell className="text-center">3100</TableCell>
-          <TableCell className="text-center">290</TableCell>
-          <TableCell className="text-center">00</TableCell>
-          <TableCell className="text-center">80</TableCell>
-          <TableCell className="text-center">2762</TableCell>
-          <TableCell className="text-center">8162</TableCell>
-          <TableCell className="text-center"></TableCell>
-          <TableCell className="text-center"></TableCell>
-        </TableRow>
-      </TableFooter>
-    )
+import { StuffingReportTotals } from "@/interfaces/stuffingItem";
+import { TableCell, TableFooter, TableRow } from "../ui/table";
+interface footer {
+  summation?: StuffingReportTotals;
 }
+export const ItemsSummationTableFooter = ({ summation }: footer) => {
+  return (
+    <TableFooter className="bg-blue-400 text-white w-full uppercase font-semibold">
+      <TableRow>
+        <TableCell colSpan={7} className="text-center">
+          Total
+        </TableCell>
+        <TableCell>{summation?.noOfPkgs}</TableCell>
+        <TableCell>PKGS</TableCell>
+        <TableCell className="text-center">{summation?.weight}</TableCell>
+        <TableCell className="text-center">{summation?.line}</TableCell>
+        <TableCell className="text-center">{summation?.handling}</TableCell>
+        <TableCell className="text-center">LINES</TableCell>
+        <TableCell className="text-center">{summation?.cbm}</TableCell>
+        <TableCell className="text-center"></TableCell>
+        <TableCell className="text-center">{summation?.freight}</TableCell>
+        <TableCell className="text-center">{summation?.blFee}</TableCell>
+        <TableCell className="text-center">{summation?.jb}</TableCell>
+        <TableCell className="text-center">{summation?.others}</TableCell>
+        <TableCell className="text-center">{summation?.totalUsd}</TableCell>
+        <TableCell className="text-center">{summation?.totalAed}</TableCell>
+        <TableCell className="text-center"></TableCell>
+        <TableCell className="text-center"></TableCell>
+      </TableRow>
+    </TableFooter>
+  );
+};

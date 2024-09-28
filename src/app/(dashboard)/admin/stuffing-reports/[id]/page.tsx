@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
 import { getStuffingReportsItems } from "@/app/httpservices/stuffingReport";
-import { NewStuffingItem } from "@/interfaces/stuffingItem";
+import { NewStuffingItem, StuffingReportTotals } from "@/interfaces/stuffingItem";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
@@ -26,6 +26,7 @@ const Page = () => {
       onSuccess: (data: {
         shipments: NewStuffingItem[];
         stuffingRpt: StuffingReport;
+        totals:StuffingReportTotals,
       }) => data.shipments.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
@@ -54,6 +55,7 @@ const Page = () => {
         data={data?.shipments}
         action={actions}
         allowItemsSummationFooter={true}
+        summation={data?.totals}
       />
     );
   }

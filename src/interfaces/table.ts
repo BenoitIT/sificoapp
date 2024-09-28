@@ -1,3 +1,5 @@
+import { StuffingReportTotals } from "./stuffingItem";
+
 export interface TableProps<T> {
     headers: {
       header: string;
@@ -10,4 +12,5 @@ export interface TableProps<T> {
       name?: string;
     }[];
     allowItemsSummationFooter?:boolean;
+    summation?:StuffingReportTotals;
   }

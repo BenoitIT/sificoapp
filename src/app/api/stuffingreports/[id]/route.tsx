@@ -53,6 +53,7 @@ export const GET = async (req: Request) => {
         consignee: true,
       },
     });
+
     if (stuffingRptItems) {
       const modifiedResponse = stuffingRptItems.map((item) => {
         return {
@@ -60,7 +61,7 @@ export const GET = async (req: Request) => {
           shipperId: item.shipper.name,
           consigneeId: item.consignee.name,
           code: item.code,
-          phone:item.consignee.phone,
+          phone: item.consignee.phone,
           mark: item.mark,
           salesAgent: item.salesAgent,
           noOfPkgs: item.noOfPkgs,
@@ -79,11 +80,43 @@ export const GET = async (req: Request) => {
           totalAed: item.totalAed,
         };
       });
+
+      const totals = stuffingRptItems.reduce(
+        (acc, item) => {
+          acc.noOfPkgs += item.noOfPkgs || 0;
+          acc.weight += item.weight || 0;
+          acc.cbm += item.cbm || 0;
+          acc.freight += item.freight || 0;
+          acc.blFee += item.blFee || 0;
+          acc.jb += item.jb || 0;
+          acc.handling += item.handling || 0;
+          acc.line += item.line || 0;
+          acc.others += item.others || 0;
+          acc.totalUsd += item.totalUsd || 0;
+          acc.totalAed += item.totalAed || 0;
+          return acc;
+        },
+        {
+          noOfPkgs: 0,
+          weight: 0,
+          cbm: 0,
+          freight: 0,
+          blFee: 0,
+          handling:0,
+          line:0,
+          jb: 0,
+          others: 0,
+          totalUsd: 0,
+          totalAed: 0,
+        }
+      );
+
       return NextResponse.json({
         status: 200,
-        data: { shipments: modifiedResponse, stuffingRpt },
+        data: { shipments: modifiedResponse, stuffingRpt, totals },
       });
     }
+
     return NextResponse.json({
       status: 404,
       message: "That stuffing report is not found",
@@ -91,10 +124,11 @@ export const GET = async (req: Request) => {
   } catch (err) {
     return NextResponse.json({
       status: 400,
-      message: "something went wrong",
+      message: "Something went wrong",
     });
   }
 };
+
 
 export const POST = async (req: NextRequest) => {
   const stuffingRptId = req.url.split("stuffingreports/")[1];
@@ -116,7 +150,7 @@ export const POST = async (req: NextRequest) => {
   const salesAgent = body.salesAgent ?? "";
   const code = body.code ?? "";
   const noOfPkgs = body.noOfPkgs;
-  const typeOfPkg = body.typeOfPk ?? "";
+  const typeOfPkg = body.typeOfPkg ?? "";
   const weight = body.weight;
   const handling = body.handling ?? 0;
   const cbm = body.cbm ?? 0;

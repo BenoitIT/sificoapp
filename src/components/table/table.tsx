@@ -15,6 +15,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
   data,
   action,
   allowItemsSummationFooter,
+  summation
 }: TableProps<T>) => {
   return (
     <Table className="bg-white shadow rounded">
@@ -68,7 +69,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
           </TableRow>
         ))}
       </TableBody>
-      {allowItemsSummationFooter ? <ItemsSummationTableFooter /> : ""}
+      {allowItemsSummationFooter ? <ItemsSummationTableFooter summation={summation} /> : ""}
     </Table>
   );
 };
