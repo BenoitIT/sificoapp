@@ -87,6 +87,7 @@ model stuffingreportItems {
   blFee            Int
   jb               Int
   others           Int
+  invoiceNo        String
   totalUsd         Int
   totalAed         Int
 }

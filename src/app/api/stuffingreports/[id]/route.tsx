@@ -75,6 +75,7 @@ export const GET = async (req: Request) => {
           freight: item.freight,
           blFee: item.blFee,
           jb: item.jb,
+          invoiceNo:item.invoiceNo,
           others: item.others,
           totalUsd: item.totalUsd,
           totalAed: item.totalAed,
@@ -133,6 +134,7 @@ export const GET = async (req: Request) => {
 export const POST = async (req: NextRequest) => {
   const stuffingRptId = req.url.split("stuffingreports/")[1];
   const body = await req.json();
+  const date=new Date();
   const validation = stuffingItemSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json({
@@ -161,6 +163,7 @@ export const POST = async (req: NextRequest) => {
   const others = body.blFee ?? 0;
   const totalUsd = handling + freight + blFee + jb + others;
   const totalAed = totalUsd * 3.66;
+  const invoiceNo= date.getDay()+date.getMonth()+date.getHours()+date.getMinutes()+"/"+date.getFullYear()+"/"+date.getSeconds();
   const stuffingReportCheck = await prisma.stuffingreport.findFirst({
     where: {
       id: Number(stuffingreportid),
@@ -191,6 +194,7 @@ export const POST = async (req: NextRequest) => {
       freight: freight,
       blFee: blFee,
       jb: jb,
+      invoiceNo:invoiceNo,
       others: others,
       totalUsd: totalUsd,
       totalAed: totalAed,
