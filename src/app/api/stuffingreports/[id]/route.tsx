@@ -57,6 +57,7 @@ export const GET = async (req: Request) => {
     if (stuffingRptItems) {
       const modifiedResponse = stuffingRptItems.map((item) => {
         return {
+          id:item.id,
           delivery: item.container.destination,
           shipperId: item.shipper.name,
           consigneeId: item.consignee.name,

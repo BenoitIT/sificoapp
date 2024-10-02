@@ -87,7 +87,16 @@ model stuffingreportItems {
   blFee            Int
   jb               Int
   others           Int
-  invoiceNo        String
+  invoiceNo        String         @unique
   totalUsd         Int
   totalAed         Int
+  invoice          Invoice[]
+}
+
+model Invoice {
+  id                 Int                 @id @default(autoincrement())
+  vat                Int                 @default(0)
+  totalAmountInWords String
+  details            stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
+  detailsId          String              @unique
 }

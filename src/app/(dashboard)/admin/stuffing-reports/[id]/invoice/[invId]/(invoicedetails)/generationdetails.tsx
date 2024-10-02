@@ -9,8 +9,16 @@ import {
 
 export const InvoiceGenerationDetails = ({
   ExportInvoicePDf,
+  vat,
+  setVat,
+  totalInwords,
+  setTotalInwords,
 }: {
   ExportInvoicePDf: () => void;
+  vat: string;
+  setVat: (val: string) => void;
+  totalInwords: string;
+  setTotalInwords: (val: string) => void;
 }) => {
   return (
     <Popover>
@@ -36,6 +44,8 @@ export const InvoiceGenerationDetails = ({
             </Label>
             <Input
               type="number"
+              value={vat}
+              onChange={(e) => setVat(e.target.value)}
               placeholder="Ex: 2.5"
               className="w-full border border-gray-400 placeholder:text-gray-300"
             />
@@ -44,11 +54,16 @@ export const InvoiceGenerationDetails = ({
             <Label>Total amount in word</Label>
             <Input
               type="text"
+              value={totalInwords}
+              onChange={(e) => setTotalInwords(e.target.value)}
               placeholder="Ex: Twenty thousands dollars"
               className="w-full border border-gray-400 placeholder:text-gray-300"
             />
           </div>
           <div className="w-full flex justify-between">
+            <span className="text-sm text-blue-400">
+              Click on invoice for preview
+            </span>
             <Button onClick={ExportInvoicePDf}>Export invoice in PDF</Button>
           </div>
         </div>

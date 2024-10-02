@@ -26,3 +26,24 @@ export const addStuffingReportsItems = async (
   const response = await sifcoApi.post(stuffingReportEndpoint + `/${id}`, data);
   return response.data.message;
 };
+
+export const getStuffingReportsItemsInvoice = async (
+  Itemsid: number,
+  invoiceId: number
+) => {
+  const response = await sifcoApi.get(
+    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`
+  );
+  return response.data.data;
+};
+export const generateInvoice = async (
+  Itemsid: number,
+  invoiceId: number,
+  data: { vat: number; totalAmountInWords: string; detailsId: string }
+) => {
+  const response = await sifcoApi.post(
+    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
+    data
+  );
+  return response.data.message;
+};
