@@ -26,3 +26,28 @@ export const DELETE = async (req: Request) => {
     });
   }
 };
+export const GET = async (req: Request) => {
+  try {
+    const consigneeId = req.url.split("consignees/")[1];
+    const consignee = await prisma.consignee.findFirst({
+      where: {
+        id: Number(consigneeId),
+      },
+    });
+    if (consignee) {
+      return NextResponse.json({
+        status: 200,
+        data: consignee,
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: null,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

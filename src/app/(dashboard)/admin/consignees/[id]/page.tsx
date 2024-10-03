@@ -1,4 +1,5 @@
 "use client";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,16 +10,32 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState,useEffect } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
-import { useRouter } from "next/navigation";
-import { createNewShipper } from "@/app/httpservices/shipper";
+import { useRouter,useParams } from "next/navigation";
+import { createNewConsignee,getConsignee,consigneesEndpoint } from "@/app/httpservices/consignee";
+import { useDispatch } from "react-redux";
+import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
-  const [newShipperpayload, setStaffData] = useState<NewShipper>({email:""});
-  const [loading,setLoading]=useState<boolean>(false)
+  const dispatch=useDispatch();
+  const params: any = useParams();
+  const cId = params?.id;
+  const { data: consignee } = useSWR(consigneesEndpoint, () => getConsignee(Number(cId)))
+  const [newConsigneepayload, setStaffData] = useState<NewShipper>({
+    email: "",
+  });
+  const [loading, setLoading] = useState<boolean>(false);
   const [errors, setValidationErrors] = useState<newShipperErrors>({});
+  useEffect(() => {
+    dispatch(setPageTitle("Update consignee"));
+}, [dispatch]);
+useEffect(() => {
+    if (consignee) {
+        setStaffData(consignee);
+    }
+}, [consignee]);
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
@@ -38,22 +55,22 @@ const Page = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const shipperName = form.elements.namedItem("name") as HTMLInputElement;
-    const shipperPhone = form.elements.namedItem("phone") as HTMLInputElement;
-    if (shipperName.value === "") {
-      ErrorLogger("name", "Shipper name is required.");
+    const consigneeName = form.elements.namedItem("name") as HTMLInputElement;
+    const consigneePhone = form.elements.namedItem("phone") as HTMLInputElement;
+    if (consigneeName.value === "") {
+      ErrorLogger("name", "Consignee name is required.");
     } else if (
-      shipperPhone.value=="" ||
-      !phoneRegx.test(shipperPhone.value)
+      consigneePhone.value == "" ||
+      !phoneRegx.test(consigneePhone.value)
     ) {
       ErrorLogger("phone", "Valid phone number is required.");
     } else {
       try {
-        setLoading(true)
-        const message = await createNewShipper(newShipperpayload);
+        setLoading(true);
+        const message = await createNewConsignee(newConsigneepayload);
         toast.success(message);
-        setLoading(false)
-        router.back()
+        setLoading(false);
+        router.back();
         form.reset();
       } catch (error) {
         toast.success("Failed to add a new shipper");
@@ -64,9 +81,9 @@ const Page = () => {
     <div className="w-full min-h-[88vh] flex justify-center items-center">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">New shipper</CardTitle>
+          <CardTitle className="text-xl text-center">{newConsigneepayload?.name}</CardTitle>
           <CardDescription className="text-center">
-            Enter a new shipper{"'"}s information. Note that all fields with
+            Update consignee{"'"}s information. Note that all fields with
             <br />
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
@@ -79,13 +96,14 @@ const Page = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">
-                    Shipper name<span className="text-red-500">*</span>
+                    Consignee name<span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="name"
                     name="name"
                     placeholder="type.."
                     onChange={handleChange}
+                    value={newConsigneepayload?.name}
                     className={
                       errors["name"]
                         ? "text-xs text-red-500 border-red-500"
@@ -103,8 +121,9 @@ const Page = () => {
                   <Input
                     id="location"
                     name="location"
-                    placeholder="Ex: Rwanda-kigali"
+                    placeholder="type.."
                     onChange={handleChange}
+                    value={newConsigneepayload?.location}
                   />
                 </div>
               </div>
@@ -116,6 +135,7 @@ const Page = () => {
                   name="email"
                   placeholder="mail@example.com"
                   onChange={handleChange}
+                  value={newConsigneepayload?.email}
                   className={"placeholder:text-gray-400"}
                 />
               </div>
@@ -126,6 +146,7 @@ const Page = () => {
                   name="phone"
                   type="text"
                   placeholder="Ex:0788888888"
+                  value={newConsigneepayload?.phone}
                   onChange={handleChange}
                   className={
                     errors["phone"]
@@ -149,7 +170,7 @@ const Page = () => {
                   Cancel
                 </Button>
                 <Button type="submit" className="w-fit" disabled={loading}>
-                  Register
+                  Update
                 </Button>
               </div>
             </div>

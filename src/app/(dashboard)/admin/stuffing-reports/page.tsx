@@ -1,6 +1,6 @@
 "use client";
 import useSWR from "swr";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+import { FaTrash, FaEye } from "react-icons/fa";
 import StaffingReports from "@/components/dashboard/pages/stuffingReports";
 import { headers } from "@/app/tableHeaders/staffingReports";
 import { useRouter, usePathname } from "next/navigation";
@@ -29,9 +29,6 @@ const Page = () => {
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
   }, [dispatch]);
-  const handleEdit = async (id: number | string) => {
-    console.log("Edit clicked", id);
-  };
   const handleDelete = async (id: number | string) => {
     console.log("Delete clicked", id);
   };
@@ -40,7 +37,6 @@ const Page = () => {
   };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
-    { icon: <FaEdit />, Click: handleEdit },
     { icon: <FaTrash />, Click: handleDelete, name: "delete" },
   ];
   if (staffingReports) {

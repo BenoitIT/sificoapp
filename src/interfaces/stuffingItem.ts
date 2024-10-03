@@ -17,6 +17,9 @@ export interface NewStuffingItem {
   blFee?: number;
   jb?: number;
   others?: number;
+  invoiceNo?:string;
+  shipperId?:number;
+  consigneeId?:number;
 }
 export interface NewStuffingItemErrors {
   shipper?: string | null;

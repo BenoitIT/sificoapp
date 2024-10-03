@@ -9,6 +9,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Sites from "@/components/dashboard/pages/sites";
 import { headers } from "@/app/tableHeaders/sites";
 import { useDispatch } from "react-redux";
+import { useRouter,usePathname } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useEffect } from "react";
 import { NewSite } from "@/interfaces/sites";
@@ -17,6 +18,8 @@ import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
+  const  currentpath:string=usePathname()!;
+  const router=useRouter();
   const {
     data: locations,
     isLoading,
@@ -29,7 +32,7 @@ const Page = () => {
     dispatch(setPageTitle("Delivery sites"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
-    console.log("Edit clicked", id);
+    router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
     try{

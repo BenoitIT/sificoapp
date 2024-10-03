@@ -12,6 +12,10 @@ export const deleteUser = async (id: number) => {
   const response = await sifcoApi.delete(usersBaseEndpoint + `/${id}`);
   return response.data.message;
 };
+export const getUser = async (id: number) => {
+  const response = await sifcoApi.get(usersBaseEndpoint + `/${id}`);
+  return response.data.data;
+};
 export const sendPasswordResetLink = async ({ email }: { email: string }) => {
   const response = await sifcoApi.post(usersBaseEndpoint + `/resetlink`, {
     email,

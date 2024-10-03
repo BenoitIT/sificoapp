@@ -14,3 +14,7 @@ export const deleteShipper = async (id: number) => {
   const response = await sifcoApi.delete(shippersEndpoint + `/${id}`);
   return response.data.message;
 };
+export const getShipper = async (id: number) => {
+  const response = await sifcoApi.get(shippersEndpoint + `/${id}`);
+  return response.data.data;
+};

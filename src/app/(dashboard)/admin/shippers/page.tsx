@@ -11,12 +11,15 @@ import {
   shippersEndpoint,
 } from "@/app/httpservices/shipper";
 import Shippers from "@/components/dashboard/pages/shippers";
+import { usePathname, useRouter } from "next/navigation";
 import { NewShipper } from "@/interfaces/shipper";
 import Loader from "@/appComponents/pageBlocks/loader";
 import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
+  const router=useRouter();
+  const currentpath=usePathname();
   const {
     data: shippingCompanies,
     isLoading,
@@ -29,7 +32,7 @@ const Page = () => {
     dispatch(setPageTitle("Shippers"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
-    console.log("Edit clicked", id);
+    router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
     try {

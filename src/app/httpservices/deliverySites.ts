@@ -14,3 +14,7 @@ export const deleteSite = async (id: number) => {
   const response = await sifcoApi.delete(deliverySitesEndpoint + `/${id}`);
   return response.data.message;
 };
+export const getSite = async (id: number) => {
+  const response = await sifcoApi.get(deliverySitesEndpoint + `/${id}`);
+  return response.data.data;
+};

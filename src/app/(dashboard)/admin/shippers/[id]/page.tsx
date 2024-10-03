@@ -1,4 +1,5 @@
 "use client";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,18 +10,32 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState,useEffect } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
-import { useRouter } from "next/navigation";
-import { createNewShipper } from "@/app/httpservices/shipper";
+import { useRouter,useParams } from "next/navigation";
+import { createNewShipper,getShipper,shippersEndpoint } from "@/app/httpservices/shipper";
+import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 const Page = () => {
   const router = useRouter();
+  const dispatch=useDispatch();
+  const params: any = useParams();
+  const shipperId = params?.id;
+  const { data: shipper } = useSWR(shippersEndpoint, () => getShipper(Number(shipperId)))
   const [newShipperpayload, setStaffData] = useState<NewShipper>({email:""});
   const [loading,setLoading]=useState<boolean>(false)
   const [errors, setValidationErrors] = useState<newShipperErrors>({});
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+    useEffect(() => {
+        dispatch(setPageTitle("Update shipper"));
+    }, [dispatch]);
+    useEffect(() => {
+        if (shipper) {
+            setStaffData(shipper);
+        }
+    }, [shipper]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: newShipperErrors) => ({
       ...prevState,
@@ -64,9 +79,9 @@ const Page = () => {
     <div className="w-full min-h-[88vh] flex justify-center items-center">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">New shipper</CardTitle>
+          <CardTitle className="text-xl text-center">{newShipperpayload?.name}</CardTitle>
           <CardDescription className="text-center">
-            Enter a new shipper{"'"}s information. Note that all fields with
+            Update shipper{"'"}s information. Note that all fields with
             <br />
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
@@ -86,6 +101,7 @@ const Page = () => {
                     name="name"
                     placeholder="type.."
                     onChange={handleChange}
+                    value={newShipperpayload?.name}
                     className={
                       errors["name"]
                         ? "text-xs text-red-500 border-red-500"
@@ -103,7 +119,8 @@ const Page = () => {
                   <Input
                     id="location"
                     name="location"
-                    placeholder="Ex: Rwanda-kigali"
+                    placeholder="type.."
+                    value={newShipperpayload?.location}
                     onChange={handleChange}
                   />
                 </div>
@@ -115,6 +132,7 @@ const Page = () => {
                   type="email"
                   name="email"
                   placeholder="mail@example.com"
+                  value={newShipperpayload?.email}
                   onChange={handleChange}
                   className={"placeholder:text-gray-400"}
                 />
@@ -127,6 +145,7 @@ const Page = () => {
                   type="text"
                   placeholder="Ex:0788888888"
                   onChange={handleChange}
+                  value={newShipperpayload?.phone}
                   className={
                     errors["phone"]
                       ? "text-xs text-red-500 border-red-500"
@@ -149,7 +168,7 @@ const Page = () => {
                   Cancel
                 </Button>
                 <Button type="submit" className="w-fit" disabled={loading}>
-                  Register
+                  Update
                 </Button>
               </div>
             </div>

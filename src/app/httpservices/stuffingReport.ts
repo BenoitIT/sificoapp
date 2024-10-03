@@ -18,7 +18,10 @@ export const getStuffingReportsItems = async (id: number) => {
   const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}`);
   return response.data.data;
 };
-
+export const getStuffingReportsItemsDetail = async (id: number,itmId:number) => {
+  const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}/detail/${itmId}`);
+  return response.data.data;
+};
 export const addStuffingReportsItems = async (
   id: number,
   data: NewStuffingItem

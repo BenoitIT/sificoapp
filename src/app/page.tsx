@@ -36,14 +36,14 @@ const Page = () => {
         </div>
         <div className="h-[100vh] w-full  absolute  bg-gradient-to-r from-transparent to-[#003472]"></div>
         <div className="w-full h-full flex justify-center items-center ">
-          <div className="z-10  w-fit p-6 flex flex-col gap-2">
-            <p className="text-white text-lg md:text-xl lg:text-2xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
+          <div className="z-10  w-fit p-6 flex flex-col gap-2 lg:gap-3 xl:gap-4">
+            <p className="text-white text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
               we are
             </p>
-            <p className="text-white text-base md:text-2xl lg:text-4xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
+            <p className="text-white text-base md:text-2xl lg:text-4xl xl:text-6xl  font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
               Super International Freight Services LLC
             </p>
-            <p className="text-white text-lg md:text-xl lg:text-3xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
+            <p className="text-white text-lg md:text-xl lg:text-3xl xl:text-4xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
               With our cargo services, your shipments
             </p>
             <p className="text-white text-lg md:text-xl lg:text-3xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">

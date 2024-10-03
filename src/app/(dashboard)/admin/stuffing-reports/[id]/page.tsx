@@ -35,7 +35,7 @@ const Page = () => {
     dispatch(setPageTitle("Stuffing report"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
-    console.log("Edit clicked", id);
+    router.push(`${currentPath}/edit/${id}`);
   };
   const handleDelete = async (id: number | string) => {
     console.log("Delete clicked", id);

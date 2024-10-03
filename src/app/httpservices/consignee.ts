@@ -14,3 +14,7 @@ export const deleteConsignee = async (id: number) => {
   const response = await sifcoApi.delete(consigneesEndpoint + `/${id}`);
   return response.data.message;
 };
+export const getConsignee = async (id: number) => {
+  const response = await sifcoApi.get(consigneesEndpoint + `/${id}`);
+  return response.data.data;
+};

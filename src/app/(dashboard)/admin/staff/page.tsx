@@ -6,6 +6,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useRouter,usePathname } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { deleteUser, getAllUsers } from "@/app/httpservices/users";
 import { NewStaff } from "@/interfaces/staff";
@@ -14,6 +15,8 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
+  const router=useRouter();
+  const currentpath:string=usePathname()!;
   const {
     data: staff,
     isLoading,
@@ -26,7 +29,7 @@ const Page = () => {
     dispatch(setPageTitle("Staff"));
   }, [dispatch]);
   const handleEdit = async (id: number) => {
-    console.log("Edit clicked", id);
+    router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
     try {

@@ -37,7 +37,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row, rowIndex) => (
+        {data.length > 0 ? data.map((row, rowIndex) => (
           <TableRow key={rowIndex} className="text-gray-700">
             <TableCell className="text-xs md:text-sm  text-gray-700">
               {rowIndex + 1}
@@ -51,23 +51,31 @@ const DynamicTable = <T extends Record<string, string | number>>({
               <div className={`flex w-fit gap-2`}>
                 {action
                   ? action.map((action, index) => (
-                      <Label
-                        key={index}
-                        className={
-                          action.name == "delete"
-                            ? "text-red-400 hover:cursor-pointer"
-                            : "cursor-pointer"
-                        }
-                        onClick={() => action.Click(row.id as number)}
-                      >
-                        {action.icon}
-                      </Label>
-                    ))
+                    <Label
+                      key={index}
+                      className={
+                        action.name == "delete"
+                          ? "text-red-400 hover:cursor-pointer"
+                          : "cursor-pointer"
+                      }
+                      onClick={() => action.Click(row.id as number)}
+                    >
+                      {action.icon}
+                    </Label>
+                  ))
                   : ""}
               </div>
             </TableCell>
           </TableRow>
-        ))}
+        )) : (
+          <TableRow>
+            <TableCell colSpan={Array.from(Object.keys(headers)).length}>
+              <div className="rounded w-full h-[40px] flex justify-center items-center capitalize text-sm text-black">
+                no record found
+              </div>
+            </TableCell>
+          </TableRow>
+        )}
       </TableBody>
       {allowItemsSummationFooter ? <ItemsSummationTableFooter summation={summation} /> : ""}
     </Table>

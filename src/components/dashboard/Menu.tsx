@@ -87,7 +87,7 @@ const Menu = () => {
           <span>
             <FaSignOutAlt />
           </span>
-          <span>Logout</span>
+          <span className="hidden md:block">Logout</span>
         </button>
       </div>
     </div>

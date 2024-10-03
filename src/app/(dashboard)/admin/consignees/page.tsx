@@ -12,11 +12,14 @@ import {
   deleteConsignee,
 } from "@/app/httpservices/consignee";
 import { NewShipper } from "@/interfaces/shipper";
+import { useRouter,usePathname } from "next/navigation";
 import Loader from "@/appComponents/pageBlocks/loader";
 import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
+  const router=useRouter();
+  const currentpath:string=usePathname()!;
   const {
     data: consignees,
     isLoading,
@@ -29,7 +32,7 @@ const Page = () => {
     dispatch(setPageTitle("Consignees"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
-    console.log("Edit clicked", id);
+    router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
     try {

@@ -34,7 +34,7 @@ const Page = () => {
   const [errors, setValidationErrors] = useState<newSitesErrors>({});
   const { data: agents } = useSWR(usersBaseEndpoint, getAllAgents);
   useEffect(() => {
-    dispatch(setPageTitle("New delivery sites"));
+    dispatch(setPageTitle("New delivery site"));
   }, [dispatch]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: newSitesErrors) => ({

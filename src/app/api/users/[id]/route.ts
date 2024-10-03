@@ -26,3 +26,28 @@ export const DELETE = async (req: Request) => {
     });
   }
 };
+export const GET = async (req: Request) => {
+  try {
+    const userId = req.url.split("users/")[1];
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(userId),
+      },
+    });
+    if (user) {
+      return NextResponse.json({
+        status: 200,
+        data: user,
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      data: null,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

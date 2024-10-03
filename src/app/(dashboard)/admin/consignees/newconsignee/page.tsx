@@ -105,7 +105,7 @@ const Page = () => {
                   <Input
                     id="location"
                     name="location"
-                    placeholder="type.."
+                    placeholder="Ex:Rwanda-kigali"
                     onChange={handleChange}
                   />
                 </div>
