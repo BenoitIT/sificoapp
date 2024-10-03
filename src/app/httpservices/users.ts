@@ -16,6 +16,10 @@ export const getUser = async (id: number) => {
   const response = await sifcoApi.get(usersBaseEndpoint + `/${id}`);
   return response.data.data;
 };
+export const updateUser = async (id: number, data: NewStaff) => {
+  const response = await sifcoApi.put(usersBaseEndpoint + `/${id}`, data);
+  return response.data.message;
+}
 export const sendPasswordResetLink = async ({ email }: { email: string }) => {
   const response = await sifcoApi.post(usersBaseEndpoint + `/resetlink`, {
     email,
@@ -37,6 +41,6 @@ export const setNewPassword = async ({
 };
 
 export const getAllAgents = async () => {
-  const response = await sifcoApi.get(usersBaseEndpoint+`/agents`);
+  const response = await sifcoApi.get(usersBaseEndpoint + `/agents`);
   return response.data.data;
 };

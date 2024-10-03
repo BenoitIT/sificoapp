@@ -24,7 +24,7 @@ import { NewStaff, newStaffErrors } from "@/interfaces/staff";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useParams, useRouter } from "next/navigation";
-import { addNewUser } from "@/app/httpservices/users";
+import { updateUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
 const Page = () => {
     const router = useRouter();
@@ -91,7 +91,7 @@ const Page = () => {
         } else {
             try {
                 delete newStaffPyaload.id;
-                const message = await addNewUser(newStaffPyaload);
+                const message = await updateUser(Number(staffId),newStaffPyaload);
                 form.reset()
                 toast.success(message);
                 router.back();

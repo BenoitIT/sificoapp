@@ -37,12 +37,40 @@ export const GET = async (req: Request) => {
     if (user) {
       return NextResponse.json({
         status: 200,
-        data: user,
+        data: user
       });
     }
     return NextResponse.json({
       status: 404,
       data: null,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};
+
+export const PUT = async (req: Request) => {
+  try {
+    const userId = req.url.split("users/")[1];
+    const body = await req.json();
+    const user = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: body
+    });
+    if (user) {
+      return NextResponse.json({
+        status: 200,
+        message: "Staff information are updated succesfully",
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: "Coud not find this staff",
     });
   } catch (err) {
     return NextResponse.json({

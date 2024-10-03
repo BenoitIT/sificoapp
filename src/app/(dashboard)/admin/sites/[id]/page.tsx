@@ -25,7 +25,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getAllAgents } from "@/app/httpservices/users";
 import { usersBaseEndpoint } from "@/app/httpservices/axios";
 import { NewStaff } from "@/interfaces/staff";
-import { createNewSite, getSite, deliverySitesEndpoint } from "@/app/httpservices/deliverySites";
+import { updateSite , getSite, deliverySitesEndpoint } from "@/app/httpservices/deliverySites";
 import { toast } from "react-toastify";
 const Page = () => {
     const dispatch = useDispatch();
@@ -81,7 +81,7 @@ const Page = () => {
             ErrorLogger("agent", "Agent must be chosen.");
         } else {
             try {
-                const message = await createNewSite(newSitePayload);
+                const message = await updateSite(Number(siteId),newSitePayload);
                 toast.success(message);
                 router.back();
                 form.reset();

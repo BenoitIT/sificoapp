@@ -51,3 +51,30 @@ export const GET = async (req: Request) => {
     });
   }
 };
+export const PUT = async (req: Request) => {
+  try {
+    const siteId = req.url.split("deliverysites/")[1];
+    const body = await req.json();
+    const site = await prisma.deliverySite.update({
+      where: {
+        id: Number(siteId),
+      },
+      data: body
+    });
+    if (site) {
+      return NextResponse.json({
+        status: 200,
+        message: "Delivery site information are updated succesfully",
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: "Coud not find delievery site",
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

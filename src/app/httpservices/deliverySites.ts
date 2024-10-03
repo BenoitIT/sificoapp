@@ -18,3 +18,7 @@ export const getSite = async (id: number) => {
   const response = await sifcoApi.get(deliverySitesEndpoint + `/${id}`);
   return response.data.data;
 };
+export const updateSite = async (id: number,data:NewSite) => {
+  const response = await sifcoApi.put(deliverySitesEndpoint + `/${id}`,data);
+  return response.data.data;
+};
