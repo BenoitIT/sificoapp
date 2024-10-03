@@ -22,6 +22,7 @@ import { InvoiceGenerationDetails } from "@/app/(dashboard)/admin/stuffing-repor
 import { Loader } from "lucide-react";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
+import { formatDate } from "@/app/utilities/dateFormat";
 interface invoiceProps {
   itemsId: number;
   invoiceId: number;
@@ -73,7 +74,13 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
   if (data) {
     return (
       <div className="w-full">
-        <div className={data?.totalAmountInWords=="total"?"m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded":"hidden"}>
+        <div
+          className={
+            data?.totalAmountInWords == "total"
+              ? "m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded"
+              : "hidden"
+          }
+        >
           <h1 className="font-semibold uppercase text-xs md:text-base">
             Invoice preview
           </h1>
@@ -128,7 +135,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
           <Table>
             <TableHeader>
               <TableRow className="border border-b">
-                <TableCell className="border-r text-black border-b border-b-white  uppercase">
+                <TableCell className="border-r text-black border-b border-b-white font-bold uppercase">
                   {data?.consigneeId}
                 </TableCell>
                 <TableCell className="border-r text-black">
@@ -148,7 +155,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                   Date
                 </TableCell>
                 <TableCell className="border-l border-r border-b">
-                  29-AUG-2024
+                  {formatDate(data.date ? data.date : new Date().toISOString())}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -208,13 +215,19 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
 
           <Table>
             <TableHeader>
-              <TableRow className="border border-b">
-                <TableCell className="border-r">Description</TableCell>
-                <TableCell className="border-r">Qty/No of Pkg</TableCell>
-                <TableCell className="border-r">Rate</TableCell>
-                <TableCell className="border-r">VAT</TableCell>
-                <TableCell className="border-r">Tax Amt</TableCell>
-                <TableCell className="border-r">Total Amount</TableCell>
+              <TableRow className="border border-b text-black">
+                <TableCell className="border-r font-bold">
+                  Description
+                </TableCell>
+                <TableCell className="border-r font-bold">
+                  Qty/No of Pkg
+                </TableCell>
+                <TableCell className="border-r font-bold">Rate</TableCell>
+                <TableCell className="border-r font-bold">VAT</TableCell>
+                <TableCell className="border-r font-bold">Tax Amt</TableCell>
+                <TableCell className="border-r font-bold">
+                  Total Amount
+                </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -237,7 +250,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                     100}
                 </TableCell>
                 <TableCell className="border-l border-r border-b border-b-white">
-                  {data?.freight -
+                  {data?.freight +
                     (data?.freight *
                       (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
                       100}
@@ -309,7 +322,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                 </TableCell>
                 <TableCell>
                   {vat !== ""
-                    ? data?.freight -
+                    ? data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
                         100 +
@@ -321,7 +334,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                       data?.handling +
                       data?.others +
                       data?.jb +
-                      data?.freight -
+                      data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
                         100}

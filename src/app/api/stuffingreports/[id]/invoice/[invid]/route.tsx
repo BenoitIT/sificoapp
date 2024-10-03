@@ -1,4 +1,4 @@
-import { Rewind } from "lucide-react";
+
 import prisma from "../../../../../../../prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 export const revalidate = 0;
@@ -49,6 +49,7 @@ export const GET = async (req: Request) => {
         freight: stuffingRptItems.freight,
         blFee: stuffingRptItems.blFee,
         vat: stuffingRptItems.invoice[0]?.vat || 0.0,
+        date:stuffingRptItems.invoice[0]?.createdAt,
         totalAmountInWords:
           stuffingRptItems.invoice[0]?.totalAmountInWords || "total",
         jb: stuffingRptItems.jb,

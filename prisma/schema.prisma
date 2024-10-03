@@ -99,4 +99,5 @@ model Invoice {
   totalAmountInWords String
   details            stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
   detailsId          String              @unique
+   createdAt          DateTime            @default(now())      
 }
