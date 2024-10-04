@@ -36,3 +36,57 @@ export const POST = async (req: NextRequest) => {
     });
   }
 };
+
+export const PUT = async (req: NextRequest) => {
+  try {
+    const body = await req.json();
+    const userId = body.userId;
+    const oldpassword = body.oldpassword;
+    const newPassword = body.newPassword;
+    const newPasswordConfirmation = body.newPasswordConfirmation;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(userId),
+      }
+    });
+    if (user) {
+      if (newPassword !== newPasswordConfirmation) {
+        return NextResponse.json({
+          status: 400,
+          message: "New password and new password confrimaton should be the same"
+        })
+      }
+      const checkOldPasswordCorrection = await bcrypt.compare(oldpassword,user.password);
+      if (!checkOldPasswordCorrection) {
+        return NextResponse.json({
+          status: 400,
+          message: "Invalid old password"
+        })
+      }
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
+      if (!updatedUser)
+        return NextResponse.json({
+          status: 400,
+          message: "Could not update password. token got expired",
+        });
+      return NextResponse.json({
+        status: 200,
+        message: "Password is updated successfully",
+      });
+    }
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json({
+      status: 400,
+      message: "token got expired",
+    });
+  }
+};

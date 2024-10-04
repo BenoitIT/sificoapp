@@ -15,3 +15,4 @@ export interface newStaffErrors{
     gender?: string|null;
     role?: string|null;
 }
+export interface passwordUpdate{ userId?: number, oldpassword?: string, newPassword?: string, newPasswordConfirmation?: string }

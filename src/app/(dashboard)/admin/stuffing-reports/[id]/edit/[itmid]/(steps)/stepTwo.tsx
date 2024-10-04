@@ -1,4 +1,4 @@
-import { addStuffingReportsItems } from "@/app/httpservices/stuffingReport";
+import { addStuffingReportsItems, updateStuffingReportsItemsDetail } from "@/app/httpservices/stuffingReport";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,7 @@ const StepTwoForm = ({
   const params = useParams();
   const router = useRouter();
   const staffReportId = params?.id;
+  const staffReportItmId = params?.itmid;
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.type == "number") {
@@ -64,8 +65,9 @@ const StepTwoForm = ({
     } else {
       try {
         delete newItemPayload.id;
-        const message = await addStuffingReportsItems(
+        const message = await updateStuffingReportsItemsDetail(
           Number(staffReportId),
+          Number(staffReportItmId),
           newItemPayload
         );
         toast.success(message);

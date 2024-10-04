@@ -51,3 +51,31 @@ export const GET = async (req: Request) => {
     });
   }
 };
+
+export const PUT = async (req: Request) => {
+  try {
+    const shipperId = req.url.split("shippers/")[1];
+    const body = await req.json();
+    const shipper = await prisma.shipper.update({
+      where: {
+        id: Number(shipperId),
+      },
+      data: body
+    });
+    if (shipper) {
+      return NextResponse.json({
+        status: 200,
+        message: "Shipper's information are updated succesfully",
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: "Coud not find shipper",
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

@@ -51,3 +51,30 @@ export const GET = async (req: Request) => {
     });
   }
 };
+export const PUT = async (req: Request) => {
+  try {
+    const consigneeId = req.url.split("consignees/")[1];
+    const body = await req.json();
+    const consignee = await prisma.consignee.update({
+      where: {
+        id: Number(consigneeId),
+      },
+      data: body
+    });
+    if (consignee) {
+      return NextResponse.json({
+        status: 200,
+        message: "Consignee's information are updated succesfully",
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: "Coud not find consignee",
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

@@ -1,4 +1,4 @@
-import { NewStaff } from "@/interfaces/staff";
+import { NewStaff, passwordUpdate } from "@/interfaces/staff";
 import { sifcoApi, usersBaseEndpoint } from "./axios";
 export const getAllUsers = async () => {
   const response = await sifcoApi.get(usersBaseEndpoint);
@@ -44,3 +44,8 @@ export const getAllAgents = async () => {
   const response = await sifcoApi.get(usersBaseEndpoint + `/agents`);
   return response.data.data;
 };
+
+export const updatePassword = async (data: passwordUpdate) => {
+  const response = await sifcoApi.put(usersBaseEndpoint + `/resetlink/newpassword`, data);
+  return response.data.message;
+}

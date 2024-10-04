@@ -1,5 +1,5 @@
 "use client";
-import { getStuffingReportsItems } from "@/app/httpservices/stuffingReport";
+import { getStuffingReport, getStuffingReportsItems, stuffingReportEndpoint } from "@/app/httpservices/stuffingReport";
 import TabularSection from "@/appComponents/pageBlocks/tabularSection";
 import { Button } from "@/components/ui/button";
 import { SearchBox } from "@/components/ui/searchBox";
@@ -18,15 +18,16 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, ChangeEvent, FormEvent} from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 import { NewSite } from "@/interfaces/sites";
 import {
   deliverySitesEndpoint,
   getAllsites,
 } from "@/app/httpservices/deliverySites";
+import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 const StaffingReportsItems = () => {
   const router = useRouter();
   const params = useParams();
@@ -37,6 +38,10 @@ const StaffingReportsItems = () => {
   const { data } = useSWR(cacheKey, () =>
     getStuffingReportsItems(Number(staffReportId))
   );
+  const { data: stuffingreport } = useSWR(
+    stuffingReportEndpoint,
+    () => getStuffingReport(Number(staffReportId))
+  );
   const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsites, {
     onSuccess: (data: NewSite[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
@@ -45,6 +50,7 @@ const StaffingReportsItems = () => {
   const handleAddNew = () => {
     router.push(`${currentPath}/newitem`);
   };
+  useEffect(() => { setPayload(stuffingreport) }, [stuffingreport])
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,
@@ -63,6 +69,9 @@ const StaffingReportsItems = () => {
     setPayload({ ...payload, destination: Number(value) });
     delete validationErrors.destination;
   };
+  const handleSelectStatusChange = (value: string) => {
+    setPayload({ ...payload, status: value });
+  };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -72,8 +81,10 @@ const StaffingReportsItems = () => {
     } else {
       try {
         delete payload.id;
-        delete payload.status;
         delete payload.code;
+        const message = await updateStuffingReport(Number(staffReportId), payload);
+        toast.success(message);
+        mutate(cacheKey);
       } catch (err) {
         toast.error("Failed to create new stuffing report");
       }
@@ -89,7 +100,7 @@ const StaffingReportsItems = () => {
           </p>
           <p className=" text-gray-600">
             Container status:
-            <span className="text-[#189bcc]"> {data?.stuffingRpt?.status}</span>
+            <span className={data?.stuffingRpt?.status != "available" ? "text-red-500 capitalize" : "text-[#189bcc] capitalize"}> {data?.stuffingRpt?.status}</span>
           </p>
           <p className=" text-gray-600">
             Delivery destination:
@@ -129,6 +140,7 @@ const StaffingReportsItems = () => {
                             type="text"
                             placeholder={data?.stuffingRpt?.origin}
                             name="origin"
+                            value={payload?.origin}
                             onChange={handleChange}
                             className={
                               validationErrors.origin
@@ -168,7 +180,7 @@ const StaffingReportsItems = () => {
                         </div>
                         <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
                           <Label>Container status</Label>
-                          <Select onValueChange={handleSelectChange}>
+                          <Select onValueChange={handleSelectStatusChange}>
                             <SelectTrigger className="w-full">
                               <SelectValue
                                 placeholder={data?.stuffingRpt?.status}

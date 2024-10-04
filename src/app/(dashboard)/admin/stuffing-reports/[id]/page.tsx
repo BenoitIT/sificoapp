@@ -7,11 +7,12 @@ import { useRouter, usePathname, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
-import { getStuffingReportsItems } from "@/app/httpservices/stuffingReport";
+import { getStuffingReport, getStuffingReportsItems, stuffingReportEndpoint } from "@/app/httpservices/stuffingReport";
 import { NewStuffingItem, StuffingReportTotals } from "@/interfaces/stuffingItem";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
@@ -19,6 +20,10 @@ const Page = () => {
   const dispatch = useDispatch();
   const staffReportId = params?.id;
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
+  const { data: stuffingreport } = useSWR(
+    stuffingReportEndpoint,
+    () => getStuffingReport(Number(staffReportId))
+  );
   const { data, isLoading, error } = useSWR(
     cacheKey,
     () => getStuffingReportsItems(Number(staffReportId)),
@@ -26,7 +31,7 @@ const Page = () => {
       onSuccess: (data: {
         shipments: NewStuffingItem[];
         stuffingRpt: StuffingReport;
-        totals:StuffingReportTotals,
+        totals: StuffingReportTotals,
       }) => data.shipments.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
@@ -35,10 +40,18 @@ const Page = () => {
     dispatch(setPageTitle("Stuffing report"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
-    router.push(`${currentPath}/edit/${id}`);
+    if (stuffingreport?.status != "closed") {
+      router.push(`${currentPath}/edit/${id}`);
+    } else {
+      toast.error("This stuffing report is closed");
+    }
   };
   const handleDelete = async (id: number | string) => {
-    console.log("Delete clicked", id);
+    if (stuffingreport?.status != "closed") {
+      router.push(`${currentPath}/edit/${id}`);
+    } else {
+      toast.error("This stuffing report is closed");
+    }
   };
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/invoice/${id}`);

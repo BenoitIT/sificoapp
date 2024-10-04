@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { ChangeEvent, FormEvent, useState,useEffect } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
 import { useRouter,useParams } from "next/navigation";
-import { createNewConsignee,getConsignee,consigneesEndpoint } from "@/app/httpservices/consignee";
+import { updateShipper,getConsignee,consigneesEndpoint } from "@/app/httpservices/consignee";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
@@ -67,7 +67,7 @@ useEffect(() => {
     } else {
       try {
         setLoading(true);
-        const message = await createNewConsignee(newConsigneepayload);
+        const message = await updateShipper(Number(cId),newConsigneepayload);
         toast.success(message);
         setLoading(false);
         router.back();

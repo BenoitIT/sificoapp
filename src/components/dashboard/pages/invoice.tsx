@@ -18,6 +18,7 @@ import {
   generateInvoice,
   getStuffingReportsItemsInvoice,
 } from "@/app/httpservices/stuffingReport";
+import { MdDownload } from "react-icons/md";
 import { InvoiceGenerationDetails } from "@/app/(dashboard)/admin/stuffing-reports/[id]/invoice/[invId]/(invoicedetails)/generationdetails";
 import { Loader } from "lucide-react";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
@@ -42,7 +43,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
 
   const ExportInvoicePDf = async () => {
     const invoice = invoiceRef?.current;
-    if (totalInwords == "") {
+    if (totalInwords == "" && !data?.totalAmountInWords) {
       return toast.error("Write total amount in words please.");
     }
     const payload = {
@@ -51,8 +52,10 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
       detailsId: data?.invoiceNo,
     };
     try {
-      const message = await generateInvoice(itemsId, invoiceId, payload);
-      toast.success(message);
+      if (totalInwords) {
+        const message = await generateInvoice(itemsId, invoiceId, payload);
+        toast.success(message);
+      }
       if (invoice) {
         const canvas = await html2Canvas(invoice);
         const imgData = canvas.toDataURL("image/png");
@@ -64,7 +67,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas.height * width) / canvas.width;
         pdf.addImage(imgData, "PNG", 0, 0, width, height);
-        pdf.save("invoice.pdf");
+        pdf.save(`${data?.consigneeId}-invoice.pdf`);
       }
       mutate(cacheKey);
     } catch (err) {
@@ -74,24 +77,23 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
   if (data) {
     return (
       <div className="w-full">
-        <div
-          className={
-            data?.totalAmountInWords == "total"
-              ? "m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded"
-              : "hidden"
-          }
-        >
-          <h1 className="font-semibold uppercase text-xs md:text-base">
-            Invoice preview
-          </h1>
-          <InvoiceGenerationDetails
-            ExportInvoicePDf={ExportInvoicePDf}
-            vat={vat ?? 0}
-            setVat={setVat}
-            totalInwords={totalInwords}
-            setTotalInwords={setTotalInwords}
-          />
-        </div>
+        {data?.totalAmountInWords == "total" ? (
+          <div
+            className={"m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded"
+            }
+          >
+            <h1 className="font-semibold uppercase text-xs md:text-base">
+              Invoice preview
+            </h1>
+            <InvoiceGenerationDetails
+              ExportInvoicePDf={ExportInvoicePDf}
+              vat={vat ?? 0}
+              setVat={setVat}
+              totalInwords={totalInwords}
+              setTotalInwords={setTotalInwords}
+            />
+          </div>
+        ) : (<div className="w-[95%] flex justify-end"><button className="text-blue-700 text-sm font-semibold bg-transparent border-none flex gap-1" onClick={ExportInvoicePDf}><MdDownload className="text-lg mt-[1px]" /><span>DownLoad</span></button></div>)}
         <div
           className="m-1 md:m-2 bg-white text-gray-700 p-6 flex flex-col gap-2 max-w-[1200px] border border-gray-300 shadow-xl"
           ref={invoiceRef}
@@ -100,7 +102,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
             <Image
               src="/images/logoo.png"
               alt="logo"
-              width={300}
+              width={250}
               height={250}
             />
             <div className="md:text-sm text-xs w-full">
@@ -253,7 +255,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                   {data?.freight +
                     (data?.freight *
                       (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                      100}
+                    100}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -323,21 +325,21 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                 <TableCell>
                   {vat !== ""
                     ? data?.freight +
-                      (data?.freight *
-                        (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100 +
-                      data?.blFee +
-                      data?.handling +
-                      data?.others +
-                      data?.jb
+                    (data?.freight *
+                      (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
+                    100 +
+                    data?.blFee +
+                    data?.handling +
+                    data?.others +
+                    data?.jb
                     : data?.blFee +
-                      data?.handling +
-                      data?.others +
-                      data?.jb +
-                      data?.freight +
-                      (data?.freight *
-                        (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100}
+                    data?.handling +
+                    data?.others +
+                    data?.jb +
+                    data?.freight +
+                    (data?.freight *
+                      (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
+                    100}
                 </TableCell>
               </TableRow>
             </TableFooter>

@@ -207,3 +207,30 @@ export const POST = async (req: NextRequest) => {
     data: stuffingreportItem,
   });
 };
+export const PUT = async (req: Request) => {
+  try {
+    const stuffingreportId = req.url.split("stuffingreports/")[1];
+    const body = await req.json();
+    const stuffingreport = await prisma.stuffingreport.update({
+      where: {
+        id: Number(stuffingreportId),
+      },
+      data: body
+    });
+    if (stuffingreport) {
+      return NextResponse.json({
+        status: 200,
+        message: "Stuffing report information are updated succesfully",
+      });
+    }
+    return NextResponse.json({
+      status: 404,
+      message: "Coud not find stuffing report",
+    });
+  } catch (err) {
+    return NextResponse.json({
+      status: 400,
+      message: "something went wrong",
+    });
+  }
+};

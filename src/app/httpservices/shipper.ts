@@ -18,3 +18,7 @@ export const getShipper = async (id: number) => {
   const response = await sifcoApi.get(shippersEndpoint + `/${id}`);
   return response.data.data;
 };
+export const updateShipper = async (id: number,data:NewShipper) => {
+  const response = await sifcoApi.put(shippersEndpoint + `/${id}`,data);
+  return response.data.message;
+};

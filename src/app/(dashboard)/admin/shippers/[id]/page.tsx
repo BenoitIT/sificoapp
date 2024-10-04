@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { ChangeEvent, FormEvent, useState,useEffect } from "react";
 import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
 import { useRouter,useParams } from "next/navigation";
-import { createNewShipper,getShipper,shippersEndpoint } from "@/app/httpservices/shipper";
+import { updateShipper,getShipper,shippersEndpoint } from "@/app/httpservices/shipper";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -65,11 +65,10 @@ const Page = () => {
     } else {
       try {
         setLoading(true)
-        const message = await createNewShipper(newShipperpayload);
+        const message = await updateShipper(Number(shipperId),newShipperpayload);
         toast.success(message);
         setLoading(false)
         router.back()
-        form.reset();
       } catch (error) {
         toast.success("Failed to add a new shipper");
       }
