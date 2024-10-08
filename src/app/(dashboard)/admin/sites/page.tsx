@@ -9,7 +9,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Sites from "@/components/dashboard/pages/sites";
 import { headers } from "@/app/tableHeaders/sites";
 import { useDispatch } from "react-redux";
-import { useRouter,usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useEffect } from "react";
 import { NewSite } from "@/interfaces/sites";
@@ -18,8 +18,8 @@ import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 const Page = () => {
   const dispatch = useDispatch();
-  const  currentpath:string=usePathname()!;
-  const router=useRouter();
+  const currentpath: string = usePathname()!;
+  const router = useRouter();
   const {
     data: locations,
     isLoading,
@@ -35,14 +35,14 @@ const Page = () => {
     router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
-    try{
-    const message = await deleteSite(id);
-    toast.success(message);
-    mutate(deliverySitesEndpoint);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to delete this delivery site");
-  }
+    try {
+      const message = await deleteSite(id);
+      toast.success(message);
+      mutate(deliverySitesEndpoint);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete this delivery site");
+    }
   };
   const actions = [
     { icon: <FaEdit />, Click: handleEdit },

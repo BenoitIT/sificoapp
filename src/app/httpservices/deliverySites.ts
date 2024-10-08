@@ -8,7 +8,7 @@ export const getAllsites = async () => {
 
 export const createNewSite = async (data: NewSite) => {
   const response = await sifcoApi.post(deliverySitesEndpoint, data);
-  return response.data.message;
+  return { message: response.data.message, status: response.data.status };
 };
 export const deleteSite = async (id: number) => {
   const response = await sifcoApi.delete(deliverySitesEndpoint + `/${id}`);
@@ -18,7 +18,7 @@ export const getSite = async (id: number) => {
   const response = await sifcoApi.get(deliverySitesEndpoint + `/${id}`);
   return response.data.data;
 };
-export const updateSite = async (id: number,data:NewSite) => {
-  const response = await sifcoApi.put(deliverySitesEndpoint + `/${id}`,data);
-  return response.data.message;
+export const updateSite = async (id: number, data: NewSite) => {
+  const response = await sifcoApi.put(deliverySitesEndpoint + `/${id}`, data);
+  return { message: response.data.message, status: response.data.status };
 };

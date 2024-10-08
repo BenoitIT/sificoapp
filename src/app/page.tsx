@@ -40,8 +40,8 @@ const Page = () => {
             <p className="text-white text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
               we are
             </p>
-            <p className="text-white text-base md:text-2xl lg:text-4xl xl:text-6xl  font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
-              Super International Freight Services LLC
+            <p className="text-white text-base md:text-2xl lg:text-4xl xl:text-5xl  font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] capitalize">
+              Super International Freight Services Company Ltd
             </p>
             <p className="text-white text-lg md:text-xl lg:text-3xl xl:text-4xl font-bold z-10 shadow-sm text-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
               With our cargo services, your shipments

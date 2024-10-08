@@ -25,6 +25,8 @@ export const POST = async (req: NextRequest) => {
   const status = "Available";
   body.code = stuffingReportID;
   body.status = status;
+  body.shipperId=body.shipper
+  delete body.shipper
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({
     status: 201,

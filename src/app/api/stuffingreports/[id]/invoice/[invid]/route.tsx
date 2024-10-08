@@ -1,4 +1,3 @@
-
 import prisma from "../../../../../../../prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 export const revalidate = 0;
@@ -13,10 +12,11 @@ export const GET = async (req: Request) => {
         container: {
           include: {
             deliverysite: true,
+            shipper: true,
           },
         },
-        shipper: true,
         consignee: true,
+        salesAgent: true,
         invoice: true,
       },
     });
@@ -24,7 +24,7 @@ export const GET = async (req: Request) => {
     if (stuffingRptItems) {
       const modifiedResponse = {
         delivery: stuffingRptItems.container.destination,
-        shipperId: stuffingRptItems.shipper.name,
+        shipperId: stuffingRptItems.container.shipper.name,
         consigneeId: stuffingRptItems.consignee.name,
         consigneeLocation: stuffingRptItems.consignee.location,
         code: stuffingRptItems.code,
@@ -36,7 +36,10 @@ export const GET = async (req: Request) => {
           "," +
           stuffingRptItems.container.deliverysite.locationName
         }`,
-        salesAgent: stuffingRptItems.salesAgent,
+        salesAgent:
+          stuffingRptItems.salesAgent.firstName +
+          " " +
+          stuffingRptItems.salesAgent.lastName,
         noOfPkgs: stuffingRptItems.noOfPkgs,
         typeOfPkg: stuffingRptItems.typeOfPkg,
         weight: stuffingRptItems.weight,
@@ -49,7 +52,7 @@ export const GET = async (req: Request) => {
         freight: stuffingRptItems.freight,
         blFee: stuffingRptItems.blFee,
         vat: stuffingRptItems.invoice[0]?.vat || 0.0,
-        date:stuffingRptItems.invoice[0]?.createdAt,
+        date: stuffingRptItems.invoice[0]?.createdAt,
         totalAmountInWords:
           stuffingRptItems.invoice[0]?.totalAmountInWords || "total",
         jb: stuffingRptItems.jb,

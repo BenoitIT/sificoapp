@@ -80,10 +80,14 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const message = await addNewUser(newStaffPyaload);
+        const {message,status} = await addNewUser(newStaffPyaload);
+        if(status==201){
         form.reset()
         toast.success(message);
         router.back();
+        }else{
+          toast.error(message)
+        }
       } catch (err) {
         toast.error("Failed to add new staff");
       }
@@ -151,7 +155,7 @@ const Page = () => {
                     <SelectContent>
                       <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="agent">Agent</SelectItem>
+                      <SelectItem value="operation manager">Operation Manager</SelectItem>
                       <SelectItem value="Health Center">
                         containers sender
                       </SelectItem>

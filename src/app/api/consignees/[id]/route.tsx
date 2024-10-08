@@ -55,11 +55,14 @@ export const PUT = async (req: Request) => {
   try {
     const consigneeId = req.url.split("consignees/")[1];
     const body = await req.json();
+    delete body.id;
+    body.itemsCode = body.itemscode;
+    delete body.itemscode;
     const consignee = await prisma.consignee.update({
       where: {
         id: Number(consigneeId),
       },
-      data: body
+      data: body,
     });
     if (consignee) {
       return NextResponse.json({

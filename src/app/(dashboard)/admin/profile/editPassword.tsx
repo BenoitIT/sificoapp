@@ -19,14 +19,18 @@ export const EditPasswordForm = ({ userId }: { userId: number }) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     try {
-      const message = await updatePassword(payload);
-      toast.warn(message);
-      form.reset();
+      const { message, status } = await updatePassword(payload);
+      if (status == 200) {
+        toast.warn(message);
+        form.reset();
+      } else {
+        toast.warn(message);
+      }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       toast.error("Could not update password");
     }
-  }
+  };
   return (
     <div className="w-full flex justify-center text-gray-700 mt-3 ml-2">
       <form onSubmit={handleDataSubmit}>
@@ -34,20 +38,35 @@ export const EditPasswordForm = ({ userId }: { userId: number }) => {
           <Label htmlFor="oldpassword">
             Current password<span className="text-red-500">*</span>
           </Label>
-          <Input type="text" placeholder="Enter the current one" name="oldpassword" onChange={handleChange} />
+          <Input
+            type="text"
+            placeholder="Enter the current one"
+            name="oldpassword"
+            onChange={handleChange}
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div className="grid gap-2 w-[280px] md:w-[300px]">
             <Label htmlFor="newPassword">
               New password<span className="text-red-500">*</span>
             </Label>
-            <Input type="text" placeholder="Enter the current one" name="newPassword" onChange={handleChange} />
+            <Input
+              type="text"
+              placeholder="Enter the current one"
+              name="newPassword"
+              onChange={handleChange}
+            />
           </div>
           <div className="grid gap-2 w-[280px] md:w-[300px]">
             <Label htmlFor="newPasswordConfirmation">
               Confirm password<span className="text-red-500">*</span>
             </Label>
-            <Input type="text" placeholder="Enter the current one" name="newPasswordConfirmation" onChange={handleChange} />
+            <Input
+              type="text"
+              placeholder="Enter the current one"
+              name="newPasswordConfirmation"
+              onChange={handleChange}
+            />
           </div>
         </div>
         <div className="mt-4">

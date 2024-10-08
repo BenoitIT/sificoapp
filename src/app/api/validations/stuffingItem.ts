@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 const stuffingItemSchema = z.object({
-  shipper: z.number(),
   consignee: z.number(),
   noOfPkgs: z.number(),
   typeOfPkg: z.string(),

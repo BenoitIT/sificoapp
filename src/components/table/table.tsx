@@ -47,7 +47,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
                 {row[header.field] as string | number}
               </TableCell>
             ))}
-            <TableCell className="text-xs md:text-sm">
+            <TableCell className={action?"text-xs md:text-sm":"hidden"}>
               <div className={`flex w-fit gap-2`}>
                 {action
                   ? action.map((action, index) => (

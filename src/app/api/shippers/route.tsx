@@ -13,16 +13,14 @@ export const POST = async (req: NextRequest) => {
         shipperValidation.error.errors[0].message,
       status: 400,
     });
-  if (body.email != "") {
+  if (body.email != "" || body.name != "") {
     const checkShipperEmailExistance = await prisma.shipper.findFirst({
-      where: {
-        email: body.email,
-      },
+      where: { OR: [{ email: body.email }, { name: body.name }] },
     });
     if (checkShipperEmailExistance)
       return NextResponse.json({
         status: 400,
-        message: "A shipper with this email already exist.",
+        message: "That shipper already exist. change either name or email",
       });
   }
   const checkshipperPhoneExistance = await prisma.shipper.findFirst({

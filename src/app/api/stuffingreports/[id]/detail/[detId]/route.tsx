@@ -27,11 +27,10 @@ export const PUT = async (req: Request) => {
     try {
         const stuffingRptItemId = req.url.split("detail/")[1];
         const body = await req.json();
-
-        const shipper = body.shipper;
+        const dollarExchangeRate = await prisma.calculationDependancy.findFirst({});
         const consignee = body.consignee;
         const mark = body.mark ?? "";
-        const salesAgent = body.salesAgent ?? "";
+        const salesAgent = body.salesAgent!;
         const code = body.code ?? "";
         const noOfPkgs = body.noOfPkgs;
         const typeOfPkg = body.typeOfPkg ?? "";
@@ -44,13 +43,12 @@ export const PUT = async (req: Request) => {
         const jb = body.blFee ?? 0;
         const others = body.blFee ?? 0;
         const totalUsd = handling + freight + blFee + jb + others;
-        const totalAed = totalUsd * 3.66;
+        const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
         const stuffingRptItems = await prisma.stuffingreportItems.update({
             where: {
                 id: Number(stuffingRptItemId),
             },
             data: {
-                shipperId: shipper,
                 consigneeId: consignee,
                 code: code,
                 mark: mark,
@@ -83,6 +81,7 @@ export const PUT = async (req: Request) => {
         });
     }
     catch (err) {
+        console.error(err)
         return NextResponse.json({
             status: 400,
             message: "Something went wrong",

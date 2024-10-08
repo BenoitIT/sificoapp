@@ -81,10 +81,14 @@ const Page = () => {
             ErrorLogger("agent", "Agent must be chosen.");
         } else {
             try {
-                const message = await updateSite(Number(siteId),newSitePayload);
+                const {message,status} = await updateSite(Number(siteId),newSitePayload);
+                if(status==200){
                 toast.success(message);
                 router.back();
                 form.reset();
+                }else{
+                    toast.error(message);  
+                }
             } catch (err) {
                 console.error(err);
                 toast.error("Failed to add new delivery site");
@@ -151,7 +155,7 @@ const Page = () => {
                             <div className="grid gap-2">
                                 <Select onValueChange={handleSelectRoleChange}>
                                     <Label htmlFor="role" className="mb-2">
-                                        Agent <span className="text-red-500">*</span>
+                                        Operation manager <span className="text-red-500">*</span>
                                     </Label>
                                     <SelectTrigger className="w-full placeholder:text-gray-300">
                                         {selectedAgent ? (

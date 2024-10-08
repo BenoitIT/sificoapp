@@ -1,5 +1,7 @@
+import { string } from "zod";
+
 export interface NewShipper {
-  id?:number;
+  id?: number;
   name?: string;
   location?: string;
   email?: string;
@@ -10,4 +12,21 @@ export interface newShipperErrors {
   location?: string | null;
   email?: string | null;
   phone?: string | null;
+}
+
+export interface NewCustomer {
+  id?: number;
+  name?: string;
+  location?: string;
+  email?: string;
+  phone?: string;
+  tinnumber?: string;
+  itemscode?:string;
+}
+export interface newCustomerErrors {
+  name?: string | null;
+  location?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  tinnumber?: string | null;
 }

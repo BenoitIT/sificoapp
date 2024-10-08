@@ -1,6 +1,8 @@
 export const headers = [
-    { header: "Consignee name", field: "name" },
-    { header: "Location", field: "location" },
-    { header: "Email", field: "email" },
-    { header: "Telephone", field: "phone" },
-  ];
+  { header: "Customer name", field: "name" },
+  { header: "TIN Number", field: "tinnumber" },
+  { header: "Location", field: "location" },
+  { header: "Email", field: "email" },
+  { header: "Telephone", field: "phone" },
+  { header: "Shipping code", field: "itemsCode" },
+];

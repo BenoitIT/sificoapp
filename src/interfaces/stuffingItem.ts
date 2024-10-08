@@ -2,9 +2,12 @@ export interface NewStuffingItem {
   id?: number;
   shipper?: number;
   consignee?: number;
+  customername?:string;
   code?: string;
   mark?: string;
-  salesAgent?: string;
+  salesAgent?: number;
+  agentname?:string;
+  salesAgentId?:number;
   noOfPkgs?: number;
   typeOfPkg?: string;
   weight?: number;

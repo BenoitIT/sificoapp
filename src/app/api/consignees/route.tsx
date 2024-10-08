@@ -4,6 +4,8 @@ import consigneeValidationSchema from "../validations/shipper";
 export const revalidate = 0;
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
+  body.itemsCode = body.itemscode;
+  delete body.itemscode;
   const validation = consigneeValidationSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json({

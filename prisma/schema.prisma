@@ -14,15 +14,16 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  firstName    String
-  lastName     String
-  email        String         @unique
-  phone        String         @unique
-  role         String
-  gender       String
-  password     String
-  deliverySite deliverySite[]
+  id                  Int                   @id @default(autoincrement())
+  firstName           String
+  lastName            String
+  email               String                @unique
+  phone               String                @unique
+  role                String
+  gender              String
+  password            String
+  deliverySite        deliverySite[]
+  stuffingReportItems stuffingreportItems[]
 }
 
 model deliverySite {
@@ -35,21 +36,22 @@ model deliverySite {
 }
 
 model shipper {
-  id       Int    @id @default(autoincrement())
-  name     String
-  location String
-  email    String @unique
-  phone    String @unique
-
-  stuffingreportItems stuffingreportItems[]
+  id             Int              @id @default(autoincrement())
+  name           String           @default("SIFCO Company Ltd")
+  location       String           @default("Kigali-Rwanda")
+  email          String           @default("info@superfreightservice.com")
+  phone          String           @default("+250788713189")
+  stuffingreport stuffingreport[]
 }
 
 model consignee {
-  id       Int    @id @default(autoincrement())
-  name     String
-  location String
-  email    String @unique
-  phone    String @unique
+  id        Int    @id @default(autoincrement())
+  name      String
+  itemsCode String @default("not mentioned")
+  location  String
+  email     String @unique
+  phone     String @unique
+  tinnumber String
 
   stuffingreportItems stuffingreportItems[]
 }
@@ -61,6 +63,8 @@ model stuffingreport {
   origin              String
   deliverysite        deliverySite          @relation(fields: [destination], references: [id])
   destination         Int
+  shipperId           Int
+  shipper             shipper               @relation(fields: [shipperId], references: [id])
   stuffingreportItems stuffingreportItems[]
 }
 
@@ -68,13 +72,12 @@ model stuffingreportItems {
   id               Int            @id @default(autoincrement())
   container        stuffingreport @relation(fields: [stuffingreportid], references: [id])
   stuffingreportid Int
-  shipper          shipper        @relation(fields: [shipperId], references: [id])
-  shipperId        Int
   consignee        consignee      @relation(fields: [consigneeId], references: [id])
   consigneeId      Int
   code             String
   mark             String
-  salesAgent       String
+  salesAgentId     Int
+  salesAgent       User           @relation(fields: [salesAgentId], references: [id])
   noOfPkgs         Int
   typeOfPkg        String
   weight           Int
@@ -99,5 +102,12 @@ model Invoice {
   totalAmountInWords String
   details            stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
   detailsId          String              @unique
-   createdAt          DateTime            @default(now())      
+  createdAt          DateTime            @default(now())
+}
+
+model CalculationDependancy {
+  id          Int   @id @default(autoincrement())
+  usd         Int   @default(1)
+  aed         Float @default(3.66)
+  freightRate Float @default(100)
 }

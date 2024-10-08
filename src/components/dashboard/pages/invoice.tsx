@@ -235,7 +235,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
             <TableBody>
               <TableRow>
                 <TableCell className="border-l border-r border-b border-b-white uppercase">
-                  FREIGHT CHARGES ({data?.origin} TO {data?.destination})
+                  FREIGHT CHARGES 
                 </TableCell>
                 <TableCell className="border-l border-r border-b border-b-white">
                   {data?.noOfPkgs}
@@ -306,7 +306,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
               </TableRow>
               <TableRow>
                 <TableCell className="border-l border-r border-b uppercase">
-                  ({data?.origin} TO {data?.destination})
+                  ({data?.origin} TO Kigali)
                 </TableCell>
                 <TableCell className="border-b border-l border-r"></TableCell>
                 <TableCell className="border-b border-l border-r"></TableCell>

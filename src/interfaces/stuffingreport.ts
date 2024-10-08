@@ -4,4 +4,5 @@ export interface StuffingReport {
     destination?: number;
     status?: string;
     code?:string;
+    shipper?:number|null
   }

@@ -23,11 +23,17 @@ const Page = () => {
   const [activeMenu, setActiveMenu] = useState("editprofile");
   const [editPhone, setEditPhone] = useState(false);
   const [data, setData] = useState<NewStaff>({});
-  const { data: user, isLoading, error } = useSWR(usersBaseEndpoint, () => getUser(Number(userId)))
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useSWR(usersBaseEndpoint, () => getUser(Number(userId)));
   useEffect(() => {
     dispatch(setPageTitle("My Profile"));
   }, [dispatch]);
-  useEffect(() => { setData(user) }, [user]);
+  useEffect(() => {
+    setData(user);
+  }, [user]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setData((prevState: NewStaff) => ({
@@ -45,7 +51,8 @@ const Page = () => {
         <div className="h-full min-w-fit md:min-h-[70vh] pt-6 flex justify-center items-center">
           <div className="h-[70px] w-[70px] md:h-[150px] md:w-[150px] bg-white rounded-full border border-gray-200 shadow-md flex justify-center items-center">
             <span className="text-xl md:text-6xl font-bold text-[#003472] uppercase">
-              {data?.lastName && data?.lastName[0]}{data?.firstName && data?.firstName[0]}
+              {data?.lastName && data?.lastName[0]}
+              {data?.firstName && data?.firstName[0]}
             </span>
           </div>
         </div>
@@ -53,10 +60,11 @@ const Page = () => {
           <div className="mb-[6vh] flex  w-fit text-base font-medium text-gray md:gap-4 gap-2  -z-10 mt-4 md:mx-8 mx-2">
             {ProfileNavigators.map((navigator) => (
               <div
-                className={`${navigator.key === activeMenu
-                  ? "text-[#189bcc] border-b-2 border-[#cde3eb] rounded-sm"
-                  : "text-[#003472]"
-                  } transition-opacity duration-150 ease-linear capitalize hover:cursor-pointer border-b pb-1 text-sm `}
+                className={`${
+                  navigator.key === activeMenu
+                    ? "text-[#189bcc] border-b-2 border-[#cde3eb] rounded-sm"
+                    : "text-[#003472]"
+                } transition-opacity duration-150 ease-linear capitalize hover:cursor-pointer border-b pb-1 text-sm `}
                 key={navigator.id}
                 onClick={() => setActiveMenu(navigator.key)}
               >
@@ -72,18 +80,24 @@ const Page = () => {
             }
           >
             <p>
-              First Name <span className="ml-8 text-gray-900 capitalize">{data?.firstName}</span>
+              First Name{" "}
+              <span className="ml-8 text-gray-900 capitalize">
+                {data?.firstName}
+              </span>
             </p>
             <p>
-              Last Name <span className="ml-8 text-gray-900 capitalize">{data?.lastName}</span>
+              Last Name{" "}
+              <span className="ml-8 text-gray-900 capitalize">
+                {data?.lastName}
+              </span>
             </p>
             <p>
-              Email{" "}
-              <span className="ml-8 text-gray-900">{data?.email}</span>
+              Email <span className="ml-8 text-gray-900">{data?.email}</span>
             </p>
             <div className="flex relative">
               <p>
-                Telephone <span className="ml-8 text-gray-900">{data?.phone}</span>
+                Telephone{" "}
+                <span className="ml-8 text-gray-900">{data?.phone}</span>
               </p>
               <span
                 className={
@@ -110,14 +124,26 @@ const Page = () => {
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                   onChange={handleChange}
                 />
-                <Button onClick={async () => {
-                  const message = await updateUser(Number(userId), data);
-                  toast.success(message);
-                  setEditPhone(false)
-                }}>
+                <Button
+                  onClick={async () => {
+                    const { message, status } = await updateUser(
+                      Number(userId),
+                      data
+                    );
+                    if (status == 200) {
+                      toast.success(message);
+                      setEditPhone(false);
+                    } else {
+                      toast.error(message);
+                    }
+                  }}
+                >
                   <FaCheck />
                 </Button>
-                <Button variant="destructive" onClick={() => setEditPhone(false)}>
+                <Button
+                  variant="destructive"
+                  onClick={() => setEditPhone(false)}
+                >
                   <RxCross2 />
                 </Button>
               </div>
@@ -130,17 +156,17 @@ const Page = () => {
             </p>
           </div>
           <div className={activeMenu != "editprofile" ? "w-full" : "hidden"}>
-            <EditPasswordForm  userId={Number(userId)}/>
+            <EditPasswordForm userId={Number(userId)} />
           </div>
         </div>
       </div>
     );
   }
   if (isLoading) {
-    return <Loader />
+    return <Loader />;
   }
   if (error) {
-    return <ErrorSection />
+    return <ErrorSection />;
   }
 };
 export default Page;

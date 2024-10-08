@@ -29,6 +29,8 @@ import {
   getAllsites,
 } from "@/app/httpservices/deliverySites";
 import { NewSite } from "@/interfaces/sites";
+import { NewShipper } from "@/interfaces/shipper";
+import { getAllshippers, shippersEndpoint } from "@/app/httpservices/shipper";
 const StaffingReports = () => {
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
@@ -36,10 +38,24 @@ const StaffingReports = () => {
     onSuccess: (data: NewSite[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
+  const { data: shippingCompanies } = useSWR(shippersEndpoint, getAllshippers, {
+    onSuccess: (data: NewShipper[]) =>
+      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+  });
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,
       [errorKey]: errorMessage,
+    }));
+  };
+  const handleSelectShipperChange = (value: string | number) => {
+    setPayload((prevState: StuffingReport) => ({
+      ...prevState,
+      shipper: Number(value),
+    }));
+    setValidationErrors((prevState: StuffingReport) => ({
+      ...prevState,
+      shipper: null,
     }));
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,15 +76,21 @@ const StaffingReports = () => {
     const origin = form.elements.namedItem("origin") as HTMLInputElement;
     if (origin.value === "") {
       ErrorLogger("origin", "Delivery origin must be specified.");
+    } else if (!payload.shipper) {
+      ErrorLogger("shipper", "Shipper must be chosen.");
     } else {
       try {
         delete payload.id;
         delete payload.status;
         delete payload.code;
-        const message = await createStuffingReports(payload);
-        mutate(stuffingReportEndpoint);
-        form.reset();
-        toast.success(message);
+        const { message, status } = await createStuffingReports(payload);
+        if (status == 201) {
+          mutate(stuffingReportEndpoint);
+          form.reset();
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
       } catch (err) {
         toast.error("Failed to create new stuffing report");
       }
@@ -94,7 +116,37 @@ const StaffingReports = () => {
                       Fill delivery information for the stuffs
                     </p>
                   </div>
+
                   <div className="grid gap-2">
+                    <div className="grid gap-2">
+                      <Select onValueChange={handleSelectShipperChange}>
+                        <Label htmlFor="shipper">
+                          Shipper <span className="text-red-500">*</span>
+                        </Label>
+                        <SelectTrigger className="w-full placeholder:text-gray-300">
+                          <SelectValue placeholder="Select..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {shippingCompanies?.map((shipper: NewShipper) => (
+                            <SelectItem
+                              key={shipper.id}
+                              value={shipper.id!.toString()}
+                            >
+                              {shipper.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <span
+                        className={
+                          validationErrors["shipper"]
+                            ? "text-xs text-red-500"
+                            : "hidden"
+                        }
+                      >
+                        {validationErrors?.shipper}
+                      </span>
+                    </div>
                     <div className="grid gap-2 text-sm text-gray-700">
                       <Label>Origin</Label>
                       <Input
@@ -130,7 +182,10 @@ const StaffingReports = () => {
                         <SelectContent>
                           {destinations &&
                             destinations.map((location: NewSite) => (
-                              <SelectItem key={location.id!} value={location.id!.toString()}>
+                              <SelectItem
+                                key={location.id!}
+                                value={location.id!.toString()}
+                              >
                                 {location.country + "," + location.locationName}
                               </SelectItem>
                             ))}

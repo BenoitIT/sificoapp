@@ -8,7 +8,7 @@ export const getAllStuffingReports = async () => {
 };
 export const createStuffingReports = async (data: StuffingReport) => {
   const response = await sifcoApi.post(stuffingReportEndpoint, data);
-  return response.data.message;
+  return { message: response.data.message, status: response.data.status };
 };
 export const deleteStuffingReports = async (id: number) => {
   const response = await sifcoApi.delete(stuffingReportEndpoint + `/${id}`);
@@ -22,24 +22,39 @@ export const getStuffingReport = async (id: number) => {
   const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}/report`);
   return response.data.data;
 };
-export const updateStuffingReport = async (id: number, data: StuffingReport) => {
+export const updateStuffingReport = async (
+  id: number,
+  data: StuffingReport
+) => {
   const response = await sifcoApi.put(stuffingReportEndpoint + `/${id}`, data);
-  return response.data.message;
+  return { message: response.data.message, status: response.data.status };
 };
-export const getStuffingReportsItemsDetail = async (id: number, itmId: number) => {
-  const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}/detail/${itmId}`);
+export const getStuffingReportsItemsDetail = async (
+  id: number,
+  itmId: number
+) => {
+  const response = await sifcoApi.get(
+    stuffingReportEndpoint + `/${id}/detail/${itmId}`
+  );
   return response.data.data;
 };
-export const updateStuffingReportsItemsDetail = async (id: number, itmId: number, data: NewStuffingItem) => {
-  const response = await sifcoApi.put(stuffingReportEndpoint + `/${id}/detail/${itmId}`, data);
-  return response.data.message;
+export const updateStuffingReportsItemsDetail = async (
+  id: number,
+  itmId: number,
+  data: NewStuffingItem
+) => {
+  const response = await sifcoApi.put(
+    stuffingReportEndpoint + `/${id}/detail/${itmId}`,
+    data
+  );
+  return { message: response.data.message, status: response.data.status };
 };
 export const addStuffingReportsItems = async (
   id: number,
   data: NewStuffingItem
 ) => {
   const response = await sifcoApi.post(stuffingReportEndpoint + `/${id}`, data);
-  return response.data.message;
+  return { message: response.data.message, status: response.data.status };
 };
 
 export const getStuffingReportsItemsInvoice = async (

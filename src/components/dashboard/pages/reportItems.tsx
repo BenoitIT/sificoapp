@@ -82,9 +82,13 @@ const StaffingReportsItems = () => {
       try {
         delete payload.id;
         delete payload.code;
-        const message = await updateStuffingReport(Number(staffReportId), payload);
+        const {message,status} = await updateStuffingReport(Number(staffReportId), payload);
+        if(status==200){
         toast.success(message);
         mutate(cacheKey);
+        }else{
+          toast.error(message);
+        }
       } catch (err) {
         toast.error("Failed to create new stuffing report");
       }
@@ -100,7 +104,7 @@ const StaffingReportsItems = () => {
           </p>
           <p className=" text-gray-600">
             Container status:
-            <span className={data?.stuffingRpt?.status != "available" ? "text-red-500 capitalize" : "text-[#189bcc] capitalize"}> {data?.stuffingRpt?.status}</span>
+            <span className={data?.stuffingRpt?.status?.toLowerCase() != "available" ? "text-red-500 capitalize" : "text-[#189bcc] capitalize"}> {data?.stuffingRpt?.status}</span>
           </p>
           <p className=" text-gray-600">
             Delivery destination:

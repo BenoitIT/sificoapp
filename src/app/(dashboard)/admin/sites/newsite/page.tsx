@@ -72,10 +72,14 @@ const Page = () => {
       ErrorLogger("agent", "Agent must be chosen.");
     } else {
       try {
-        const message = await createNewSite(newSitePayload);
-        toast.success(message);
-        router.back();
-        form.reset();
+        const { message, status } = await createNewSite(newSitePayload);
+        if (status == 201) {
+          toast.success(message);
+          router.back();
+          form.reset();
+        } else {
+          toast.error(message);
+        }
       } catch (err) {
         console.error(err);
         toast.error("Failed to add new delivery site");
@@ -140,7 +144,7 @@ const Page = () => {
               <div className="grid gap-2">
                 <Select onValueChange={handleSelectRoleChange}>
                   <Label htmlFor="role" className="mb-2">
-                    Agent <span className="text-red-500">*</span>
+                    Operation manager <span className="text-red-500">*</span>
                   </Label>
                   <SelectTrigger className="w-full placeholder:text-gray-300">
                     <SelectValue placeholder="Select..." />
@@ -148,7 +152,7 @@ const Page = () => {
                   <SelectContent>
                     {agents?.map((agent: NewStaff) => (
                       <SelectItem key={agent.id} value={agent.id!.toString()}>
-                        {agent.firstName + " " + agent.lastName}
+                        {agent?.firstName + " " + agent?.lastName}
                       </SelectItem>
                     ))}
                   </SelectContent>

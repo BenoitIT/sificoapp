@@ -48,23 +48,28 @@ export const GET = async (req: Request) => {
         stuffingreportid: Number(stuffingRptId),
       },
       include: {
-        container: true,
-        shipper: true,
+        container: {
+          include: {
+            shipper: true,
+          },
+        },
         consignee: true,
+        salesAgent: true,
       },
     });
 
     if (stuffingRptItems) {
       const modifiedResponse = stuffingRptItems.map((item) => {
         return {
-          id:item.id,
+          id: item.id,
           delivery: item.container.destination,
-          shipperId: item.shipper.name,
+          shipperId: item.container.shipper.name,
           consigneeId: item.consignee.name,
           code: item.code,
           phone: item.consignee.phone,
           mark: item.mark,
-          salesAgent: item.salesAgent,
+          salesAgent:
+            item.salesAgent.firstName + " " + item.salesAgent.lastName,
           noOfPkgs: item.noOfPkgs,
           typeOfPkg: item.typeOfPkg,
           weight: item.weight,
@@ -76,7 +81,7 @@ export const GET = async (req: Request) => {
           freight: item.freight,
           blFee: item.blFee,
           jb: item.jb,
-          invoiceNo:item.invoiceNo,
+          invoiceNo: item.invoiceNo,
           others: item.others,
           totalUsd: item.totalUsd,
           totalAed: item.totalAed,
@@ -104,8 +109,8 @@ export const GET = async (req: Request) => {
           cbm: 0,
           freight: 0,
           blFee: 0,
-          handling:0,
-          line:0,
+          handling: 0,
+          line: 0,
           jb: 0,
           others: 0,
           totalUsd: 0,
@@ -131,11 +136,10 @@ export const GET = async (req: Request) => {
   }
 };
 
-
 export const POST = async (req: NextRequest) => {
   const stuffingRptId = req.url.split("stuffingreports/")[1];
   const body = await req.json();
-  const date=new Date();
+  const date = new Date();
   const validation = stuffingItemSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json({
@@ -146,8 +150,13 @@ export const POST = async (req: NextRequest) => {
       status: 400,
     });
   }
+  const dollarExchangeRate = await prisma.calculationDependancy.findFirst({});
+  const previousItem = await prisma.stuffingreportItems.findFirst({
+    orderBy: {
+      id: "desc",
+    },
+  });
   const stuffingreportid = Number(stuffingRptId);
-  const shipper = body.shipper;
   const consignee = body.consignee;
   const mark = body.mark ?? "";
   const salesAgent = body.salesAgent ?? "";
@@ -163,8 +172,13 @@ export const POST = async (req: NextRequest) => {
   const jb = body.blFee ?? 0;
   const others = body.blFee ?? 0;
   const totalUsd = handling + freight + blFee + jb + others;
-  const totalAed = totalUsd * 3.66;
-  const invoiceNo= date.getDay()+date.getMonth()+date.getHours()+date.getMinutes()+"/"+date.getFullYear()+"/"+date.getSeconds();
+  const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
+  const invoiceNo =
+    stuffingRptId +
+    "/" +
+    date.getFullYear() +
+    "/" +
+    Number((previousItem?.id ?? 0) + 1);
   const stuffingReportCheck = await prisma.stuffingreport.findFirst({
     where: {
       id: Number(stuffingreportid),
@@ -179,11 +193,10 @@ export const POST = async (req: NextRequest) => {
   const stuffingreportItem = await prisma.stuffingreportItems.create({
     data: {
       stuffingreportid: stuffingreportid,
-      shipperId: shipper,
+      salesAgentId: salesAgent,
       consigneeId: consignee,
       code: code,
       mark: mark,
-      salesAgent: salesAgent,
       noOfPkgs: noOfPkgs,
       typeOfPkg: typeOfPkg,
       weight: weight,
@@ -195,7 +208,7 @@ export const POST = async (req: NextRequest) => {
       freight: freight,
       blFee: blFee,
       jb: jb,
-      invoiceNo:invoiceNo,
+      invoiceNo: invoiceNo,
       others: others,
       totalUsd: totalUsd,
       totalAed: totalAed,
@@ -215,7 +228,7 @@ export const PUT = async (req: Request) => {
       where: {
         id: Number(stuffingreportId),
       },
-      data: body
+      data: body,
     });
     if (stuffingreport) {
       return NextResponse.json({

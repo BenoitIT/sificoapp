@@ -6,7 +6,7 @@ export const getAllUsers = async () => {
 };
 export const addNewUser = async (data: NewStaff) => {
   const response = await sifcoApi.post(usersBaseEndpoint, data);
-  return response.data.message;
+  return {message:response.data.message,status:response.data.status};
 };
 export const deleteUser = async (id: number) => {
   const response = await sifcoApi.delete(usersBaseEndpoint + `/${id}`);
@@ -18,7 +18,7 @@ export const getUser = async (id: number) => {
 };
 export const updateUser = async (id: number, data: NewStaff) => {
   const response = await sifcoApi.put(usersBaseEndpoint + `/${id}`, data);
-  return response.data.message;
+  return {message:response.data.message,status:response.data.status};;
 }
 export const sendPasswordResetLink = async ({ email }: { email: string }) => {
   const response = await sifcoApi.post(usersBaseEndpoint + `/resetlink`, {
@@ -37,7 +37,7 @@ export const setNewPassword = async ({
     token,
     password,
   });
-  return response.data.message;
+  return {message:response.data.message,status:response.data.status};;
 };
 
 export const getAllAgents = async () => {
@@ -47,5 +47,5 @@ export const getAllAgents = async () => {
 
 export const updatePassword = async (data: passwordUpdate) => {
   const response = await sifcoApi.put(usersBaseEndpoint + `/resetlink/newpassword`, data);
-  return response.data.message;
+  return {message:response.data.message,status:response.data.status};;
 }

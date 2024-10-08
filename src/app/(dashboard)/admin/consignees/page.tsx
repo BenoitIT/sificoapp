@@ -29,7 +29,7 @@ const Page = () => {
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
   useEffect(() => {
-    dispatch(setPageTitle("Consignees"));
+    dispatch(setPageTitle("Customers"));
   }, [dispatch]);
   const handleEdit = async (id: number | string) => {
     router.push(`${currentpath}/${id}`);
@@ -41,7 +41,7 @@ const Page = () => {
       mutate(consigneesEndpoint);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to delete this consignee");
+      toast.error("Failed to delete this customer");
     }
   };
   const actions = [

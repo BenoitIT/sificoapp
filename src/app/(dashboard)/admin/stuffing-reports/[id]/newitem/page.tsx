@@ -15,6 +15,7 @@ import SetpOneForm from "./(steps)/stepOne";
 import StepTwoForm from "./(steps)/stepTwo";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
+import StepThree from "./(steps)/review";
 const Page = () => {
   const [newItemPayload, setItemsData] = useState<NewStuffingItem>({});
   const [errors, setValidationErrors] = useState<NewStuffingItemErrors>({});
@@ -53,12 +54,17 @@ const Page = () => {
               newItemPayload={newItemPayload}
               setActiveForm={setActiveForm}
             />
-          ) : (
+          ) : activeForm == 2 ? (
             <StepTwoForm
               setItemsData={setItemsData}
               setValidationErrors={setValidationErrors}
               errors={errors}
               ErrorLogger={ErrorLogger}
+              newItemPayload={newItemPayload}
+              setActiveForm={setActiveForm}
+            />
+          ) : (
+            <StepThree
               newItemPayload={newItemPayload}
               setActiveForm={setActiveForm}
             />

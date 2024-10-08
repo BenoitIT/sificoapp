@@ -50,7 +50,7 @@ export const menuItems = [
       },
       {
         icon: <MdMoveDown />,
-        label: "Consignees",
+        label: "Customers",
         href: "/admin/consignees",
         visible: ["admin"],
       },
@@ -68,7 +68,7 @@ export const menuItems = [
       },
       {
         icon: <TbReport />,
-        label: "Reports",
+        label: "Sales report",
         href: "/admin/reports",
         visible: ["admin"],
       },
