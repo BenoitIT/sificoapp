@@ -3,7 +3,6 @@ import {
   consigneesEndpoint,
   getAllconsignees,
 } from "@/app/httpservices/consignee";
-import { getAllshippers, shippersEndpoint } from "@/app/httpservices/shipper";
 import { getAllUsers } from "@/app/httpservices/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

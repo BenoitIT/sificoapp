@@ -173,7 +173,7 @@ const StepTwoForm = ({
                 disabled
                 placeholder="type.."
                 onChange={handleChange}
-                value={Number(newItemPayload?.line! * data?.freightRate) ?? ""}
+                value={Number(newItemPayload.line! * data.freightRate) ?? ""}
                 className={
                   errors["freight"]
                     ? "text-xs text-red-500 border-red-500"

@@ -24,6 +24,7 @@ model User {
   password            String
   deliverySite        deliverySite[]
   stuffingReportItems stuffingreportItems[]
+  createdAt             DateTime       @default(now())
 }
 
 model deliverySite {
@@ -33,6 +34,7 @@ model deliverySite {
   user           User             @relation(fields: [agent], references: [id])
   agent          Int
   stuffingreport stuffingreport[]
+  createdAt             DateTime       @default(now())
 }
 
 model shipper {
@@ -42,6 +44,7 @@ model shipper {
   email          String           @default("info@superfreightservice.com")
   phone          String           @default("+250788713189")
   stuffingreport stuffingreport[]
+  createdAt             DateTime       @default(now())
 }
 
 model consignee {
@@ -54,6 +57,7 @@ model consignee {
   tinnumber String
 
   stuffingreportItems stuffingreportItems[]
+  createdAt             DateTime       @default(now())
 }
 
 model stuffingreport {
@@ -66,6 +70,7 @@ model stuffingreport {
   shipperId           Int
   shipper             shipper               @relation(fields: [shipperId], references: [id])
   stuffingreportItems stuffingreportItems[]
+  createdAt             DateTime       @default(now())
 }
 
 model stuffingreportItems {
@@ -94,6 +99,7 @@ model stuffingreportItems {
   totalUsd         Int
   totalAed         Int
   invoice          Invoice[]
+  createdAt             DateTime       @default(now())
 }
 
 model Invoice {

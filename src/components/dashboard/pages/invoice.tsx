@@ -24,6 +24,7 @@ import { Loader } from "lucide-react";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
 import { formatDate } from "@/app/utilities/dateFormat";
+import Back from "@/components/ui/back";
 interface invoiceProps {
   itemsId: number;
   invoiceId: number;
@@ -93,7 +94,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
               setTotalInwords={setTotalInwords}
             />
           </div>
-        ) : (<div className="w-[95%] flex justify-end"><button className="text-blue-700 text-sm font-semibold bg-transparent border-none flex gap-1" onClick={ExportInvoicePDf}><MdDownload className="text-lg mt-[1px]" /><span>DownLoad</span></button></div>)}
+        ) : (<div className="w-[95%] flex flex-col md:flex-row justify-between pl-3"><Back/><button className="text-blue-700 text-sm font-semibold bg-transparent border-none flex gap-1" onClick={ExportInvoicePDf}><MdDownload className="text-lg mt-[1px]" /><span>DownLoad</span></button></div>)}
         <div
           className="m-1 md:m-2 bg-white text-gray-700 p-6 flex flex-col gap-2 max-w-[1200px] border border-gray-300 shadow-xl"
           ref={invoiceRef}
