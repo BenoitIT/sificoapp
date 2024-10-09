@@ -42,7 +42,7 @@ export const PUT = async (req: Request) => {
         const blFee = body.blFee ?? 0;
         const jb = body.blFee ?? 0;
         const others = body.blFee ?? 0;
-        const totalUsd = handling + freight + blFee + jb + others;
+        const totalUsd = freight + blFee + jb + others;
         const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
         const stuffingRptItems = await prisma.stuffingreportItems.update({
             where: {

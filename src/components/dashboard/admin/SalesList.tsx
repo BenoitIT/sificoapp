@@ -1,27 +1,16 @@
-import React from 'react';
-import SalesItem from './SalesItem';
+import React from "react";
+import SalesItem from "./SalesItem";
+import { recentShipping } from "./SalesPanel";
 
-interface Sale {
-  name: string;
-  email: string;
-  avatarUrl: string;
-  amount: string;
-}
-
-interface SalesListProps {
-  sales: Sale[];
-}
-
-const SalesList: React.FC<SalesListProps> = ({ sales }) => {
+const SalesList = ({ shippingData }: recentShipping) => {
   return (
-    <div className='w-full overflow-auto'>
-      {sales.map((sale, index) => (
+    <div className="w-full overflow-auto">
+      {shippingData.map((sale, index) => (
         <SalesItem
           key={index}
-          name={sale.name}
-          email={sale.email}
-          avatarUrl={sale.avatarUrl}
-          amount={sale.amount}
+          name={sale.customerName}
+          email={sale.customerPhone}
+          amount={sale.amountEarned}
         />
       ))}
     </div>

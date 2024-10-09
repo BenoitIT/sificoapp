@@ -5,14 +5,13 @@ import Image from 'next/image';
 interface AvatarProps {
   name: string;
   email: string;
-  avatarUrl: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ name, email, avatarUrl }) => {
+const Avatar: React.FC<AvatarProps> = ({ name, email }) => {
   return (
     <div className="flex items-center">
       <Image
-      src={avatarUrl}
+      src={"/images/avatar.png"}
       width={50}
       height={50}
       alt={`${name}'s avatar`}

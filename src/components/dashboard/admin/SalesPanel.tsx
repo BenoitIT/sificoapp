@@ -1,20 +1,25 @@
-import React from 'react';
-import CardSales from './CardSales';
-import SalesList from './SalesList';
+import React from "react";
+import CardSales from "./CardSales";
+import SalesList from "./SalesList";
+interface shippingData {
+  customerName: string;
+  customerPhone: string;
+  amountEarned: string;
+}
+export interface recentShipping {
+  shippingData: shippingData[];
+}
 
-const salesData = [
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', avatarUrl: '/images/avatar.png', amount: '$1,999.00' },
-  { name: 'Jackson Lee', email: 'jackson.lee@email.com', avatarUrl: '/images/avatar.png', amount: '$39.00' },
-  { name: 'Isabella Nguyen', email: 'isabella.nguyen@email.com', avatarUrl: '/images/avatar.png', amount: '$299.00' },
-  { name: 'William Kim', email: 'will@email.com', avatarUrl: '/images/avatar.png', amount: '$99.00' },
-  { name: 'Sofia Davis', email: 'sofia.davis@email.com', avatarUrl: '/images/avatar.png', amount: '$39.00' },
-];
-
-const SalesPanel: React.FC = () => {
+const SalesPanel = ({ shippingData }: recentShipping) => {
   return (
     <div className=" lg:mt-0 lg:w-[40%] w-full">
-      <CardSales title="Recent shippings" subtitle="You made 265 shippings this month.">
-        <SalesList sales={salesData} />
+      <CardSales
+        title="Recent shippings"
+        subtitle={`You have made ${shippingData?.length} shipping${
+          shippingData?.length > 1 ? "s" : ""
+        } this month.`}
+      >
+        <SalesList shippingData={shippingData} />
       </CardSales>
     </div>
   );

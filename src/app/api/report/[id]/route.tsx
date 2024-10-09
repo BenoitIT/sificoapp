@@ -1,6 +1,6 @@
 import prisma from "../../../../../prisma/client";
 import { NextResponse } from "next/server";
-
+export const revalidate=0;
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const agentId = req.url.split("report/")[1][0];
