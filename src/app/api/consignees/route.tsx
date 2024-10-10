@@ -46,8 +46,21 @@ export const POST = async (req: NextRequest) => {
   });
 };
 
-export const GET = async () => {
-  const consignees = await prisma.consignee.findMany({});
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const searchValue = searchParams.get("search");
+  const consignees = await prisma.consignee.findMany({
+    where: searchValue
+      ? {
+          OR: [
+            { name: { contains: searchValue, mode: "insensitive" } },
+            { location: { contains: searchValue, mode: "insensitive" } },
+            { phone: { contains: searchValue, mode: "insensitive" } },
+            { email: { contains: searchValue, mode: "insensitive" } },
+          ],
+        }
+      : {},
+  });
   return NextResponse.json({
     status: 200,
     data: consignees,

@@ -24,8 +24,26 @@ export const POST = async (req: NextRequest) => {
   });
 };
 
-export const GET = async () => {
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const searchValue = searchParams.get("search");
   const deliverySites = await prisma.deliverySite.findMany({
+    where: searchValue
+      ? {
+          OR: [
+            { country: { contains: searchValue, mode: "insensitive" } },
+            { locationName: { contains: searchValue, mode: "insensitive" } },
+            {
+              user: {
+                OR: [
+                  { firstName: { contains: searchValue, mode: "insensitive" } },
+                  { lastName: { contains: searchValue, mode: "insensitive" } },
+                ],
+              },
+            },
+          ],
+        }
+      : {},
     include: {
       user: true,
     },

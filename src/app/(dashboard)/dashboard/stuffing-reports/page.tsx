@@ -24,17 +24,21 @@ const Page = () => {
   const session: any = useSession();
   const role = session?.data?.role;
   const userId = session?.data?.id;
-  const searchValue = searchParams?.get("search");
+  const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 2000);
   const {
     data: staffingReports,
     isLoading,
     error,
-  } = useSWR([stuffingReportEndpoint, searchValues], getAllStuffingReports, {
-    onSuccess: (data: StuffingReport[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
+  } = useSWR(
+    [stuffingReportEndpoint, searchValues],
+    () => getAllStuffingReports(searchValues),
+    {
+      onSuccess: (data: StuffingReport[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
   }, [dispatch]);

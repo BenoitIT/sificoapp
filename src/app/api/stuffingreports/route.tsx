@@ -37,8 +37,38 @@ export const POST = async (req: NextRequest) => {
     data: stuffingReport,
   });
 };
-export const GET = async () => {
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const searchValue = searchParams.get("search");
   const stuffingReports = await prisma.stuffingreport.findMany({
+    where: searchValue
+      ? {
+          OR: [
+            { code: { contains: searchValue, mode: "insensitive" } },
+            { status: { contains: searchValue, mode: "insensitive" } },
+            { origin: { contains: searchValue, mode: "insensitive" } },
+            {
+              deliverysite: {
+                OR: [
+                  { country: { contains: searchValue, mode: "insensitive" } },
+                  {
+                    locationName: {
+                      contains: searchValue,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    user: {
+                      firstName: { contains: searchValue, mode: "insensitive" },
+                      lastName: { contains: searchValue, mode: "insensitive" },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        }
+      : {},
     include: {
       deliverysite: {
         include: {

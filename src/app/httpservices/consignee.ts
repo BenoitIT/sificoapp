@@ -1,8 +1,10 @@
 import { NewShipper } from "@/interfaces/shipper";
 import { sifcoApi } from "./axios";
 export const consigneesEndpoint = "/consignees";
-export const getAllconsignees = async () => {
-  const response = await sifcoApi.get(consigneesEndpoint);
+export const getAllconsignees = async (searchValues: string) => {
+  const response = await sifcoApi.get(
+    consigneesEndpoint + `?search=${searchValues}`
+  );
   return response.data.data;
 };
 

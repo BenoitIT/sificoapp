@@ -60,7 +60,7 @@ export const GET = async (req: Request) => {
     },
   });
   const customerPercentage =
-    (CustomersCountThisMonth._count.id * 100) / groupedCustomers._count.id ?? 1;
+    (CustomersCountThisMonth._count.id * 100) / (groupedCustomers._count.id ?? 1);
   const groupedStaffingReport = await prisma.stuffingreport.aggregate({
     _count: {
       id: true,
@@ -79,7 +79,7 @@ export const GET = async (req: Request) => {
   });
   const staffingPercentage =
     (groupedStaffingReportThisMonth._count.id * 100) /
-      groupedStaffingReport._count.id ?? 1;
+      (groupedStaffingReport._count.id ?? 1);
   const invoicesCount = await prisma.invoice.aggregate({
     _count: {
       id: true,
@@ -97,7 +97,7 @@ export const GET = async (req: Request) => {
     },
   });
   const invoiceCountPercentage =
-    (invoiceCountThisMonth._count.id * 100) / invoicesCount._count.id ?? 1;
+    (invoiceCountThisMonth._count.id * 100) / (invoicesCount._count.id ?? 1);
   const recentShipping = await prisma.stuffingreportItems.findMany({
     where: {
       createdAt: {

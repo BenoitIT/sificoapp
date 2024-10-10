@@ -42,8 +42,21 @@ export const POST = async (req: NextRequest) => {
   });
 };
 
-export const GET = async () => {
-  const shippers = await prisma.shipper.findMany({});
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const searchValue = searchParams.get("search");
+  const shippers = await prisma.shipper.findMany({
+    where: searchValue
+      ? {
+          OR: [
+            { name: { contains: searchValue, mode: "insensitive" } },
+            { location: { contains: searchValue, mode: "insensitive" } },
+            { phone: { contains: searchValue, mode: "insensitive" } },
+            { email: { contains: searchValue, mode: "insensitive" } },
+          ],
+        }
+      : {},
+  });
   return NextResponse.json({
     status: 200,
     data: shippers,
