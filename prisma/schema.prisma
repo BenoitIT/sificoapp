@@ -25,6 +25,8 @@ model User {
   deliverySite        deliverySite[]
   stuffingReportItems stuffingreportItems[]
   createdAt             DateTime       @default(now())
+
+  Invoice Invoice[]
 }
 
 model deliverySite {
@@ -107,6 +109,8 @@ model Invoice {
   vat                Int                 @default(0)
   totalAmountInWords String
   details            stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
+  createdBy          User    @relation(fields: [staffid],references: [id])
+  staffid            Int
   detailsId          String              @unique
   createdAt          DateTime            @default(now())
 }

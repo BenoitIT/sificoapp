@@ -5,7 +5,7 @@ import { recentShipping } from "./SalesPanel";
 const SalesList = ({ shippingData }: recentShipping) => {
   return (
     <div className="w-full overflow-auto">
-      {shippingData.map((sale, index) => (
+      {shippingData?.map((sale, index) => (
         <SalesItem
           key={index}
           name={sale.customerName}

@@ -10,9 +10,12 @@ const Authlayout = ({ children }: { children: React.ReactNode }) => {
   if (!accessToken) {
     return <div>{children}</div>;
   } else if (accessToken && role?.toLowerCase().includes("admin")) {
-    return router.push("/admin");
-  } else if (accessToken && role?.toLowerCase().includes("agent")) {
-    return router.push("/agent");
+    return router.push("/dashboard");
+  }
+  else if (accessToken && role?.toLowerCase().includes("origin agent")) {
+    return router.push("/dashboard");
+  } else if (accessToken && role?.toLowerCase().includes("operation manager")) {
+    return router.push("/opmanager");
   } else {
     return router.push("/");
   }

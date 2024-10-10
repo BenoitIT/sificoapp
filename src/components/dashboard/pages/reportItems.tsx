@@ -1,5 +1,9 @@
 "use client";
-import { getStuffingReport, getStuffingReportsItems, stuffingReportEndpoint } from "@/app/httpservices/stuffingReport";
+import {
+  getStuffingReport,
+  getStuffingReportsItems,
+  stuffingReportEndpoint,
+} from "@/app/httpservices/stuffingReport";
 import TabularSection from "@/appComponents/pageBlocks/tabularSection";
 import { Button } from "@/components/ui/button";
 import { SearchBox } from "@/components/ui/searchBox";
@@ -28,9 +32,12 @@ import {
 import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
+import { useSession } from "next-auth/react";
 const StaffingReportsItems = () => {
   const router = useRouter();
   const params = useParams();
+  const session: any = useSession();
+  const role = session?.data?.role;
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
   const staffReportId = params?.id;
@@ -38,9 +45,8 @@ const StaffingReportsItems = () => {
   const { data } = useSWR(cacheKey, () =>
     getStuffingReportsItems(Number(staffReportId))
   );
-  const { data: stuffingreport } = useSWR(
-    stuffingReportEndpoint,
-    () => getStuffingReport(Number(staffReportId))
+  const { data: stuffingreport } = useSWR(stuffingReportEndpoint, () =>
+    getStuffingReport(Number(staffReportId))
   );
   const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsites, {
     onSuccess: (data: NewSite[]) =>
@@ -50,7 +56,9 @@ const StaffingReportsItems = () => {
   const handleAddNew = () => {
     router.push(`${currentPath}/newitem`);
   };
-  useEffect(() => { setPayload(stuffingreport) }, [stuffingreport])
+  useEffect(() => {
+    setPayload(stuffingreport);
+  }, [stuffingreport]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,
@@ -82,11 +90,14 @@ const StaffingReportsItems = () => {
       try {
         delete payload.id;
         delete payload.code;
-        const {message,status} = await updateStuffingReport(Number(staffReportId), payload);
-        if(status==200){
-        toast.success(message);
-        mutate(cacheKey);
-        }else{
+        const { message, status } = await updateStuffingReport(
+          Number(staffReportId),
+          payload
+        );
+        if (status == 200) {
+          toast.success(message);
+          mutate(cacheKey);
+        } else {
           toast.error(message);
         }
       } catch (err) {
@@ -104,7 +115,16 @@ const StaffingReportsItems = () => {
           </p>
           <p className=" text-gray-600">
             Container status:
-            <span className={data?.stuffingRpt?.status?.toLowerCase() != "available" ? "text-red-500 capitalize" : "text-[#189bcc] capitalize"}> {data?.stuffingRpt?.status}</span>
+            <span
+              className={
+                data?.stuffingRpt?.status?.toLowerCase() != "available"
+                  ? "text-red-500 capitalize"
+                  : "text-[#189bcc] capitalize"
+              }
+            >
+              {" "}
+              {data?.stuffingRpt?.status}
+            </span>
           </p>
           <p className=" text-gray-600">
             Delivery destination:
@@ -120,7 +140,13 @@ const StaffingReportsItems = () => {
           <div className="flex justify-end">
             <SearchBox />
           </div>
-          <div className="flex gap-2 justify-end w-full">
+          <div
+            className={
+              role == "origin agent"
+                ? "flex gap-2 justify-end w-full"
+                : "hidden"
+            }
+          >
             <div className="flex gap-2 justify-end w-full">
               <Popover>
                 <PopoverTrigger asChild>
@@ -167,16 +193,23 @@ const StaffingReportsItems = () => {
                           <Select onValueChange={handleSelectChange}>
                             <SelectTrigger className="w-full">
                               <SelectValue
-                                placeholder={data?.stuffingRpt?.deliverysite?.country +
+                                placeholder={
+                                  data?.stuffingRpt?.deliverysite?.country +
                                   "," +
-                                  data?.stuffingRpt?.deliverysite?.locationName}
+                                  data?.stuffingRpt?.deliverysite?.locationName
+                                }
                               />
                             </SelectTrigger>
                             <SelectContent>
                               {destinations &&
                                 destinations.map((location: NewSite) => (
-                                  <SelectItem key={location.id!} value={location.id!.toString()}>
-                                    {location.country + "," + location.locationName}
+                                  <SelectItem
+                                    key={location.id!}
+                                    value={location.id!.toString()}
+                                  >
+                                    {location.country +
+                                      "," +
+                                      location.locationName}
                                   </SelectItem>
                                 ))}
                             </SelectContent>
@@ -194,12 +227,8 @@ const StaffingReportsItems = () => {
                               <SelectItem value="available">
                                 Available
                               </SelectItem>
-                              <SelectItem value="closed">
-                                Closed
-                              </SelectItem>
-                              <SelectItem value="full">
-                                Full
-                              </SelectItem>
+                              <SelectItem value="closed">Closed</SelectItem>
+                              <SelectItem value="full">Full</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>

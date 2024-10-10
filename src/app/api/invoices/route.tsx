@@ -13,14 +13,18 @@ export const GET = async () => {
           },
         },
       },
+      createdBy: true,
     },
   });
   const invoices = records.map((record) => {
     return {
       id: record.id,
+      date:record.createdAt.toDateString(),
       consigneeName: record.details.consignee.name,
       containerId: record.details.container.code,
       origin: record.details.container.origin,
+      createdBy: record.createdBy.lastName,
+      createdById: record.createdBy.id,
       destination:
         record.details.container.deliverysite.country +
         "," +

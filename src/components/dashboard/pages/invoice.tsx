@@ -25,11 +25,14 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
 import { formatDate } from "@/app/utilities/dateFormat";
 import Back from "@/components/ui/back";
+import { useSession } from "next-auth/react";
 interface invoiceProps {
   itemsId: number;
   invoiceId: number;
 }
 const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
+  const session: any = useSession();
+  const staffId = session?.data?.id;
   const cacheKey = `stuffingreports/${itemsId}/invoice/${invoiceId}`;
   const dispatch = useDispatch();
   const [vat, setVat] = useState<string>("");
@@ -51,6 +54,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
       vat: Number(vat),
       totalAmountInWords: totalInwords,
       detailsId: data?.invoiceNo,
+      createdBy:staffId
     };
     try {
       if (totalInwords) {
@@ -83,9 +87,12 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
             className={"m-1 md:m-2 bg-white text-gray-700 py-6 px-10 flex justify-between  max-w-[1200px] border border-gray-100 shadow-xl sticky top-16 z-10 rounded"
             }
           >
+            <div className="flex gap-2 items-center">
+            <Back/>
             <h1 className="font-semibold uppercase text-xs md:text-base">
               Invoice preview
             </h1>
+            </div>
             <InvoiceGenerationDetails
               ExportInvoicePDf={ExportInvoicePDf}
               vat={vat ?? 0}

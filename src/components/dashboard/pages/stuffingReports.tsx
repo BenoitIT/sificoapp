@@ -31,7 +31,10 @@ import {
 import { NewSite } from "@/interfaces/sites";
 import { NewShipper } from "@/interfaces/shipper";
 import { getAllshippers, shippersEndpoint } from "@/app/httpservices/shipper";
+import { useSession } from "next-auth/react";
 const StaffingReports = () => {
+  const session: any = useSession();
+  const role = session?.data?.role;
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
   const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsites, {
@@ -100,7 +103,11 @@ const StaffingReports = () => {
     <div>
       <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4 gap-2">
         <SearchBox />
-        <div className="flex gap-2 justify-end w-full">
+        <div
+          className={
+            role == "origin agent" ? "flex gap-2 justify-end w-full" : "hidden"
+          }
+        >
           <Popover>
             <PopoverTrigger asChild>
               <Button>Add new</Button>

@@ -15,7 +15,13 @@ export const menuItems = [
         icon: <LuLayoutDashboard />,
         label: "Dashboard",
         href: "/dashboard",
-        visible: ["admin", "origin agent", "operation manager"],
+        visible: ["admin", "origin agent"],
+      },
+      {
+        icon: <LuLayoutDashboard />,
+        label: "Dashboard",
+        href: "/opmanager",
+        visible: ["operation manager"],
       },
       {
         icon: <BsListUl />,
@@ -26,7 +32,7 @@ export const menuItems = [
       {
         icon: <BsListUl />,
         label: "Stuffing reports",
-        href: "/agent/stuffing-reports",
+        href: "/opmanager/stuffing-reports",
         visible: ["operation manager"],
       },
       {
@@ -62,7 +68,7 @@ export const menuItems = [
       {
         icon: <BsCashCoin />,
         label: "Invoices",
-        href: "/agent/invoices",
+        href: "/opmanager/invoices",
         visible: ["operation manager"],
       },
       {

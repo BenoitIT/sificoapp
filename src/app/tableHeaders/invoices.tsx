@@ -1,6 +1,8 @@
 export const headers = [
-  { header: "Consignee name", field: "consigneeName" },
+  { header: "Date", field: "date" },
+  { header: "Customer name", field: "consigneeName" },
   { header: "Container No", field: "containerId" },
+  { header: "Issued by", field: "createdBy" },
   { header: "Origin", field: "origin" },
   { header: "Destination", field: "destination" },
   { header: "Invoice No.", field: "invoiceNo" },

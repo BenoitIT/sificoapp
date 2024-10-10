@@ -49,7 +49,7 @@ const ReportPage = () => {
         </div>
         <div className="bg-white rounded shadow-sm flex justify-center w-full py-6">
           <p className="text-gray-800 uppercase font-medium md:text-base text-sm">
-            {data?.agentName}'s Selling records in{" "}
+            {data?.agentName}'s Shipping records in{" "}
             {new Date().getDate() != date?.to?.getDate() ? "" : "last "}
             <span className="font-bold">
               {date && date.from && date.to

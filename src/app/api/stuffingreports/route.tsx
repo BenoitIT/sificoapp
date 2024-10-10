@@ -14,19 +14,22 @@ export const POST = async (req: NextRequest) => {
         validation.error.errors[0].message,
       status: 400,
     });
+  const previousstuffingReport = await prisma.stuffingreport.findFirst({
+    orderBy: { id: "desc" },
+  });
+  const prevId = previousstuffingReport?.id ?? 0;
   const stuffingReportID =
     "SIF" +
     `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}` +
     body.origin[0].toUpperCase() +
     body.origin[1].toUpperCase() +
-    date.getHours() +
-    date.getMinutes() +
-    date.getSeconds();
+    prevId +
+    1;
   const status = "Available";
   body.code = stuffingReportID;
   body.status = status;
-  body.shipperId=body.shipper
-  delete body.shipper
+  body.shipperId = body.shipper;
+  delete body.shipper;
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({
     status: 201,
@@ -37,15 +40,21 @@ export const POST = async (req: NextRequest) => {
 export const GET = async () => {
   const stuffingReports = await prisma.stuffingreport.findMany({
     include: {
-      deliverysite: true,
+      deliverysite: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
   const processedData = stuffingReports.map((record) => {
     return {
       id: record.id,
+      date: record.createdAt.toDateString(),
       code: record.code,
       status: record.status,
       origin: record.origin,
+      operatorId: record.deliverysite.user.id,
       destination:
         record.deliverysite.country + "," + record.deliverysite.locationName,
     };

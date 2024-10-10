@@ -7,22 +7,31 @@ import { useRouter, usePathname, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
-import { getStuffingReport, getStuffingReportsItems, stuffingReportEndpoint } from "@/app/httpservices/stuffingReport";
-import { NewStuffingItem, StuffingReportTotals } from "@/interfaces/stuffingItem";
+import {
+  getStuffingReport,
+  getStuffingReportsItems,
+  stuffingReportEndpoint,
+} from "@/app/httpservices/stuffingReport";
+import {
+  NewStuffingItem,
+  StuffingReportTotals,
+} from "@/interfaces/stuffingItem";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
   const currentPath = usePathname();
   const dispatch = useDispatch();
   const staffReportId = params?.id;
+  const session: any = useSession();
+  const role = session?.data?.role;
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
-  const { data: stuffingreport } = useSWR(
-    stuffingReportEndpoint,
-    () => getStuffingReport(Number(staffReportId))
+  const { data: stuffingreport } = useSWR(stuffingReportEndpoint, () =>
+    getStuffingReport(Number(staffReportId))
   );
   const { data, isLoading, error } = useSWR(
     cacheKey,
@@ -31,7 +40,7 @@ const Page = () => {
       onSuccess: (data: {
         shipments: NewStuffingItem[];
         stuffingRpt: StuffingReport;
-        totals: StuffingReportTotals,
+        totals: StuffingReportTotals;
       }) => data.shipments.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
@@ -58,8 +67,15 @@ const Page = () => {
   };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
-    { icon: <FaEdit />, Click: handleEdit },
-    { icon: <FaTrash />, Click: handleDelete, name: "delete" },
+    {
+      icon: <FaEdit className={role == "operation manager" ? "hidden" : ""} />,
+      Click: handleEdit,
+    },
+    {
+      icon: <FaTrash className={role == "operation manager" ? "hidden" : ""} />,
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
   if (data?.shipments) {
     return (

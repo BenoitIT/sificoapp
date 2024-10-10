@@ -88,6 +88,7 @@ export const POST = async (req: NextRequest) => {
         vat: body.vat,
         totalAmountInWords: body.totalAmountInWords,
         detailsId: body.detailsId,
+        staffid:body.createdBy
       },
     });
     if (newInvoice) {
