@@ -1,5 +1,8 @@
 "use client";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
+import { usersBaseEndpoint } from "@/app/httpservices/axios";
+import { getUser } from "@/app/httpservices/users";
 import {
   Select,
   SelectContent,
@@ -20,18 +23,26 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { NewStaff, newStaffErrors } from "@/interfaces/staff";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { useRouter } from "next/navigation";
-import { addNewUser } from "@/app/httpservices/users";
+import { useParams, useRouter } from "next/navigation";
+import { updateUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
-  const [newStaffPyaload, setStaffData] = useState<NewStaff>({});
+  const params: any = useParams();
+  const staffId = params?.id;
+  const { data } = useSWR(usersBaseEndpoint, () => getUser(Number(staffId)));
+  const [newStaffPyaload, setStaffData] = useState<NewStaff>(data);
   const [errors, setValidationErrors] = useState<newStaffErrors>({});
+  useEffect(() => {
+    if (data) {
+      setStaffData(data);
+    }
+  }, [data]);
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("New staff"));
+    dispatch(setPageTitle("Update staff"));
   }, [dispatch]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: newStaffErrors) => ({
@@ -80,13 +91,16 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const {message,status} = await addNewUser(newStaffPyaload);
-        if(status==201){
-        form.reset()
-        toast.success(message);
-        router.back();
-        }else{
-          toast.error(message)
+        const { message, status } = await updateUser(
+          Number(staffId),
+          newStaffPyaload
+        );
+        if (status == 200) {
+          form.reset();
+          toast.success(message);
+          router.back();
+        } else {
+          toast.error(message);
         }
       } catch (err) {
         toast.error("Failed to add new staff");
@@ -97,9 +111,13 @@ const Page = () => {
     <div className="w-full min-h-[88vh] flex justify-center items-center">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">New staff</CardTitle>
+          <CardTitle className="text-xl text-center">
+            {newStaffPyaload?.firstName
+              ? newStaffPyaload?.firstName
+              : "" + " " + newStaffPyaload?.lastName}
+          </CardTitle>
           <CardDescription className="text-center">
-            Enter a new staff{"'"}s information. Note that all fields with
+            Update staff{"'"}s information. Note that all fields with
             <br />
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
@@ -119,6 +137,7 @@ const Page = () => {
                     name="firstName"
                     placeholder="John"
                     onChange={handleChange}
+                    value={newStaffPyaload?.firstName}
                     className={
                       errors["firstName"]
                         ? "text-xs text-red-500 border-red-500"
@@ -140,6 +159,7 @@ const Page = () => {
                     name="lastName"
                     placeholder="doe"
                     onChange={handleChange}
+                    value={newStaffPyaload?.lastName}
                   />
                 </div>
               </div>
@@ -150,15 +170,20 @@ const Page = () => {
                       Role <span className="text-red-500">*</span>
                     </Label>
                     <SelectTrigger className="w-full placeholder:text-gray-300">
-                      <SelectValue placeholder="Select..." />
+                      {newStaffPyaload?.role ? (
+                        <SelectValue
+                          placeholder={newStaffPyaload?.role as string}
+                        />
+                      ) : (
+                        <SelectValue placeholder="Select..." />
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="operation manager">Operation Manager</SelectItem>
-                      <SelectItem value="Health Center">
-                        containers sender
+                      <SelectItem value="operation manager">
+                        Operation Manager
                       </SelectItem>
+                      <SelectItem value="origin agent">Origin agent</SelectItem>
                     </SelectContent>
                   </Select>
                   <span
@@ -173,7 +198,13 @@ const Page = () => {
                       Gender <span className="text-red-500">*</span>
                     </Label>
                     <SelectTrigger className="w-full placeholder:text-gray-300">
-                      <SelectValue placeholder="Select..." />
+                      {newStaffPyaload?.gender ? (
+                        <SelectValue
+                          placeholder={newStaffPyaload?.gender as string}
+                        />
+                      ) : (
+                        <SelectValue placeholder="Select..." />
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="male">Male</SelectItem>
@@ -199,6 +230,7 @@ const Page = () => {
                   name="email"
                   placeholder="mail@example.com"
                   onChange={handleChange}
+                  value={newStaffPyaload?.email}
                   className={
                     errors["email"]
                       ? "text-xs text-red-500 border-red-500"
@@ -221,6 +253,7 @@ const Page = () => {
                   type="text"
                   placeholder="Ex:0788888888"
                   onChange={handleChange}
+                  value={newStaffPyaload?.phone}
                   className={
                     errors["phone"]
                       ? "text-xs text-red-500 border-red-500"
@@ -243,7 +276,7 @@ const Page = () => {
                   Cancel
                 </Button>
                 <Button type="submit" className="w-fit">
-                  Register
+                  Update
                 </Button>
               </div>
             </div>

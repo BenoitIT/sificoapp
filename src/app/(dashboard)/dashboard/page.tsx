@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { DashboardCardWrapper } from "@/components/dashboard/admin/CardWrapper";
 import RevenueChart from "@/components/dashboard/admin/RevenueChart";
 import SalesPanel from "@/components/dashboard/admin/SalesPanel";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { BsCashCoin, BsListUl } from "react-icons/bs";
@@ -15,19 +15,32 @@ import {
 } from "@/app/httpservices/dashboard";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import DatePickerWithRange from "@/components/ui/dateSelector";
+import { DateRange } from "react-day-picker";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().setDate(new Date().getDate() - 30)),
+    to: new Date(),
+  });
   useEffect(() => {
     dispatch(setPageTitle("Home"));
   }, [dispatch]);
   const { data, isLoading, error } = useSWR(
-    dashboardEndpoint,
-    getDashboardinfo
+    date?.from && date?.to && [dashboardEndpoint, date.from, date.to],
+    () =>
+      getDashboardinfo(
+        date?.from as unknown as string,
+        date?.to as unknown as string
+      )
   );
   if (data) {
     return (
       <div className=" flex lg:gap-4 gap-2 flex-col  m-auto justify-center">
+        <div className="w-fit">
+          <DatePickerWithRange date={date} setDate={setDate} />
+        </div>
         <div className="w-full lg:gap-4 gap-2 h-fit grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1">
           <DashboardCardWrapper
             header="Total revenue"
@@ -39,7 +52,9 @@ const AdminPage = () => {
           />
           <DashboardCardWrapper
             header="Total customers"
-            amount={`${Intl.NumberFormat("en-Us").format(data?.totalCustomers)}`}
+            amount={`${Intl.NumberFormat("en-Us").format(
+              data?.totalCustomers
+            )}`}
             perMonth={`+${data?.customerPercentageThisMonth}% from this month`}
             icon={<TbUsersGroup className="flex my-auto text-lg" />}
           />
@@ -59,7 +74,7 @@ const AdminPage = () => {
           />
         </div>
         <div className="lg:h-[80vh] h-full w-full flex lg:flex-row flex-col lg:gap-4 gap-2">
-          <RevenueChart data={data?.chatRecords}/>
+          <RevenueChart data={data?.chatRecords} />
           <SalesPanel shippingData={data?.recentShipping} />
         </div>
       </div>

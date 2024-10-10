@@ -6,17 +6,20 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { useRouter,usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { deleteUser, getAllUsers } from "@/app/httpservices/users";
 import { NewStaff } from "@/interfaces/staff";
 import { toast } from "react-toastify";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import { useSession } from "next-auth/react";
 const Page = () => {
   const dispatch = useDispatch();
-  const router=useRouter();
-  const currentpath:string=usePathname()!;
+  const router = useRouter();
+  const session: any = useSession();
+  const userId = session?.data?.id;
+  const currentpath: string = usePathname()!;
   const {
     data: staff,
     isLoading,
@@ -45,7 +48,10 @@ const Page = () => {
     { icon: <FaTrash />, Click: handleDelete, name: "delete" },
   ];
   if (staff) {
-    return <Staff headers={headers} data={staff} action={actions} />;
+    const filteredStaff = Array.isArray(staff)
+      ? staff?.filter((user: NewStaff) => user.id != userId)
+      : staff;
+    return <Staff headers={headers} data={filteredStaff} action={actions} />;
   }
   if (isLoading) {
     return <Loader />;

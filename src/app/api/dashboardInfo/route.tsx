@@ -1,10 +1,27 @@
 import prisma from "../../../../prisma/client";
 import { NextResponse } from "next/server";
-export const revalidate=0;
+export const revalidate = 0;
 export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
   const date = new Date();
   const currentMonth = date.getMonth() + 1;
   const currentYear = date.getFullYear();
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const start = startDate
+    ? new Date(startDate)
+    : new Date(
+        `${currentYear}-${currentMonth
+          .toString()
+          .padStart(2, "0")}-01T00:00:00.000Z`
+      );
+  const end = endDate
+    ? new Date(new Date(endDate).setDate(new Date(endDate).getDate() + 1))
+    : new Date(
+        `${currentYear}-${(currentMonth + 1)
+          .toString()
+          .padStart(2, "0")}-01T00:00:00.000Z`
+      );
   const totalRevenueMade = await prisma.stuffingreportItems.aggregate({
     _sum: {
       totalUsd: true,
@@ -17,16 +34,8 @@ export const GET = async (req: Request) => {
       },
       where: {
         createdAt: {
-          gte: new Date(
-            `${currentYear}-${currentMonth
-              .toString()
-              .padStart(2, "0")}-01T00:00:00.000Z`
-          ),
-          lt: new Date(
-            `${currentYear}-${(currentMonth + 1)
-              .toString()
-              .padStart(2, "0")}-01T00:00:00.000Z`
-          ),
+          gte: start,
+          lt: end,
         },
       },
     });
@@ -45,16 +54,8 @@ export const GET = async (req: Request) => {
     },
     where: {
       createdAt: {
-        gte: new Date(
-          `${currentYear}-${currentMonth
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
-        lt: new Date(
-          `${currentYear}-${(currentMonth + 1)
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
+        gte: start,
+        lt: end,
       },
     },
   });
@@ -71,16 +72,8 @@ export const GET = async (req: Request) => {
     },
     where: {
       createdAt: {
-        gte: new Date(
-          `${currentYear}-${currentMonth
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
-        lt: new Date(
-          `${currentYear}-${(currentMonth + 1)
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
+        gte: start,
+        lt: end,
       },
     },
   });
@@ -98,16 +91,8 @@ export const GET = async (req: Request) => {
     },
     where: {
       createdAt: {
-        gte: new Date(
-          `${currentYear}-${currentMonth
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
-        lt: new Date(
-          `${currentYear}-${(currentMonth + 1)
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
+        gte: start,
+        lt: end,
       },
     },
   });
@@ -116,16 +101,8 @@ export const GET = async (req: Request) => {
   const recentShipping = await prisma.stuffingreportItems.findMany({
     where: {
       createdAt: {
-        gte: new Date(
-          `${currentYear}-${currentMonth
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
-        lt: new Date(
-          `${currentYear}-${(currentMonth + 1)
-            .toString()
-            .padStart(2, "0")}-01T00:00:00.000Z`
-        ),
+        gte: start,
+        lt: end,
       },
     },
     include: {

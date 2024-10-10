@@ -19,7 +19,7 @@ import {
   getStuffingReportsItemsInvoice,
 } from "@/app/httpservices/stuffingReport";
 import { MdDownload } from "react-icons/md";
-import { InvoiceGenerationDetails } from "@/app/(dashboard)/admin/stuffing-reports/[id]/invoice/[invId]/(invoicedetails)/generationdetails";
+import { InvoiceGenerationDetails } from "@/app/(dashboard)/dashboard/stuffing-reports/[id]/invoice/[invId]/(invoicedetails)/generationdetails";
 import { Loader } from "lucide-react";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";

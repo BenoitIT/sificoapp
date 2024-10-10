@@ -1,12 +1,13 @@
 "use client";
-import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { menuItems } from "./staticData/routes";
 import { usePathname } from "next/navigation";
 import { FaSignOutAlt } from "react-icons/fa";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 const Menu = () => {
+  const session: any = useSession();
+  const role = session?.data?.role;
   const pathname: string | null = usePathname();
   const handleSignOut = async () => {
     await signOut();
