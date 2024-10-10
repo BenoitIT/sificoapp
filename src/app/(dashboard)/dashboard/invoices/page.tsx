@@ -2,7 +2,7 @@
 import useSWR from "swr";
 import { FaEye } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/invoices";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -17,6 +17,8 @@ const Page = () => {
   const currentPath = usePathname();
   const router = useRouter();
   const searchParams: any = useSearchParams();
+  const start = searchParams?.get("start");
+  const end = searchParams?.get("end");
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 2000);
@@ -49,4 +51,10 @@ const Page = () => {
   }
 };
 
-export default Page;
+const SuspensePage = () => (
+  <Suspense fallback={<Loader />}>
+    <Page />
+  </Suspense>
+);
+
+export default SuspensePage;

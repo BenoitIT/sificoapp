@@ -11,7 +11,7 @@ import { headers } from "@/app/tableHeaders/sites";
 import { useDispatch } from "react-redux";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { NewSite } from "@/interfaces/sites";
 import Loader from "@/appComponents/pageBlocks/loader";
 import { toast } from "react-toastify";
@@ -67,4 +67,10 @@ const Page = () => {
   }
 };
 
-export default Page;
+const SuspensePage = () => (
+  <Suspense fallback={<Loader />}>
+    <Page />
+  </Suspense>
+);
+
+export default SuspensePage;

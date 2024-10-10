@@ -6,7 +6,7 @@ import { headers } from "@/app/tableHeaders/staffingReports";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   getAllStuffingReports,
   stuffingReportEndpoint,
@@ -81,4 +81,10 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default Page;
+const SuspensePage = () => (
+  <Suspense fallback={<Loader />}>
+    <Page />
+  </Suspense>
+);
+
+export default SuspensePage;

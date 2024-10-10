@@ -2,7 +2,7 @@
 import useSWR, { mutate } from "swr";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/shippers";
 import {
@@ -73,4 +73,10 @@ const Page = () => {
   }
 };
 
-export default Page;
+const SuspensePage = () => (
+  <Suspense fallback={<Loader />}>
+    <Page />
+  </Suspense>
+);
+
+export default SuspensePage;

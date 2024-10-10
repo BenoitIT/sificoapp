@@ -12,9 +12,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 const Invoices = () => {
-  const [date, setDate] = useState<DateRange | undefined>();
+  const router = useRouter();
+  const searchParams: any = useSearchParams();
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().setDate(new Date().getDate() - 30)),
+    to: new Date(),
+  });
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
+  useEffect(() => {
+    router.push(
+      `?${createQueryString("start", date?.from as unknown as string)+`&`+createQueryString("end", date?.to as unknown as string)}`
+    );
+  }, [date]);
   return (
     <div>
       <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4 gap-2">
@@ -26,7 +45,7 @@ const Invoices = () => {
                 id="date"
                 variant={"outline"}
                 className={cn(
-                  "w-[270px] md:w-[300px] justify-start text-left font-normal relative bg-[#189bcc] text-white"
+                  "w-[270px] md:w-[300px] justify-start text-left font-normal relative text-gray-700 bg-white"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -47,7 +66,6 @@ const Invoices = () => {
                   )
                 ) : (
                   <div className="flex flex-row gap-1">
-                    <span className="font-medium">Filter between</span>
                     <span className="text-gray-700">Start date</span>
                     <span className="text-gray-700">and </span>
                     <span className="text-gray-700">End date</span>

@@ -4,6 +4,8 @@ import {
   getAllconsignees,
 } from "@/app/httpservices/consignee";
 import { getAllUsers } from "@/app/httpservices/users";
+import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import Loader from "@/appComponents/pageBlocks/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,11 +36,15 @@ const SetpOneForm = ({
   setActiveForm,
 }: StepFormProps) => {
   const router = useRouter();
-  const { data: consignees } = useSWR(consigneesEndpoint, getAllconsignees, {
-    onSuccess: (data: NewShipper[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
-  const { data: staff } = useSWR(usersBaseEndpoint, getAllUsers);
+  const { data: consignees,isLoading,error } = useSWR(
+    consigneesEndpoint,
+    () => getAllconsignees(""),
+    {
+      onSuccess: (data: NewShipper[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
+  const { data: staff } = useSWR(usersBaseEndpoint, () => getAllUsers(""));
   const customerr = consignees?.find(
     (customer: NewShipper) => customer?.id == newItemPayload?.consignee
   );
@@ -103,6 +109,7 @@ const SetpOneForm = ({
       setActiveForm(2);
     }
   };
+  if(consignees){
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="grid gap-4">
@@ -296,5 +303,12 @@ const SetpOneForm = ({
       </div>
     </form>
   );
+}
+if(isLoading){
+  return <Loader/>
+}
+if(error){
+  return <ErrorSection/>
+}
 };
 export default SetpOneForm;
