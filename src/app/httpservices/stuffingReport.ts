@@ -2,9 +2,9 @@ import { NewStuffingItem } from "@/interfaces/stuffingItem";
 import { sifcoApi } from "./axios";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 export const stuffingReportEndpoint = "/stuffingreports";
-export const getAllStuffingReports = async (searchValues: string) => {
+export const getAllStuffingReports = async (searchValues: string,currentPage:number) => {
   const response = await sifcoApi.get(
-    stuffingReportEndpoint + `?search=${searchValues}`
+    stuffingReportEndpoint + `?search=${searchValues}&page=${currentPage}`
   );
   return response.data.data;
 };

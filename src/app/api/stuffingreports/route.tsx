@@ -40,6 +40,9 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
+  const currentPage = Number(searchParams?.get("page"));
+  const pageSize = 13;
+  const offset = (currentPage - 1) * pageSize;
   const stuffingReports = await prisma.stuffingreport.findMany({
     where: searchValue
       ? {
@@ -76,6 +79,8 @@ export const GET = async (req: Request) => {
         },
       },
     },
+    take: pageSize,
+    skip: offset,
   });
   const processedData = stuffingReports.map((record) => {
     return {

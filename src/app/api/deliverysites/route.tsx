@@ -27,6 +27,9 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
+  const currentPage=Number(searchParams?.get("page"));
+  const pageSize = 13; 
+  const offset = (currentPage - 1) * pageSize;
   const deliverySites = await prisma.deliverySite.findMany({
     where: searchValue
       ? {
@@ -47,6 +50,8 @@ export const GET = async (req: Request) => {
     include: {
       user: true,
     },
+    skip:offset,
+    take:pageSize
   });
   const transformedSites = deliverySites.map((site) => ({
     id: site.id,

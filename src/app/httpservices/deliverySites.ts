@@ -1,9 +1,12 @@
 import { NewSite } from "@/interfaces/sites";
 import { sifcoApi } from "./axios";
 export const deliverySitesEndpoint = "/deliverysites";
-export const getAllsites = async (searchValues: string) => {
+export const getAllsites = async (
+  searchValues: string,
+  currentPage: number
+) => {
   const response = await sifcoApi.get(
-    deliverySitesEndpoint + `?search=${searchValues}`
+    deliverySitesEndpoint + `?search=${searchValues}&page=${currentPage}`
   );
   return response.data.data;
 };

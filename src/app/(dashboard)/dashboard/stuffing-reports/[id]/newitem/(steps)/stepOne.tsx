@@ -38,7 +38,7 @@ const SetpOneForm = ({
   const router = useRouter();
   const { data: consignees,isLoading,error } = useSWR(
     consigneesEndpoint,
-    () => getAllconsignees(""),
+    () => getAllconsignees("",1),
     {
       onSuccess: (data: NewShipper[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),

@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
+  const currentPage=Number(searchParams?.get("page"));
+  const pageSize = 13; 
+  const offset = (currentPage - 1) * pageSize;
   const records = await prisma.invoice.findMany({
     where: searchValue
       ? {
@@ -61,6 +64,8 @@ export const GET = async (req: Request) => {
       },
       createdBy: true,
     },
+    skip:offset,
+    take:pageSize
   });
   const invoices = records.map((record) => {
     return {
