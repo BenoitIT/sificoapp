@@ -7,8 +7,9 @@ import {
   useRouter,
   usePathname,
   useParams,
+  useSearchParams,
 } from "next/navigation";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
 import {
@@ -25,11 +26,13 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import exportDataInExcel from "@/app/utilities/exportdata";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
   const currentPath = usePathname();
   const dispatch = useDispatch();
+  const searchParams: any = useSearchParams();
   const staffReportId = params?.id;
   const session: any = useSession();
   const role = session?.data?.role;
@@ -52,6 +55,12 @@ const Page = () => {
   useEffect(() => {
     dispatch(setPageTitle("Stuffing report"));
   }, [dispatch]);
+  useEffect(() => {
+    if (searchParams?.get("export") && Array.isArray(data?.shipments)) {
+      exportDataInExcel(data?.shipments, headers, `${data?.stuffingRpt?.code}`);
+      router.back();
+    }
+  }, [searchParams]);
   const handleEdit = async (id: number | string) => {
     if (stuffingreport?.status != "closed") {
       router.push(`${currentPath}/edit/${id}`);

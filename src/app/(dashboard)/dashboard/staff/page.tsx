@@ -1,11 +1,12 @@
 "use client";
+
 import useSWR, { mutate } from "swr";
 import { usersBaseEndpoint as cacheKey } from "@/app/httpservices/axios";
 import { headers } from "@/app/tableHeaders/users";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
 import { useDispatch } from "react-redux";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { deleteUser, getAllUsers } from "@/app/httpservices/users";
@@ -15,6 +16,7 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { useSession } from "next-auth/react";
 import useDebounce from "@/app/utilities/debouce";
+import exportDataInExcel from "@/app/utilities/exportdata";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -39,6 +41,12 @@ const Page = () => {
   useEffect(() => {
     setSearch(searchValue);
   }, [searchValue]);
+  useEffect(() => {
+    if (searchParams?.get("export")) {
+      exportDataInExcel(staff, headers, "Staff");
+      router.back();
+    }
+  }, [searchParams]);
   const handleEdit = async (id: number) => {
     router.push(`${currentpath}/${id}`);
   };

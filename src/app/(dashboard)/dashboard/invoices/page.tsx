@@ -13,6 +13,8 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
+import exportDataInExcel from "@/app/utilities/exportdata";
+import usePagination from "@/app/utilities/usePagination";
 const Page = () => {
   const dispatch = useDispatch();
   const currentPath = usePathname();
@@ -21,8 +23,8 @@ const Page = () => {
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 2000);
-  const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
+  const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
     [invoiceEndpoint, searchValues, currentPage],
     () => getAllinvoices(searchValues, currentPage),
@@ -31,48 +33,28 @@ const Page = () => {
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
+  const { handlePageChange, handleNextPage, handlePreviousPage } =
+    usePagination(data, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Invoices"));
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
   }, [searchValue]);
-  const handleOpenInvoice = async (id: number | string) => {
-    router.push(`${currentPath}/${id}`);
-  };
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
-  const handlePageChange = (pageNumber: number) => {
-    router.push(`?${createQueryString("page", pageNumber.toString())}`);
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      router.push(
-        `?${createQueryString("page", (currentPage - 1).toString())}`
-      );
+  useEffect(() => {
+    if (searchParams?.get("export")) {
+      exportDataInExcel(data, headers, `Invoices-page ${currentPage}`);
+      router.back();
     }
-  };
-  const handleNextPage = () => {
-    if (Array.isArray(data) && data.length > currentPage) {
-      router.push(
-        `?${createQueryString(
-          "page",
-          (Number(currentPage) + Number(1)).toString()
-        )}`
-      );
-    }
-  };
+  }, [searchParams]);
   useEffect(() => {
     if (activePage) {
       setCurrentPage(activePage);
     }
   }, [activePage]);
+  const handleOpenInvoice = async (id: number | string) => {
+    router.push(`${currentPath}/${id}`);
+  };
   const actions = [{ icon: <FaEye />, Click: handleOpenInvoice, name: "view" }];
   if (data) {
     return (

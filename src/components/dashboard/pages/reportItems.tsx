@@ -33,6 +33,7 @@ import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
+import ExportButton from "@/components/ui/exportBtn";
 const StaffingReportsItems = () => {
   const router = useRouter();
   const params = useParams();
@@ -241,9 +242,7 @@ const StaffingReportsItems = () => {
                 </PopoverContent>
               </Popover>
               <Button onClick={handleAddNew}>Add new item</Button>
-              <Button className="hover:bg-[#003472] bg-[#189bcc]">
-                Export items
-              </Button>
+              <ExportButton/>
             </div>
           </div>
         </div>

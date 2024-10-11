@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
+import exportDataInExcel from "@/app/utilities/exportdata";
 const Page = () => {
   const dispatch = useDispatch();
   const currentpath: string = usePathname()!;
@@ -33,8 +34,8 @@ const Page = () => {
     isLoading,
     error,
   } = useSWR(
-    [deliverySitesEndpoint, searchValues,currentPage],
-    () => getAllsites(searchValues,currentPage),
+    [deliverySitesEndpoint, searchValues, currentPage],
+    () => getAllsites(searchValues, currentPage),
     {
       onSuccess: (data: NewSite[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
@@ -46,6 +47,12 @@ const Page = () => {
   useEffect(() => {
     setSearch(searchValue);
   }, [searchValue]);
+  useEffect(() => {
+    if (searchParams?.get("export")) {
+      exportDataInExcel(locations, headers, "delivery destinations");
+      router.back();
+    }
+  }, [searchParams]);
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);

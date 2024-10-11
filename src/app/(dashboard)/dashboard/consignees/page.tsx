@@ -19,6 +19,8 @@ import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
+import exportDataInExcel from "@/app/utilities/exportdata";
+import usePagination from "@/app/utilities/usePagination";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -30,20 +32,20 @@ const Page = () => {
   const searchValues = useDebounce(search, 2000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
-
   const {
     data: consignees,
     isLoading,
     error,
   } = useSWR(
-    [consigneesEndpoint, searchValues,currentPage],
-    () => getAllconsignees(searchValues,currentPage),
+    [consigneesEndpoint, searchValues, currentPage],
+    () => getAllconsignees(searchValues, currentPage),
     {
       onSuccess: (data: NewShipper[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
-
+  const { handlePageChange, handleNextPage, handlePreviousPage } =
+    usePagination(consignees, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Customers"));
   }, [dispatch]);
@@ -55,7 +57,12 @@ const Page = () => {
   const handleEdit = async (id: number | string) => {
     router.push(`${currentpath}/${id}`);
   };
-
+  useEffect(() => {
+    if (searchParams?.get("export") && Array.isArray(consignees)) {
+      exportDataInExcel(consignees, headers, `customers-page${currentPage}`);
+      router.back();
+    }
+  }, [searchParams]);
   const handleDelete = async (id: number) => {
     try {
       const message = await deleteConsignee(id);
@@ -64,35 +71,6 @@ const Page = () => {
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete this customer");
-    }
-  };
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
-  const handlePageChange = (pageNumber: number) => {
-    router.push(`?${createQueryString("page", pageNumber.toString())}`);
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      router.push(
-        `?${createQueryString("page", (currentPage - 1).toString())}`
-      );
-    }
-  };
-  const handleNextPage = () => {
-    if (Array.isArray(consignees) && consignees?.length > currentPage) {
-      router.push(
-        `?${createQueryString(
-          "page",
-          (Number(currentPage) + Number(1)).toString()
-        )}`
-      );
     }
   };
   useEffect(() => {
