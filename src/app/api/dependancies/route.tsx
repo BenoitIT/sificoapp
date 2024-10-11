@@ -10,13 +10,18 @@ export const GET = async () => {
         status: 200,
         data: calculationDependancies,
       });
-    }
+    }else{
     return NextResponse.json({
       status: 400,
       data: null,
     });
+  }
   } catch (err) {
     console.error(err);
+    return NextResponse.json({
+      status: 400,
+      data: null,
+    });
   }
 };
 export const PUT = async (req: NextRequest) => {
@@ -36,12 +41,17 @@ export const PUT = async (req: NextRequest) => {
         data: updatedInfo,
         message: "Update success",
       });
-    }
+    }else{
     return NextResponse.json({
       status: 400,
       message: "Update failed",
     });
+  }
   } catch (err) {
     console.error(err);
+    return NextResponse.json({
+      status: 400,
+      message: "Update failed",
+    });
   }
 };
