@@ -37,11 +37,11 @@ const StaffingReports = () => {
   const role = session?.data?.role;
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
-  const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsites, {
+  const { data: destinations } = useSWR(deliverySitesEndpoint, ()=>getAllsites("",1), {
     onSuccess: (data: NewSite[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
-  const { data: shippingCompanies } = useSWR(shippersEndpoint, getAllshippers, {
+  const { data: shippingCompanies } = useSWR(shippersEndpoint, ()=>getAllshippers(""), {
     onSuccess: (data: NewShipper[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });

@@ -73,7 +73,7 @@ export const menuItems = [
       },
       {
         icon: <TbReport />,
-        label: "Sales report",
+        label: "Shipping report",
         href: "/dashboard/reports",
         visible: ["admin", "origin agent"],
       },

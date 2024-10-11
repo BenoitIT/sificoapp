@@ -50,7 +50,7 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page"));
-  const pageSize = currentPage == 0 ? 1000000 * 1000000 : 13;
+  const pageSize = 20;
   const offset = (currentPage - 1) * pageSize;
   const consignees = await prisma.consignee.findMany({
     where: searchValue

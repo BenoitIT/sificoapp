@@ -38,7 +38,7 @@ const ReportPage = () => {
       )
   );
   useEffect(() => {
-    dispatch(setPageTitle("Sales report"));
+    dispatch(setPageTitle("Shipping report"));
   }, [dispatch]);
   if (data) {
     return (

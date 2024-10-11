@@ -36,7 +36,7 @@ const ReportPage = () => {
       )
   );
   useEffect(() => {
-    dispatch(setPageTitle("Sales report"));
+    dispatch(setPageTitle("Shipping report"));
   }, [dispatch]);
   const handleView = async (id: number) => {
     router.push(`${currentPath}/${id}`);
