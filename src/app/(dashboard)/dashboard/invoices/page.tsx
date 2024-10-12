@@ -2,7 +2,7 @@
 import useSWR from "swr";
 import { FaEye } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/invoices";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -46,7 +46,7 @@ const Page = () => {
       exportDataInExcel(data, headers, `Invoices-page ${currentPage}`);
       router.back();
     }
-  }, [searchParams]);
+  }, [searchParams, data, router, currentPage]);
   useEffect(() => {
     if (activePage) {
       setCurrentPage(activePage);

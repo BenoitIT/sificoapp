@@ -60,7 +60,7 @@ const Page = () => {
       exportDataInExcel(data?.shipments, headers, `${data?.stuffingRpt?.code}`);
       router.back();
     }
-  }, [searchParams]);
+  }, [searchParams,data?.shipments,router,data?.stuffingRpt?.code]);
   const handleEdit = async (id: number | string) => {
     if (stuffingreport?.status != "closed") {
       router.push(`${currentPath}/edit/${id}`);

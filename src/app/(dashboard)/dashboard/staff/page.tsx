@@ -6,7 +6,7 @@ import { headers } from "@/app/tableHeaders/users";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
 import { useDispatch } from "react-redux";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { deleteUser, getAllUsers } from "@/app/httpservices/users";
@@ -22,6 +22,7 @@ const Page = () => {
   const router = useRouter();
   const session: any = useSession();
   const userId = session?.data?.id;
+  const role = session?.data?.role;
   const currentpath: string = usePathname()!;
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
@@ -46,7 +47,7 @@ const Page = () => {
       exportDataInExcel(staff, headers, "Staff");
       router.back();
     }
-  }, [searchParams]);
+  }, [searchParams, staff, router]);
   const handleEdit = async (id: number) => {
     router.push(`${currentpath}/${id}`);
   };
@@ -60,8 +61,15 @@ const Page = () => {
     }
   };
   const actions = [
-    { icon: <FaEdit />, Click: handleEdit },
-    { icon: <FaTrash />, Click: handleDelete, name: "delete" },
+    {
+      icon: <FaEdit className={role !== "admin" ? "hidden" : ""} />,
+      Click: handleEdit,
+    },
+    {
+      icon: <FaTrash className={role !== "admin" ? "hidden" : ""} />,
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
   if (staff) {
     const filteredStaff = Array.isArray(staff)

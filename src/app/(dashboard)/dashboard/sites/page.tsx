@@ -52,7 +52,7 @@ const Page = () => {
       exportDataInExcel(locations, headers, "delivery destinations");
       router.back();
     }
-  }, [searchParams]);
+  }, [searchParams,locations,router]);
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);

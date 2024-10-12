@@ -3,7 +3,7 @@
 import useSWR, { mutate } from "swr";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { useEffect, useState, Suspense, useCallback } from "react";
+import { useEffect, useState, Suspense} from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/consignees";
 import Consignee from "@/components/dashboard/pages/consignee";
@@ -62,7 +62,7 @@ const Page = () => {
       exportDataInExcel(consignees, headers, `customers-page${currentPage}`);
       router.back();
     }
-  }, [searchParams]);
+  }, [searchParams,consignees,currentPage,router]);
   const handleDelete = async (id: number) => {
     try {
       const message = await deleteConsignee(id);
