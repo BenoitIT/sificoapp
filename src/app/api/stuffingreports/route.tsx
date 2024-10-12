@@ -43,6 +43,36 @@ export const GET = async (req: Request) => {
   const currentPage = Number(searchParams?.get("page"));
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
+  const itemCount = await prisma.stuffingreport.count({
+    where: searchValue
+      ? {
+          OR: [
+            { code: { contains: searchValue, mode: "insensitive" } },
+            { status: { contains: searchValue, mode: "insensitive" } },
+            { origin: { contains: searchValue, mode: "insensitive" } },
+            {
+              deliverysite: {
+                OR: [
+                  { country: { contains: searchValue, mode: "insensitive" } },
+                  {
+                    locationName: {
+                      contains: searchValue,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    user: {
+                      firstName: { contains: searchValue, mode: "insensitive" },
+                      lastName: { contains: searchValue, mode: "insensitive" },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        }
+      : {},
+  });
   const stuffingReports = await prisma.stuffingreport.findMany({
     where: searchValue
       ? {
@@ -82,6 +112,7 @@ export const GET = async (req: Request) => {
     take: pageSize,
     skip: offset,
   });
+  const totalPages = Math.ceil(itemCount / pageSize);
   const processedData = stuffingReports.map((record) => {
     return {
       id: record.id,
@@ -96,6 +127,6 @@ export const GET = async (req: Request) => {
   });
   return NextResponse.json({
     status: 200,
-    data: processedData,
+    data: { containers: processedData, count: totalPages },
   });
 };

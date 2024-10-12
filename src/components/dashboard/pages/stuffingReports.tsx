@@ -26,7 +26,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import {
   deliverySitesEndpoint,
-  getAllsites,
+  getAllsitesUnpaginated,
 } from "@/app/httpservices/deliverySites";
 import { NewSite } from "@/interfaces/sites";
 import { NewShipper } from "@/interfaces/shipper";
@@ -37,14 +37,22 @@ const StaffingReports = () => {
   const role = session?.data?.role;
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
-  const { data: destinations } = useSWR(deliverySitesEndpoint, ()=>getAllsites("",1), {
-    onSuccess: (data: NewSite[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
-  const { data: shippingCompanies } = useSWR(shippersEndpoint, ()=>getAllshippers(""), {
-    onSuccess: (data: NewShipper[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
+  const { data: destinations } = useSWR(
+    deliverySitesEndpoint,
+    getAllsitesUnpaginated,
+    {
+      onSuccess: (data: NewSite[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
+  const { data: shippingCompanies } = useSWR(
+    shippersEndpoint,
+    () => getAllshippers(""),
+    {
+      onSuccess: (data: NewShipper[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,

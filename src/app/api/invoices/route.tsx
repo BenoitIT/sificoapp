@@ -6,6 +6,52 @@ export const GET = async (req: Request) => {
   const currentPage=Number(searchParams?.get("page"));
   const pageSize = 13; 
   const offset = (currentPage - 1) * pageSize;
+  const itemCount = await prisma.invoice.count({
+    where: searchValue
+      ? {
+          OR: [
+            {
+              details: {
+                container: {
+                  code: {
+                    contains: searchValue,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+            {
+              details: {
+                consignee: {
+                  name: {
+                    contains: searchValue,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+            {
+              details: {
+                consignee: {
+                  phone: {
+                    contains: searchValue,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+            {
+              details: {
+                invoiceNo: {
+                  contains: searchValue,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        }
+      : {},
+  });
   const records = await prisma.invoice.findMany({
     where: searchValue
       ? {
@@ -67,6 +113,7 @@ export const GET = async (req: Request) => {
     skip:offset,
     take:pageSize
   });
+  const totalPages = Math.ceil(itemCount / pageSize);
   const invoices = records.map((record) => {
     return {
       id: record.id,
@@ -87,6 +134,6 @@ export const GET = async (req: Request) => {
   });
   return NextResponse.json({
     status: 200,
-    data: invoices,
+    data: {invoices:invoices,count:totalPages}
   });
 };

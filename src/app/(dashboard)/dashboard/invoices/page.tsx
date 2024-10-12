@@ -34,7 +34,7 @@ const Page = () => {
     }
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
-    usePagination(data, currentPage);
+    usePagination(data?.invoices, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Invoices"));
   }, [dispatch]);
@@ -43,10 +43,14 @@ const Page = () => {
   }, [searchValue]);
   useEffect(() => {
     if (searchParams?.get("export")) {
-      exportDataInExcel(data, headers, `Invoices-page ${currentPage}`);
+      exportDataInExcel(
+        data?.invoices,
+        headers,
+        `Invoices-page ${currentPage}`
+      );
       router.back();
     }
-  }, [searchParams, data, router, currentPage]);
+  }, [searchParams, data?.invoices, router, currentPage]);
   useEffect(() => {
     if (activePage) {
       setCurrentPage(activePage);
@@ -56,18 +60,14 @@ const Page = () => {
     router.push(`${currentPath}/${id}`);
   };
   const actions = [{ icon: <FaEye />, Click: handleOpenInvoice, name: "view" }];
-  if (data) {
+  if (data?.invoices) {
     return (
       <div className="w-full">
-        <Invoices headers={headers} data={data} action={actions} />
+        <Invoices headers={headers} data={data?.invoices} action={actions} />
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={
-              Array.isArray(data) && Math.ceil(data.length / 13) < 1
-                ? 1
-                : Math.ceil(data.length / 13)
-            }
+            totalPages={data?.count}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}

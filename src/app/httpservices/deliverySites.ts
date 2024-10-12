@@ -10,6 +10,13 @@ export const getAllsites = async (
   );
   return response.data.data;
 };
+export const getAllsitesUnpaginated = async (
+) => {
+  const response = await sifcoApi.get(
+    deliverySitesEndpoint + `/unpaginated`
+  );
+  return response.data.data;
+};
 
 export const createNewSite = async (data: NewSite) => {
   const response = await sifcoApi.post(deliverySitesEndpoint, data);

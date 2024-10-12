@@ -50,8 +50,20 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page"));
-  const pageSize = 20;
+  const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
+  const totalCount = await prisma.consignee.count({
+    where: searchValue
+      ? {
+          OR: [
+            { name: { contains: searchValue, mode: "insensitive" } },
+            { location: { contains: searchValue, mode: "insensitive" } },
+            { phone: { contains: searchValue, mode: "insensitive" } },
+            { email: { contains: searchValue, mode: "insensitive" } },
+          ],
+        }
+      : {},
+  });
   const consignees = await prisma.consignee.findMany({
     where: searchValue
       ? {
@@ -66,8 +78,9 @@ export const GET = async (req: Request) => {
     take: pageSize,
     skip: offset,
   });
+  const totalPages = Math.ceil(totalCount / pageSize);
   return NextResponse.json({
     status: 200,
-    data: consignees,
+    data: { customers: consignees, count: totalPages },
   });
 };

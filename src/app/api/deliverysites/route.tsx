@@ -27,6 +27,27 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
+  const currentPage = Number(searchParams?.get("page"));
+  const pageSize = 13;
+  const offset = (currentPage - 1) * pageSize;
+  const itemCount = await prisma.deliverySite.count({
+    where: searchValue
+      ? {
+          OR: [
+            { country: { contains: searchValue, mode: "insensitive" } },
+            { locationName: { contains: searchValue, mode: "insensitive" } },
+            {
+              user: {
+                OR: [
+                  { firstName: { contains: searchValue, mode: "insensitive" } },
+                  { lastName: { contains: searchValue, mode: "insensitive" } },
+                ],
+              },
+            },
+          ],
+        }
+      : {},
+  });
   const deliverySites = await prisma.deliverySite.findMany({
     where: searchValue
       ? {
@@ -47,7 +68,10 @@ export const GET = async (req: Request) => {
     include: {
       user: true,
     },
+    take: pageSize,
+    skip: offset,
   });
+  const totalPages = Math.ceil(itemCount / pageSize);
   const transformedSites = deliverySites.map((site) => ({
     id: site.id,
     country: site.country,
@@ -55,7 +79,7 @@ export const GET = async (req: Request) => {
     agent: `${site.user.firstName} ${site.user.lastName}`,
   }));
   return NextResponse.json({
-    data: transformedSites,
+    data: { sites: transformedSites, count: totalPages },
     status: 200,
   });
 };

@@ -3,7 +3,7 @@
 import useSWR, { mutate } from "swr";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { useEffect, useState, Suspense} from "react";
+import { useEffect, useState, Suspense } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/consignees";
 import Consignee from "@/components/dashboard/pages/consignee";
@@ -32,11 +32,7 @@ const Page = () => {
   const searchValues = useDebounce(search, 2000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
-  const {
-    data: consignees,
-    isLoading,
-    error,
-  } = useSWR(
+  const { data, isLoading, error } = useSWR(
     [consigneesEndpoint, searchValues, currentPage],
     () => getAllconsignees(searchValues, currentPage),
     {
@@ -45,7 +41,7 @@ const Page = () => {
     }
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
-    usePagination(consignees, currentPage);
+    usePagination(data?.customers, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Customers"));
   }, [dispatch]);
@@ -58,11 +54,15 @@ const Page = () => {
     router.push(`${currentpath}/${id}`);
   };
   useEffect(() => {
-    if (searchParams?.get("export") && Array.isArray(consignees)) {
-      exportDataInExcel(consignees, headers, `customers-page${currentPage}`);
+    if (searchParams?.get("export") && Array.isArray(data?.customers)) {
+      exportDataInExcel(
+        data?.customers,
+        headers,
+        `customers-page${currentPage}`
+      );
       router.back();
     }
-  }, [searchParams,consignees,currentPage,router]);
+  }, [searchParams, data?.customers, currentPage, router]);
   const handleDelete = async (id: number) => {
     try {
       const message = await deleteConsignee(id);
@@ -83,18 +83,14 @@ const Page = () => {
     { icon: <FaTrash />, Click: handleDelete, name: "delete" },
   ];
 
-  if (consignees) {
+  if (data?.customers) {
     return (
       <div className="w-full">
-        <Consignee headers={headers} data={consignees} action={actions} />
+        <Consignee headers={headers} data={data?.customers} action={actions} />
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={
-              Array.isArray(consignees) && Math.ceil(consignees.length / 13) < 1
-                ? 1
-                : Math.ceil(consignees.length / 13)
-            }
+            totalPages={data?.count}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}

@@ -1,7 +1,7 @@
 import { usersBaseEndpoint } from "@/app/httpservices/axios";
 import {
   consigneesEndpoint,
-  getAllconsignees,
+  getAllconsigneesUnPaginated,
 } from "@/app/httpservices/consignee";
 import { getAllUsers } from "@/app/httpservices/users";
 import { Button } from "@/components/ui/button";
@@ -34,11 +34,15 @@ const SetpOneForm = ({
   setActiveForm,
 }: StepFormProps) => {
   const router = useRouter();
-  const { data: consignees } = useSWR(consigneesEndpoint, ()=>getAllconsignees("",0), {
-    onSuccess: (data: NewShipper[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
-  const { data: staff } = useSWR(usersBaseEndpoint, getAllUsers);
+  const { data: consignees } = useSWR(
+    consigneesEndpoint,
+    getAllconsigneesUnPaginated,
+    {
+      onSuccess: (data: NewShipper[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
+  const { data: staff } = useSWR(usersBaseEndpoint, () => getAllUsers(""));
   const handleSelectAgentChange = (value: string | number) => {
     const userr = staff?.find((user: NewStaff) => user.id == value);
     setItemsData((prevState: NewStuffingItem) => ({
@@ -78,7 +82,7 @@ const SetpOneForm = ({
     ErrorLogger(e.target.name, null);
   };
   const salesAgent = staff?.find(
-    (staff: NewStaff) => staff.id == newItemPayload?.salesAgentId 
+    (staff: NewStaff) => staff.id == newItemPayload?.salesAgentId
   );
   const consignee = consignees?.find(
     (consignee: NewShipper) => consignee?.id == newItemPayload?.consigneeId

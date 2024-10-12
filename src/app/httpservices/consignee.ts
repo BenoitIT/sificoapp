@@ -10,7 +10,10 @@ export const getAllconsignees = async (
   );
   return response.data.data;
 };
-
+export const getAllconsigneesUnPaginated = async () => {
+  const response = await sifcoApi.get(consigneesEndpoint + `/unpaginated`);
+  return response.data.data;
+};
 export const createNewConsignee = async (data: NewShipper) => {
   const response = await sifcoApi.post(consigneesEndpoint, data);
   return { message: response.data.message, status: response.data.status };
