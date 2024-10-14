@@ -5,26 +5,39 @@ export const revalidate = 0;
 export const DELETE = async (req: Request) => {
   try {
     const stuffingRptId = req.url.split("stuffingreports/")[1];
-    await prisma.stuffingreportItems.deleteMany({
-      where: {
-        stuffingreportid: Number(stuffingRptId),
-      },
-    });
-    const stuffingRpttoDelete = await prisma.stuffingreport.delete({
+    const stuffingRpt = await prisma.stuffingreport.findFirst({
       where: {
         id: Number(stuffingRptId),
       },
     });
-    if (stuffingRpttoDelete) {
+    if (stuffingRpt?.status?.toLowerCase() == "available") {
+      await prisma.stuffingreportItems.deleteMany({
+        where: {
+          stuffingreportid: Number(stuffingRptId),
+        },
+      });
+      const stuffingRpttoDelete = await prisma.stuffingreport.delete({
+        where: {
+          id: Number(stuffingRptId),
+        },
+      });
+      if (stuffingRpttoDelete) {
+        return NextResponse.json({
+          status: 200,
+          message: "Stuffing report is deleted successfully",
+        });
+      }
+    } else if (stuffingRpt?.status?.toLowerCase() !== "available") {
       return NextResponse.json({
-        status: 200,
-        message: "Stuffing report is deleted successfully",
+        status: 400,
+        message: `This stuffing report can not be deleted. it is ${stuffingRpt?.status}`,
+      });
+    } else {
+      return NextResponse.json({
+        status: 404,
+        message: "That stuffing report id is not found",
       });
     }
-    return NextResponse.json({
-      status: 404,
-      message: "That stuffing report id is not found",
-    });
   } catch (err) {
     return NextResponse.json({
       status: 400,
@@ -56,6 +69,9 @@ export const GET = async (req: Request) => {
         consignee: true,
         salesAgent: true,
       },
+      orderBy:{
+        id:"desc"
+      }
     });
 
     if (stuffingRptItems) {

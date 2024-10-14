@@ -111,6 +111,9 @@ export const GET = async (req: Request) => {
     },
     take: pageSize,
     skip: offset,
+    orderBy:{
+      id:"desc"
+    }
   });
   const totalPages = Math.ceil(itemCount / pageSize);
   const processedData = stuffingReports.map((record) => {

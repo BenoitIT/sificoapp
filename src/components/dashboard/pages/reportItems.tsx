@@ -27,7 +27,7 @@ import { StuffingReport } from "@/interfaces/stuffingreport";
 import { NewSite } from "@/interfaces/sites";
 import {
   deliverySitesEndpoint,
-  getAllsites,
+  getAllsitesUnpaginated,
 } from "@/app/httpservices/deliverySites";
 import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
@@ -49,7 +49,7 @@ const StaffingReportsItems = () => {
   const { data: stuffingreport } = useSWR(stuffingReportEndpoint, () =>
     getStuffingReport(Number(staffReportId))
   );
-  const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsites, {
+  const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsitesUnpaginated, {
     onSuccess: (data: NewSite[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
@@ -203,7 +203,7 @@ const StaffingReportsItems = () => {
                             </SelectTrigger>
                             <SelectContent>
                               {destinations &&
-                                destinations.map((location: NewSite) => (
+                                destinations?.map((location: NewSite) => (
                                   <SelectItem
                                     key={location.id!}
                                     value={location.id!.toString()}

@@ -196,7 +196,7 @@ const StaffingReports = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {destinations &&
-                            destinations.map((location: NewSite) => (
+                            destinations?.map((location: NewSite) => (
                               <SelectItem
                                 key={location.id!}
                                 value={location.id!.toString()}

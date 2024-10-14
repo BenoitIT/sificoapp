@@ -1,5 +1,5 @@
 "use client";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { FaTrash, FaEye } from "react-icons/fa";
 import StaffingReports from "@/components/dashboard/pages/stuffingReports";
 import { headers } from "@/app/tableHeaders/staffingReports";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { Suspense, useEffect, useState } from "react";
 import {
+  deleteStuffingReports,
   getAllStuffingReports,
   stuffingReportEndpoint,
 } from "@/app/httpservices/stuffingReport";
@@ -18,6 +19,7 @@ import { useSession } from "next-auth/react";
 import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
+import { toast } from "react-toastify";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -31,13 +33,10 @@ const Page = () => {
   const searchValues = useDebounce(search, 2000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
+  const [reload,setReload]=useState(false);
   const { data, isLoading, error } = useSWR(
-    [stuffingReportEndpoint, searchValues, currentPage],
-    () => getAllStuffingReports(searchValues, currentPage),
-    {
-      onSuccess: (data: StuffingReport[]) =>
-        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-    }
+    [stuffingReportEndpoint, searchValues, currentPage,reload],
+    () => getAllStuffingReports(searchValues, currentPage)
   );
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
@@ -52,8 +51,11 @@ const Page = () => {
       setCurrentPage(activePage);
     }
   }, [activePage]);
-  const handleDelete = async (id: number | string) => {
-    console.log("Delete clicked", id);
+  const handleDelete = async (id: number) => {
+    const message = await deleteStuffingReports(id);
+    toast.success(message);
+    mutate(stuffingReportEndpoint);
+    setReload(!reload)
   };
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
@@ -83,7 +85,7 @@ const Page = () => {
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={data?.count||1}
+            totalPages={data?.count || 1}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}
