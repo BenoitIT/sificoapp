@@ -67,7 +67,7 @@ const Page = () => {
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={data?.count}
+            totalPages={data?.count||1}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}
