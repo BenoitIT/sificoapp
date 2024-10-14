@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { resetPasswordEmailTemplate } from "@/appComponents/emailTemplates/passwordReset";
 export const revalidate = 0;
-const resend = new Resend(process.env.NEXT_RESEND_API_KEY);
+const resend = new Resend(process.env.NEXT_RESEND_API_KEY!);
 const frontendLink = process.env.NEXT_FRONTEND_URL!;
 export const POST = async (req: NextRequest) => {
   const body = await req.json();

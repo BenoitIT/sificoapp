@@ -1,4 +1,4 @@
-name: fisicoWebPipelines
+name: sifcoWebPipelines
 
 on:
   push:

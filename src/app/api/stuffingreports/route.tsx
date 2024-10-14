@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
-  const currentPage = Number(searchParams?.get("page"));
+  const currentPage = Number(searchParams?.get("page"))||1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.stuffingreport.count({

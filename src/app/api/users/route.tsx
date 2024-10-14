@@ -5,7 +5,7 @@ import userValidationSchema from "../validations/user";
 import bcrypt from "bcrypt";
 import { EmailTemplate } from "@/appComponents/emailTemplates/userCreation";
 export const revalidate = 0;
-const resend = new Resend(process.env.NEXT_RESEND_API_KEY);
+const resend = new Resend(process.env.NEXT_RESEND_API_KEY!);
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const userDataValidation = userValidationSchema.safeParse(body);
