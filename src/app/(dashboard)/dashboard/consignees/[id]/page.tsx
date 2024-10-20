@@ -14,9 +14,15 @@ import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import {
   NewCustomer,
   newCustomerErrors,
-  NewShipper,
   newShipperErrors,
 } from "@/interfaces/shipper";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; 
 import { useRouter, useParams } from "next/navigation";
 import {
   updateShipper,
@@ -26,6 +32,8 @@ import {
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
+import { deliverySitesEndpoint, getAllsitesUnpaginated } from "@/app/httpservices/deliverySites";
+import { NewSite } from "@/interfaces/sites";
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -40,7 +48,7 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setValidationErrors] = useState<newCustomerErrors>({});
   useEffect(() => {
-    dispatch(setPageTitle("Update consignee"));
+    dispatch(setPageTitle("Update customer"));
   }, [dispatch]);
   useEffect(() => {
     if (consignee) {
@@ -55,9 +63,17 @@ const Page = () => {
       [errorKey]: errorMessage,
     }));
   };
+  const { data: destinations } = useSWR(
+    deliverySitesEndpoint,
+    getAllsitesUnpaginated,
+    {
+      onSuccess: (data: NewSite[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setStaffData((prevState: NewShipper) => ({
+    setStaffData((prevState: NewCustomer) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
@@ -95,6 +111,10 @@ const Page = () => {
       }
     }
   };
+  const handleSelectChange = (value: string) => {
+    setStaffData({ ...newConsigneepayload, location: Number(value) });
+    delete errors.location;
+  };
   return (
     <div className="w-full min-h-[88vh] flex justify-center items-center">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
@@ -103,7 +123,7 @@ const Page = () => {
             {newConsigneepayload?.name}
           </CardTitle>
           <CardDescription className="text-center">
-            Update consignee{"'"}s information. Note that all fields with
+            Update customer{"'"}s information. Note that all fields with
             <br />
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
@@ -136,15 +156,27 @@ const Page = () => {
                     {errors?.name}
                   </span>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    name="location"
-                    placeholder="type.."
-                    onChange={handleChange}
-                    value={newConsigneepayload?.location}
-                  />
+                <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                  <Label>Location</Label>
+                  <Select onValueChange={handleSelectChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder="Select..."
+                        className="placeholder:text-gray-300"
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {destinations &&
+                        destinations?.map((location: NewSite) => (
+                          <SelectItem
+                            key={location.id!}
+                            value={location.id!.toString()}
+                          >
+                            {location.country + "," + location.locationName}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,8 +245,8 @@ const Page = () => {
                   <Input
                     id="itemscode"
                     type="text"
-                    name="itemscode"
-                    value={newConsigneepayload?.itemscode}
+                    name="itemsCode"
+                    value={newConsigneepayload?.itemsCode}
                     placeholder="xxxxx"
                     onChange={handleChange}
                     className={"placeholder:text-gray-400"}

@@ -15,7 +15,11 @@ export const GET = async (req: Request) => {
             shipper: true,
           },
         },
-        consignee: true,
+        consignee:{
+          include:{
+            location:true
+          }
+        },
         salesAgent: true,
         invoice: true,
       },
@@ -26,7 +30,7 @@ export const GET = async (req: Request) => {
         delivery: stuffingRptItems.container.destination,
         shipperId: stuffingRptItems.container.shipper.name,
         consigneeId: stuffingRptItems.consignee.name,
-        consigneeLocation: stuffingRptItems.consignee.location,
+        consigneeLocation: stuffingRptItems.consignee.location.country+"-"+stuffingRptItems.consignee.location.locationName,
         code: stuffingRptItems.code,
         phone: stuffingRptItems.consignee.phone,
         mark: stuffingRptItems.mark,

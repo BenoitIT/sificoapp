@@ -1,4 +1,4 @@
-import { NewShipper } from "@/interfaces/shipper";
+import { NewCustomer } from "@/interfaces/shipper";
 import { sifcoApi } from "./axios";
 export const consigneesEndpoint = "/consignees";
 export const getAllconsignees = async (
@@ -14,7 +14,7 @@ export const getAllconsigneesUnPaginated = async () => {
   const response = await sifcoApi.get(consigneesEndpoint + `/unpaginated`);
   return response.data.data;
 };
-export const createNewConsignee = async (data: NewShipper) => {
+export const createNewConsignee = async (data: NewCustomer) => {
   const response = await sifcoApi.post(consigneesEndpoint, data);
   return { message: response.data.message, status: response.data.status };
 };
@@ -26,7 +26,7 @@ export const getConsignee = async (id: number) => {
   const response = await sifcoApi.get(consigneesEndpoint + `/${id}`);
   return response.data.data;
 };
-export const updateShipper = async (id: number, data: NewShipper) => {
+export const updateShipper = async (id: number, data: NewCustomer) => {
   const response = await sifcoApi.put(consigneesEndpoint + `/${id}`, data);
   return { message: response.data.message, status: response.data.status };
 };

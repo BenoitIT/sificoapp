@@ -17,11 +17,11 @@ export interface newShipperErrors {
 export interface NewCustomer {
   id?: number;
   name?: string;
-  location?: string;
+  location?: number;
   email?: string;
   phone?: string;
   tinnumber?: string;
-  itemscode?:string;
+  itemsCode?:string;
 }
 export interface newCustomerErrors {
   name?: string | null;

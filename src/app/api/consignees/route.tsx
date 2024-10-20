@@ -4,8 +4,6 @@ import consigneeValidationSchema from "../validations/shipper";
 export const revalidate = 0;
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
-  body.itemsCode = body.itemscode;
-  delete body.itemscode;
   const validation = consigneeValidationSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json({
@@ -38,6 +36,8 @@ export const POST = async (req: NextRequest) => {
       status: 400,
       message: "A consignee with this phone number already exist.",
     });
+  body.locationid = body.location;
+  delete body.location;
   const shipper = await prisma.consignee.create({ data: body });
   return NextResponse.json({
     status: 201,
@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
-  const currentPage = Number(searchParams?.get("page"))||1;
+  const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const totalCount = await prisma.consignee.count({
@@ -57,7 +57,6 @@ export const GET = async (req: Request) => {
       ? {
           OR: [
             { name: { contains: searchValue, mode: "insensitive" } },
-            { location: { contains: searchValue, mode: "insensitive" } },
             { phone: { contains: searchValue, mode: "insensitive" } },
             { email: { contains: searchValue, mode: "insensitive" } },
           ],
@@ -69,7 +68,6 @@ export const GET = async (req: Request) => {
       ? {
           OR: [
             { name: { contains: searchValue, mode: "insensitive" } },
-            { location: { contains: searchValue, mode: "insensitive" } },
             { phone: { contains: searchValue, mode: "insensitive" } },
             { email: { contains: searchValue, mode: "insensitive" } },
           ],
@@ -77,10 +75,23 @@ export const GET = async (req: Request) => {
       : {},
     take: pageSize,
     skip: offset,
+    include: {
+      location: true,
+    },
   });
+  const consigneeData = consignees.map((consignee) => ({
+    id: consignee.id,
+    name: consignee.name,
+    tinnumber: consignee.tinnumber,
+    location:
+      consignee.location.country + "-" + consignee.location.locationName,
+    email: consignee.email ? consignee.email : "-",
+    phone: consignee.phone,
+    itemsCode: consignee.itemsCode,
+  }));
   const totalPages = Math.ceil(totalCount / pageSize);
   return NextResponse.json({
     status: 200,
-    data: { customers: consignees, count: totalPages },
+    data: { customers: consigneeData, count: totalPages },
   });
 };

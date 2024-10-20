@@ -24,7 +24,7 @@ model User {
   password            String
   deliverySite        deliverySite[]
   stuffingReportItems stuffingreportItems[]
-  createdAt             DateTime       @default(now())
+  createdAt           DateTime              @default(now())
 
   Invoice Invoice[]
 }
@@ -36,7 +36,9 @@ model deliverySite {
   user           User             @relation(fields: [agent], references: [id])
   agent          Int
   stuffingreport stuffingreport[]
-  createdAt             DateTime       @default(now())
+  createdAt      DateTime         @default(now())
+
+  consignee consignee[]
 }
 
 model shipper {
@@ -46,20 +48,20 @@ model shipper {
   email          String           @default("info@superfreightservice.com")
   phone          String           @default("+250788713189")
   stuffingreport stuffingreport[]
-  createdAt             DateTime       @default(now())
+  createdAt      DateTime         @default(now())
 }
 
 model consignee {
-  id        Int    @id @default(autoincrement())
-  name      String
-  itemsCode String @default("not mentioned")
-  location  String
-  email     String @unique
-  phone     String @unique
-  tinnumber String
-
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  itemsCode           String                @default("not mentioned")
+  location            deliverySite          @relation(fields: [locationid], references: [id])
+  locationid          Int
+  email               String
+  phone               String                @unique
+  tinnumber           String
   stuffingreportItems stuffingreportItems[]
-  createdAt             DateTime       @default(now())
+  createdAt           DateTime              @default(now())
 }
 
 model stuffingreport {
@@ -72,7 +74,7 @@ model stuffingreport {
   shipperId           Int
   shipper             shipper               @relation(fields: [shipperId], references: [id])
   stuffingreportItems stuffingreportItems[]
-  createdAt             DateTime       @default(now())
+  createdAt           DateTime              @default(now())
 }
 
 model stuffingreportItems {
@@ -101,7 +103,7 @@ model stuffingreportItems {
   totalUsd         Int
   totalAed         Int
   invoice          Invoice[]
-  createdAt             DateTime       @default(now())
+  createdAt        DateTime       @default(now())
 }
 
 model Invoice {
@@ -109,7 +111,7 @@ model Invoice {
   vat                Int                 @default(0)
   totalAmountInWords String
   details            stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
-  createdBy          User    @relation(fields: [staffid],references: [id])
+  createdBy          User                @relation(fields: [staffid], references: [id])
   staffid            Int
   detailsId          String              @unique
   createdAt          DateTime            @default(now())

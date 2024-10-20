@@ -7,6 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -14,6 +21,12 @@ import { NewCustomer, newCustomerErrors } from "@/interfaces/shipper";
 import { useRouter } from "next/navigation";
 import { createNewConsignee } from "@/app/httpservices/consignee";
 import { toast } from "react-toastify";
+import {
+  deliverySitesEndpoint,
+  getAllsitesUnpaginated,
+} from "@/app/httpservices/deliverySites";
+import { NewSite } from "@/interfaces/sites";
+import useSWR from "swr";
 const Page = () => {
   const router = useRouter();
   const [newConsigneepayload, setStaffData] = useState<NewCustomer>({
@@ -29,6 +42,14 @@ const Page = () => {
       [errorKey]: errorMessage,
     }));
   };
+  const { data: destinations } = useSWR(
+    deliverySitesEndpoint,
+    getAllsitesUnpaginated,
+    {
+      onSuccess: (data: NewSite[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setStaffData((prevState: NewCustomer) => ({
@@ -57,16 +78,20 @@ const Page = () => {
         );
         if (status == 201) {
           toast.success(message);
-          setLoading(false);
           router.back();
           form.reset();
         } else {
           toast.error(message);
         }
       } catch (error) {
-        toast.success("Failed to add a new shipper");
+        toast.error("Failed to add a new shipper");
       }
+      setLoading(false);
     }
+  };
+  const handleSelectChange = (value: string) => {
+    setStaffData({ ...newConsigneepayload, location: Number(value) });
+    delete errors.location;
   };
   return (
     <div className="w-full min-h-[88vh] flex justify-center items-center">
@@ -106,14 +131,27 @@ const Page = () => {
                     {errors?.name}
                   </span>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    name="location"
-                    placeholder="Ex:Rwanda-kigali"
-                    onChange={handleChange}
-                  />
+                <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                  <Label>Location</Label>
+                  <Select onValueChange={handleSelectChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder="Select..."
+                        className="placeholder:text-gray-300"
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {destinations &&
+                        destinations?.map((location: NewSite) => (
+                          <SelectItem
+                            key={location.id!}
+                            value={location.id!.toString()}
+                          >
+                            {location.country + "," + location.locationName}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,7 +178,9 @@ const Page = () => {
                   </span>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="tinnumber">TIN Number<span className="text-red-500">*</span></Label>
+                  <Label htmlFor="tinnumber">
+                    TIN Number<span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="text"
                     name="tinnumber"
@@ -175,11 +215,13 @@ const Page = () => {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="itemscode">Shipping code<span className="text-red-500">*</span></Label>
+                  <Label htmlFor="itemscode">
+                    Shipping code<span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="itemscode"
                     type="text"
-                    name="itemscode"
+                    name="itemsCode"
                     placeholder="xxxxx"
                     onChange={handleChange}
                     className={"placeholder:text-gray-400"}
