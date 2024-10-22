@@ -4,5 +4,4 @@ export const headers = [
   { header: "Location", field: "location" },
   { header: "Email", field: "email" },
   { header: "Telephone", field: "phone" },
-  { header: "Shipping code", field: "itemsCode" },
 ];

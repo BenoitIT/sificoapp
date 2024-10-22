@@ -26,19 +26,30 @@ model User {
   stuffingReportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
 
-  Invoice Invoice[]
+  Invoice     Invoice[]
+  Commissions Commissions[]
 }
 
 model deliverySite {
+  id                  Int                   @id @default(autoincrement())
+  country             String
+  locationName        String
+  user                User                  @relation(fields: [agent], references: [id])
+  agent               Int
+  createdAt           DateTime              @default(now())
+  consignee           consignee[]
+  siteCode            String
+  shippingInstruction shippingInstruction[]
+
+  stuffingreport stuffingreport[]
+}
+
+model deliveries {
   id             Int              @id @default(autoincrement())
   country        String
-  locationName   String
-  user           User             @relation(fields: [agent], references: [id])
-  agent          Int
-  stuffingreport stuffingreport[]
+  deliveryName   String
   createdAt      DateTime         @default(now())
-
-  consignee consignee[]
+  stuffingreport stuffingreport[]
 }
 
 model shipper {
@@ -54,7 +65,6 @@ model shipper {
 model consignee {
   id                  Int                   @id @default(autoincrement())
   name                String
-  itemsCode           String                @default("not mentioned")
   location            deliverySite          @relation(fields: [locationid], references: [id])
   locationid          Int
   email               String
@@ -64,17 +74,38 @@ model consignee {
   createdAt           DateTime              @default(now())
 }
 
+model shippingInstruction {
+  id                  Int                 @id @default(autoincrement())
+  prepared            Boolean             @default(false)
+  portOfdischarge     String
+  deliveryTerm        String
+  prepaidFreight      Int                 @default(0)
+  prepaidBlFee        Int                 @default(0)
+  finaldeliverId      Int
+  finaldelivery       deliverySite        @relation(fields: [finaldeliverId], references: [id])
+  totalamountinword   String
+  itemId              Int                 @unique
+  stuffingReportItems stuffingreportItems @relation(fields: [itemId], references: [id])
+  createdAt           DateTime            @default(now())
+  updatedAt           String              @default("")
+}
+
 model stuffingreport {
   id                  Int                   @id @default(autoincrement())
   code                String
   status              String
+  stuffingstatus      String                @default("preview")
   origin              String
-  deliverysite        deliverySite          @relation(fields: [destination], references: [id])
-  destination         Int
   shipperId           Int
+  delivery            deliveries            @relation(fields: [deliveryId], references: [id])
+  deliveryId          Int
   shipper             shipper               @relation(fields: [shipperId], references: [id])
   stuffingreportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
+  packagingType       String
+  blCode              String
+  deliverySite        deliverySite?         @relation(fields: [deliverySiteId], references: [id])
+  deliverySiteId      Int?
 }
 
 model stuffingreportItems {
@@ -98,12 +129,18 @@ model stuffingreportItems {
   freight          Int
   blFee            Int
   jb               Int
-  others           Int
+  inspection       Int
+  carHanging       Int
+  recovery         Int
+  insurance        Int
+  localCharges     Int
   invoiceNo        String         @unique
   totalUsd         Int
   totalAed         Int
   invoice          Invoice[]
   createdAt        DateTime       @default(now())
+
+  shippingInstruction shippingInstruction[]
 }
 
 model Invoice {
@@ -114,12 +151,34 @@ model Invoice {
   createdBy          User                @relation(fields: [staffid], references: [id])
   staffid            Int
   detailsId          String              @unique
+  paidInFull         Boolean             @default(false)
+  amountPaid         Int                 @default(0)
+  paidAt             String              @default("")
+  recievedBy         String              @default("")
+  paymentApproved    Boolean             @default(false)
+  releaseGenarated   Boolean             @default(false)
   createdAt          DateTime            @default(now())
 }
 
+model Commissions {
+  id             Int      @id @default(autoincrement())
+  agent          User     @relation(fields: [agentId], references: [id])
+  agentId        Int
+  handling       Float
+  rate           Int
+  totalAmount    Float
+  stuffingItemId Int
+  amountPaid     Int      @default(0)
+  paymentStatus  String   @default("unpaid")
+  paidAt         String   @default("")
+  paidBy         String   @default("")
+  createdAt      DateTime @default(now())
+}
+
 model CalculationDependancy {
-  id          Int   @id @default(autoincrement())
-  usd         Int   @default(1)
-  aed         Float @default(3.66)
-  freightRate Float @default(100)
+  id                  Int   @id @default(autoincrement())
+  usd                 Int   @default(1)
+  aed                 Float @default(3.66)
+  freightRate         Float @default(260)
+  freightRateFullCont Float @default(270)
 }

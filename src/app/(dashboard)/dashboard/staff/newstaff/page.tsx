@@ -23,6 +23,7 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useRouter } from "next/navigation";
 import { addNewUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const [newStaffPyaload, setStaffData] = useState<NewStaff>({});
@@ -80,13 +81,13 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const {message,status} = await addNewUser(newStaffPyaload);
-        if(status==201){
-        form.reset()
-        toast.success(message);
-        router.back();
-        }else{
-          toast.error(message)
+        const { message, status } = await addNewUser(newStaffPyaload);
+        if (status == 201) {
+          form.reset();
+          toast.success(message);
+          router.back();
+        } else {
+          toast.error(message);
         }
       } catch (err) {
         toast.error("Failed to add new staff");
@@ -154,10 +155,15 @@ const Page = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="operation manager">Operation Manager</SelectItem>
-                      <SelectItem value="origin agent">
-                      Origin agent
+                      <SelectItem value="operation manager">
+                        Operation Manager
                       </SelectItem>
+                      <SelectItem value="origin agent">Origin agent</SelectItem>
+                      <SelectItem value="finance">Finance</SelectItem>
+                      <SelectItem value="head of finance">
+                        Head of finance
+                      </SelectItem>
+                      <SelectItem value="sales agent">Sales agent</SelectItem>
                     </SelectContent>
                   </Select>
                   <span
@@ -252,4 +258,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["admin"]) as React.FC;

@@ -1,7 +1,7 @@
 import prisma from "../../../../prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import deliveryValidationSchema from "../validations/deliverySite";
-
+export const revalidate = 0;
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const validation = deliveryValidationSchema.safeParse(body);
@@ -18,7 +18,7 @@ export const POST = async (req: NextRequest) => {
     data: body,
   });
   return NextResponse.json({
-    message: "New delivery site is registred",
+    message: "New destination site is registred",
     data: deliverySite,
     status: 201,
   });
@@ -27,7 +27,7 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
-  const currentPage = Number(searchParams?.get("page"))||1;
+  const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.deliverySite.count({
@@ -76,6 +76,7 @@ export const GET = async (req: Request) => {
     id: site.id,
     country: site.country,
     locationName: site.locationName,
+    siteCode: site.siteCode,
     agent: `${site.user.firstName} ${site.user.lastName}`,
   }));
   return NextResponse.json({

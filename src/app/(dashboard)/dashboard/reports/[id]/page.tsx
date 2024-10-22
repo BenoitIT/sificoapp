@@ -19,6 +19,7 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { MdMoveDown } from "react-icons/md";
 import { useParams } from "next/navigation";
 import Back from "@/components/ui/back";
+import { withRolesAccess } from "@/components/auth/accessRights";
 
 const ReportPage = () => {
   const params = useParams();
@@ -80,9 +81,9 @@ const ReportPage = () => {
             icon={<GiTakeMyMoney className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
-            header="Customers"
-            amount={`${data?.customers}`}
-            perMonth="Involved"
+            header="Handling"
+            amount={`$ ${Intl.NumberFormat("en-Us").format(data?.customers)}`}
+            perMonth="Paid"
             icon={<MdMoveDown className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
@@ -111,4 +112,4 @@ const ReportPage = () => {
   }
 };
 
-export default ReportPage;
+export default withRolesAccess(ReportPage, ["origin agent", "admin"]) as React.FC;

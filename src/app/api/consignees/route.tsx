@@ -87,7 +87,6 @@ export const GET = async (req: Request) => {
       consignee.location.country + "-" + consignee.location.locationName,
     email: consignee.email ? consignee.email : "-",
     phone: consignee.phone,
-    itemsCode: consignee.itemsCode,
   }));
   const totalPages = Math.ceil(totalCount / pageSize);
   return NextResponse.json({

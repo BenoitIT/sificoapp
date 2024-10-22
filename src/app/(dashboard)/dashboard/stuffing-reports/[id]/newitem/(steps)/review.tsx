@@ -1,3 +1,4 @@
+import { mutate } from "swr";
 import { addStuffingReportsItems } from "@/app/httpservices/stuffingReport";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,23 +9,26 @@ import { toast } from "react-toastify";
 interface StepFormProps {
   newItemPayload: NewStuffingItem;
   setActiveForm: (val: number) => void;
+  currentTotals: any;
 }
 const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
   const params = useParams();
   const router = useRouter();
   const staffReportId = params?.id;
+  const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       delete newItemPayload.id;
-      const {message,status} = await addStuffingReportsItems(
+      const { message, status } = await addStuffingReportsItems(
         Number(staffReportId),
         newItemPayload
       );
-      if(status==201){
-      toast.success(message);
-      router.back();
-      }else{
+      if (status == 201) {
+        toast.success(message);
+        mutate(cacheKey);
+        router.back();
+      } else {
         toast.error(message);
       }
     } catch (err) {
@@ -163,11 +167,27 @@ const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
             </span>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="mark">
-              Other<span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="mark">Car hanging</Label>
             <span className="w-full flex-shrink text-sm text-gray-600">
-              {newItemPayload?.others}
+              {newItemPayload?.carHanging ?? "-"}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="mark">Recovery</Label>
+            <span className="w-full flex-shrink text-sm text-gray-600">
+              {newItemPayload?.recovery ?? "-"}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="mark">Insurance</Label>
+            <span className="w-full flex-shrink text-sm text-gray-600">
+              {newItemPayload?.insurance ?? "-"}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="mark">Local Charges</Label>
+            <span className="w-full flex-shrink text-sm text-gray-600">
+              {newItemPayload?.localCharges ?? "-"}
             </span>
           </div>
         </div>

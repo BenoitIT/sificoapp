@@ -124,6 +124,53 @@ const StepTwoForm = ({
               {errors?.description}
             </span>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="noOfPkgs">
+                JB<span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="jb"
+                name="jb"
+                placeholder="type.."
+                type="number"
+                value={newItemPayload?.jb}
+                onChange={handleChange}
+                className={
+                  errors?.jb
+                    ? "text-xs text-red-500 border-red-500"
+                    : "placeholder:text-gray-400"
+                }
+              />
+              <span className={errors?.jb ? "text-xs text-red-500" : "hidden"}>
+                {errors?.jb}
+              </span>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="freight">
+                Freight<span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="freight"
+                name="freight"
+                type="number"
+                placeholder="type.."
+                disabled
+                value={newItemPayload?.freight}
+                onChange={handleChange}
+                className={
+                  errors["freight"]
+                    ? "text-xs text-red-500 border-red-500"
+                    : "placeholder:text-gray-400"
+                }
+              />
+              <span
+                className={errors?.freight ? "text-xs text-red-500" : "hidden"}
+              >
+                {errors?.freight}
+              </span>
+            </div>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="line">Line</Label>
@@ -180,55 +227,7 @@ const StepTwoForm = ({
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="noOfPkgs">
-                JB<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="jb"
-                name="jb"
-                placeholder="type.."
-                type="number"
-                value={newItemPayload?.jb}
-                onChange={handleChange}
-                className={
-                  errors?.jb
-                    ? "text-xs text-red-500 border-red-500"
-                    : "placeholder:text-gray-400"
-                }
-              />
-              <span className={errors?.jb ? "text-xs text-red-500" : "hidden"}>
-                {errors?.jb}
-              </span>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="freight">
-                Freight<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="freight"
-                name="freight"
-                type="number"
-                placeholder="type.."
-                disabled
-                value={newItemPayload?.freight}
-                onChange={handleChange}
-                className={
-                  errors["freight"]
-                    ? "text-xs text-red-500 border-red-500"
-                    : "placeholder:text-gray-400"
-                }
-              />
-              <span
-                className={errors?.freight ? "text-xs text-red-500" : "hidden"}
-              >
-                {errors?.freight}
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="blFee">
                 BL Fee<span className="text-red-500">*</span>
@@ -253,25 +252,66 @@ const StepTwoForm = ({
               </span>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="mark">Other</Label>
+              <Label htmlFor="inspection">Inspection</Label>
               <Input
-                id="other"
-                name="others"
+                id="inspection"
+                name="inspection"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.others}
+                value={newItemPayload?.inspection}
                 onChange={handleChange}
-                className={
-                  errors?.others
-                    ? "text-xs text-red-500 border-red-500"
-                    : "placeholder:text-gray-400"
-                }
+                className={"placeholder:text-gray-400"}
               />
-              <span
-                className={errors?.others ? "text-xs text-red-500" : "hidden"}
-              >
-                {errors?.others}
-              </span>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="carHanging">Car hanging</Label>
+              <Input
+                id="carHanging"
+                name="carHanging"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.carHanging}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="recovery">Recovery</Label>
+              <Input
+                id="recovery"
+                name="recovery"
+                type="number"
+                placeholder="type.."
+                onChange={handleChange}
+                value={newItemPayload?.recovery}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="insurance">Insurance</Label>
+              <Input
+                id="insurance"
+                name="insurance"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.insurance}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="localCharges">Local charges</Label>
+              <Input
+                id="localCharges"
+                name="localCharges"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.localCharges}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
             </div>
           </div>
           <div className="flex justify-between gap-4">

@@ -62,7 +62,6 @@ export const PUT = async (req: Request) => {
         freight: freight,
         blFee: blFee,
         jb: jb,
-        others: others,
         totalUsd: totalUsd,
         totalAed: totalAed,
       },
@@ -79,6 +78,53 @@ export const PUT = async (req: Request) => {
     });
   } catch (err) {
     console.error(err);
+    return NextResponse.json({
+      status: 400,
+      message: "Something went wrong",
+    });
+  }
+};
+export const DELETE = async (req: Request) => {
+  try {
+    const stuffingRptItemId = req.url.split("detail/")[1];
+    const stuffingRptItems = await prisma.stuffingreportItems.findFirst({
+      where: {
+        id: Number(stuffingRptItemId),
+      },
+      include: {
+        invoice: true,
+        shippingInstruction: true,
+      },
+    });
+    if (stuffingRptItems?.invoice) {
+      await prisma.invoice.deleteMany({
+        where: {
+          detailsId: stuffingRptItemId,
+        },
+      });
+      await prisma.shippingInstruction.deleteMany({
+        where: {
+          itemId: Number(stuffingRptItemId),
+        },
+      });
+    }
+    const deletedItems = await prisma.stuffingreportItems.delete({
+      where: {
+        id: Number(stuffingRptItemId),
+      },
+    });
+    if (deletedItems) {
+      return NextResponse.json({
+        status: 200,
+        data: "The client's items are deleted from stuffing report.",
+      });
+    } else {
+      return NextResponse.json({
+        status: 400,
+        message: "Deletion failed",
+      });
+    }
+  } catch (err) {
     return NextResponse.json({
       status: 400,
       message: "Something went wrong",

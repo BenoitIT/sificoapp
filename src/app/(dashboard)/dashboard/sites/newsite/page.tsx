@@ -27,6 +27,7 @@ import { usersBaseEndpoint } from "@/app/httpservices/axios";
 import { NewStaff } from "@/interfaces/staff";
 import { createNewSite } from "@/app/httpservices/deliverySites";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -34,7 +35,7 @@ const Page = () => {
   const [errors, setValidationErrors] = useState<newSitesErrors>({});
   const { data: agents } = useSWR(usersBaseEndpoint, getAllAgents);
   useEffect(() => {
-    dispatch(setPageTitle("New delivery site"));
+    dispatch(setPageTitle("New destination site"));
   }, [dispatch]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: newSitesErrors) => ({
@@ -64,12 +65,15 @@ const Page = () => {
     const siteName = form.elements.namedItem(
       "locationName"
     ) as HTMLInputElement;
+    const siteCode = form.elements.namedItem("siteCode") as HTMLInputElement;
     if (country.value === "") {
       ErrorLogger("country", "Country is required.");
     } else if (siteName.value === "") {
       ErrorLogger("locationName", "Site location name is required.");
     } else if (!newSitePayload.agent) {
       ErrorLogger("agent", "Agent must be chosen.");
+    } else if ((siteCode.value = "")) {
+      ErrorLogger("siteCode", "destination Code is required.");
     } else {
       try {
         const { message, status } = await createNewSite(newSitePayload);
@@ -92,8 +96,8 @@ const Page = () => {
         <CardHeader>
           <CardTitle className="text-xl text-center">New site</CardTitle>
           <CardDescription className="text-center">
-            Enter a new site{"'"}s information with its monitoring agent. <br />{" "}
-            Note that all fields with
+            Enter a new site{"'"}s information with its operation manager.{" "}
+            <br /> Note that all fields with
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
             </span>
@@ -142,6 +146,22 @@ const Page = () => {
                 </span>
               </div>
               <div className="grid gap-2">
+                <Label htmlFor="siteCode">destination code</Label>
+                <Input
+                  id="siteCode"
+                  name="siteCode"
+                  placeholder="Ex:KGl"
+                  onChange={handleChange}
+                />
+                <span
+                  className={
+                    errors?.siteCode ? "text-xs text-red-500" : "hidden"
+                  }
+                >
+                  {errors?.siteCode}
+                </span>
+              </div>
+              <div className="grid gap-2">
                 <Select onValueChange={handleSelectRoleChange}>
                   <Label htmlFor="role" className="mb-2">
                     Operation manager <span className="text-red-500">*</span>
@@ -184,4 +204,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;

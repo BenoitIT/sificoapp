@@ -1,5 +1,5 @@
 "use client";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { FaEye } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Suspense, useEffect, useState } from "react";
@@ -7,7 +7,11 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { headers } from "@/app/tableHeaders/invoices";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Invoices from "@/components/dashboard/pages/invoices";
-import { getAllinvoices, invoiceEndpoint } from "@/app/httpservices/invoices";
+import {
+  getAllinvoices,
+  invoiceEndpoint,
+  updateInvoice,
+} from "@/app/httpservices/invoices";
 import { invoice } from "@/interfaces/invoice";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
@@ -15,14 +19,21 @@ import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import usePagination from "@/app/utilities/usePagination";
+import { withRolesAccess } from "@/components/auth/accessRights";
+import { MdLibraryAddCheck } from "react-icons/md";
+import { IoMdDoneAll } from "react-icons/io";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 const Page = () => {
   const dispatch = useDispatch();
+  const session: any = useSession();
   const currentPath = usePathname();
   const router = useRouter();
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
+  const role = session?.data?.role;
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
   const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
@@ -59,7 +70,46 @@ const Page = () => {
   const handleOpenInvoice = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
   };
-  const actions = [{ icon: <FaEye />, Click: handleOpenInvoice, name: "view" }];
+  const handleApprovePayment = async (id: number) => {
+    try {
+      const response = await updateInvoice(id);
+      if (response.status == 200) {
+        toast.success(response.message);
+        mutate(invoiceEndpoint);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to approve this payment");
+    }
+  };
+  const handleOpenRealiseLetter = async (id: number | string) => {
+    router.push(`${currentPath}/releaseletter/${id}`);
+  };
+  const actions = [
+    { icon: <FaEye />, Click: handleOpenInvoice, name: "view" },
+    {
+      icon: (
+        <MdLibraryAddCheck
+          className={
+            role == "head of finance" ? "text-blue-900 text-base" : "hidden"
+          }
+        />
+      ),
+      Click: handleApprovePayment,
+      name: "Approve payment",
+    },
+    {
+      icon: (
+        <IoMdDoneAll
+          className={role == "head of finance" ? "text-blue-900" : "hidden"}
+        />
+      ),
+      Click: handleOpenRealiseLetter,
+      name: "View release letter",
+    },
+  ];
   if (data?.invoices) {
     return (
       <div className="w-full">
@@ -67,7 +117,7 @@ const Page = () => {
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={data?.count||1}
+            totalPages={data?.count || 1}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}
@@ -90,4 +140,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default SuspensePage;
+export default withRolesAccess(SuspensePage, ["finance", "admin","head of finance"]) as React.FC;

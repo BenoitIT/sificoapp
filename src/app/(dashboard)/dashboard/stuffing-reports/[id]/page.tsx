@@ -1,5 +1,5 @@
 "use client";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import StaffingReportsItems from "@/components/dashboard/pages/reportItems";
 import { headers } from "@/app/tableHeaders/staffingItems";
@@ -9,13 +9,13 @@ import {
   useParams,
   useSearchParams,
 } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
 import {
-  getStuffingReport,
+  deleteStuffingReportsItemsDetail,
+  generateStuffingReport,
   getStuffingReportsItems,
-  stuffingReportEndpoint,
 } from "@/app/httpservices/stuffingReport";
 import {
   NewStuffingItem,
@@ -27,6 +27,8 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import exportDataInExcel from "@/app/utilities/exportdata";
+import { Button } from "@/components/ui/button";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
@@ -35,13 +37,14 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const staffReportId = params?.id;
   const session: any = useSession();
-  const role = session?.data?.role;
+  const UserRole = session?.data?.role;
+  const [generateReprt, setGenerateReport] = useState<boolean>(false);
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
-  const { data: stuffingreport } = useSWR(stuffingReportEndpoint, () =>
-    getStuffingReport(Number(staffReportId))
-  );
   const { data, isLoading, error } = useSWR(
-    cacheKey,
+    [cacheKey, reload],
     () => getStuffingReportsItems(Number(staffReportId)),
     {
       onSuccess: (data: {
@@ -51,54 +54,126 @@ const Page = () => {
       }) => data.shipments.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
-
   useEffect(() => {
-    dispatch(setPageTitle("Stuffing report"));
+    dispatch(setPageTitle("Stuffing report preview"));
   }, [dispatch]);
   useEffect(() => {
     if (searchParams?.get("export") && Array.isArray(data?.shipments)) {
       exportDataInExcel(data?.shipments, headers, `${data?.stuffingRpt?.code}`);
       router.back();
     }
-  }, [searchParams,data?.shipments,router,data?.stuffingRpt?.code]);
+  }, [searchParams, data?.shipments, router, data?.stuffingRpt?.code]);
   const handleEdit = async (id: number | string) => {
-    if (stuffingreport?.status != "closed") {
+    if (data?.status != "closed") {
       router.push(`${currentPath}/edit/${id}`);
     } else {
       toast.error("This stuffing report is closed");
     }
   };
-  const handleDelete = async (id: number | string) => {
-    if (stuffingreport?.status != "closed") {
-      router.push(`${currentPath}/edit/${id}`);
+  const handleDelete = async (id: number) => {
+    if (data?.status != "closed") {
+      const response = await deleteStuffingReportsItemsDetail(
+        Number(staffReportId),
+        id
+      );
+      if (response.status == 200) {
+        toast.success(response.message);
+        mutate(cacheKey)
+      } else {
+        toast.error(response.message);
+      }
     } else {
-      toast.error("This stuffing report is closed");
+      toast.error("Could not delete this product.");
     }
   };
   const handleOpenStaffingReport = async (id: number | string) => {
-    router.push(`${currentPath}/invoice/${id}`);
+    router.push(`${currentPath}/shippinginstruction/${id}`);
+  };
+  const generateStuffingReprt = async () => {
+    setLoading(true);
+    try {
+      const { message, status } = await generateStuffingReport(
+        Number(staffReportId)
+      );
+      if (status == 200) {
+        toast.success(message);
+        setReload(!reload);
+        mutate(cacheKey);
+      } else {
+        toast.error(message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
   };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
     {
-      icon: <FaEdit className={role == "operation manager" ? "hidden" : ""} />,
+      icon: <FaEdit className={role !== "origin agent" ? "hidden" : ""} />,
       Click: handleEdit,
     },
     {
-      icon: <FaTrash className={role == "operation manager" ? "hidden" : ""} />,
+      icon: <FaTrash className={role !== "origin agent" ? "hidden" : ""} />,
       Click: handleDelete,
       name: "delete",
     },
   ];
-  if (data?.shipments) {
+  useEffect(() => {
+    const allShippingInstructionAvailable =
+      Array.isArray(data?.shipments) &&
+      data.shipments.every(
+        (shipment: NewStuffingItem) => shipment?.instructionPrepared == true
+      );
+    setGenerateReport(allShippingInstructionAvailable);
+  }, [data?.shipments]);
+  useEffect(() => {
+    setRole(UserRole);
+  }, [UserRole]);
+  if (data?.shipments && data?.stuffingRpt?.stuffingstatus == "preview") {
     return (
-      <StaffingReportsItems
-        headers={headers}
-        data={data?.shipments}
-        action={actions}
-        allowItemsSummationFooter={true}
-        summation={data?.totals}
-      />
+      <div className="w-full overflow-scroll">
+        <StaffingReportsItems
+          headers={headers}
+          data={data?.shipments}
+          action={actions}
+          allowItemsSummationFooter={true}
+          summation={data?.totals}
+          stuffingRprt={true}
+        />
+        <div
+          className={
+            generateReprt &&
+            data?.shipments?.length > 0 &&
+            role == "origin agent"
+              ? "mt-8"
+              : "hidden"
+          }
+        >
+          <Button
+            variant="secondary"
+            onClick={generateStuffingReprt}
+            disabled={loading}
+            className="disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            Generate stuffing report
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  if (data?.shipments && data?.stuffingRpt?.stuffingstatus !== "preview") {
+    return (
+      <div className="w-full overflow-scroll">
+        <StaffingReportsItems
+          headers={headers}
+          data={data?.shipments}
+          allowItemsSummationFooter={true}
+          summation={data?.totals}
+          stuffingRprt={true}
+          preparedRprt={true}
+        />
+      </div>
     );
   }
   if (isLoading) {
@@ -108,4 +183,4 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]);

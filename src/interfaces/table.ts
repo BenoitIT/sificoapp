@@ -4,6 +4,7 @@ export interface TableProps<T> {
     headers: {
       header: string;
       field: string;
+      hidden?:boolean
     }[];
     data: T[];
     action?: {
@@ -13,4 +14,6 @@ export interface TableProps<T> {
     }[];
     allowItemsSummationFooter?:boolean;
     summation?:StuffingReportTotals;
+    stuffingRprt?:boolean;
+    preparedRprt?:boolean;
   }

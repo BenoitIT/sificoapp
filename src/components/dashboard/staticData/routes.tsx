@@ -6,6 +6,11 @@ import { TbReport, TbUsersGroup } from "react-icons/tb";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdMoveDown } from "react-icons/md";
 import { BsCashCoin } from "react-icons/bs";
+import { MdOutlineIntegrationInstructions } from "react-icons/md";
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { GiPayMoney } from "react-icons/gi";
+import { SiPayoneer } from "react-icons/si";
+import { GiStorkDelivery } from "react-icons/gi";
 
 export const menuItems = [
   {
@@ -15,7 +20,7 @@ export const menuItems = [
         icon: <LuLayoutDashboard />,
         label: "Dashboard",
         href: "/dashboard",
-        visible: ["admin", "origin agent"],
+        visible: ["admin", "origin agent","finance","head of finance"],
       },
       {
         icon: <LuLayoutDashboard />,
@@ -36,6 +41,18 @@ export const menuItems = [
         visible: ["operation manager"],
       },
       {
+        icon: <MdOutlineIntegrationInstructions />,
+        label: "Shipping instructions",
+        href: "/opmanager/shipping-instructions",
+        visible: ["operation manager"],
+      },
+      {
+        icon: <MdOutlineIntegrationInstructions />,
+        label: "Shipping instructions",
+        href: "/dashboard/shipping-instructions",
+        visible: ["admin", "origin agent"],
+      },
+      {
         icon: <TbUsersGroup />,
         label: "Staff",
         href: "/dashboard/staff",
@@ -43,8 +60,14 @@ export const menuItems = [
       },
       {
         icon: <LiaSitemapSolid />,
-        label: "Delivery sites",
+        label: "Destination sites",
         href: "/dashboard/sites",
+        visible: ["admin", "origin agent"],
+      },
+      {
+        icon: <GiStorkDelivery />,
+        label: "Deliveries",
+        href: "/dashboard/deliveries",
         visible: ["admin", "origin agent"],
       },
       {
@@ -63,7 +86,7 @@ export const menuItems = [
         icon: <BsCashCoin />,
         label: "Invoices",
         href: "/dashboard/invoices",
-        visible: ["admin"],
+        visible: ["admin", "finance","head of finance"],
       },
       {
         icon: <BsCashCoin />,
@@ -72,8 +95,26 @@ export const menuItems = [
         visible: ["operation manager"],
       },
       {
+        icon: <SiPayoneer />,
+        label: "Containers payments",
+        href: "/dashboard/containerspayment",
+        visible: ["admin", "finance","head of finance"],
+      },
+      {
+        icon: <GiPayMoney />,
+        label: "commissions",
+        href: "/dashboard/commissions",
+        visible: ["admin", "finance","head of finance"],
+      },
+      {
+        icon: <HiOutlineDocumentReport />,
+        label: "Financial report",
+        href: "/dashboard/finance",
+        visible: ["admin", "finance","head of finance"],
+      },
+      {
         icon: <TbReport />,
-        label: "Shipping report",
+        label: "Performance report",
         href: "/dashboard/reports",
         visible: ["admin", "origin agent"],
       },
@@ -86,13 +127,13 @@ export const menuItems = [
         icon: <FaRegCircleUser />,
         label: "Profile",
         href: "/dashboard/profile",
-        visible: ["admin", "origin agent", "operation manager"],
+        visible: ["admin", "origin agent", "operation manager","finance","head of finance"],
       },
       {
         icon: <GearIcon />,
         label: "Settings",
         href: "/dashboard/settings",
-        visible: ["admin"],
+        visible: ["admin", "origin agent"],
       },
     ],
   },

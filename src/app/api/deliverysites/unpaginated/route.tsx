@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
+export const revalidate = 0;
 export const GET = async () => {
   const consignees = await prisma.deliverySite.findMany({});
   return NextResponse.json({

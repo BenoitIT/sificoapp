@@ -26,6 +26,7 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useParams, useRouter } from "next/navigation";
 import { updateUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const params: any = useParams();
@@ -286,4 +287,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["admin"]) as React.FC;

@@ -28,7 +28,7 @@ export const SearchBox = () => {
       <Input
         type="search"
         placeholder="Search..."
-        value={search}
+        value={search ?? ""}
         className="w-full border-0 h-6 font-normal placeholder:font-normal text-black"
         onChange={handleChange}
       />

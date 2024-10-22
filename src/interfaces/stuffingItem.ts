@@ -2,12 +2,13 @@ export interface NewStuffingItem {
   id?: number;
   shipper?: number;
   consignee?: number;
-  customername?:string;
+  customername?: string;
+  destination?: number;
   code?: string;
   mark?: string;
   salesAgent?: number;
-  agentname?:string;
-  salesAgentId?:number;
+  agentname?: string;
+  salesAgentId?: number;
   noOfPkgs?: number;
   typeOfPkg?: string;
   weight?: number;
@@ -19,10 +20,17 @@ export interface NewStuffingItem {
   freight?: number;
   blFee?: number;
   jb?: number;
-  others?: number;
-  invoiceNo?:string;
-  shipperId?:number;
-  consigneeId?:number;
+  inspection?: number;
+  carHanging?: number;
+  recovery?: number;
+  insurance?: number;
+  localCharges?: number;
+  invoiceNo?: string;
+  shipperId?: number;
+  consigneeId?: number;
+  totalUsd?:number;
+  instructionPrepared?: boolean;
+  invoiceInfo?:any[]
 }
 export interface NewStuffingItemErrors {
   shipper?: string | null;
@@ -32,16 +40,16 @@ export interface NewStuffingItemErrors {
   salesAgent?: string | null;
   noOfPkgs?: number;
   typeOfPkg?: string | null;
-  weight?: number;
-  line?: number;
-  handling?: number;
+  weight?: string | null;
+  line?: string | null;
+  destination?: string | null;
+  handling?: string | null;
   type?: string | null;
   cbm?: string | null;
   description?: string | null;
   freight?: string | null;
   blFee?: string | null;
   jb?: string | null;
-  others?: string | null;
 }
 
 export interface StepFormProps {
@@ -64,12 +72,16 @@ export interface StuffingReportTotals {
   noOfPkgs: number;
   weight: number;
   cbm: number;
-  line:number;
-  handling:number;
+  line: number;
+  handling: number;
   freight: number;
   blFee: number;
   jb: number;
-  others: number;
+  inspection: number;
+  insurance: number;
+  carLashing: number;
+  recovery: number;
+  carHanging:number;
   totalUsd: number;
   totalAed: number;
 }

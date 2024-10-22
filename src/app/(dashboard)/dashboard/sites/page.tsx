@@ -20,6 +20,7 @@ import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import usePagination from "@/app/utilities/usePagination";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const dispatch = useDispatch();
   const currentpath: string = usePathname()!;
@@ -27,7 +28,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading, error } = useSWR(
@@ -41,7 +42,7 @@ const Page = () => {
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.customers, currentPage);
   useEffect(() => {
-    dispatch(setPageTitle("Delivery sites"));
+    dispatch(setPageTitle("Destination sites"));
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -81,7 +82,7 @@ const Page = () => {
         <div className="flex justify-end w-full mt-2">
           <Paginator
             activePage={currentPage}
-            totalPages={data?.count||1}
+            totalPages={data?.count || 1}
             onPageChange={handlePageChange}
             onPreviousPageChange={handlePreviousPage}
             onNextPageChange={handleNextPage}
@@ -104,4 +105,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default SuspensePage;
+export default withRolesAccess(SuspensePage, ["origin agent", "admin"]) as React.FC;

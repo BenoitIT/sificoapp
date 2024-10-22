@@ -14,3 +14,7 @@ export const getInvoice = async (id: number) => {
   const response = await sifcoApi.get(invoiceEndpoint + "/" + id);
   return response.data.data;
 };
+export const updateInvoice = async (id: number) => {
+  const response = await sifcoApi.put(invoiceEndpoint + "/" + id);
+  return {message:response.data.message,status:response.data.status};
+};

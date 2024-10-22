@@ -19,6 +19,7 @@ import { TbUsersGroup } from "react-icons/tb";
 import { MdMoveDown } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import Back from "@/components/ui/back";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const ReportPage = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -55,7 +56,7 @@ const ReportPage = () => {
     return (
       <div className="p-4 flex gap-4 flex-col m-auto justify-center">
         <div className="w-full flex justify-between">
-          <Back/>
+          <Back />
           <DatePickerWithRange date={date} setDate={setDate} />
         </div>
         <div className="bg-white rounded shadow-sm flex justify-center w-full py-6">
@@ -97,9 +98,11 @@ const ReportPage = () => {
             icon={<GiTakeMyMoney className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
-            header="Customers"
-            amount={`${data?.customers?.numberOfCustomers}`}
-            perMonth="Involved"
+            header="Total Commission"
+            amount={`${Intl.NumberFormat("en-Us").format(
+              data?.customers?.totalPaidCommission
+            )}`}
+            perMonth="Paid"
             icon={<MdMoveDown className="flex my-auto text-lg" />}
           />
         </div>
@@ -129,4 +132,4 @@ const ReportPage = () => {
   }
 };
 
-export default ReportPage;
+export default withRolesAccess(ReportPage, ["origin agent", "admin"]) as React.FC;

@@ -19,16 +19,17 @@ export const POST = async (req: NextRequest) => {
   });
   const prevId = previousstuffingReport?.id ?? 0;
   const stuffingReportID =
-    "SIF" +
-    `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}` +
-    body.origin[0].toUpperCase() +
-    body.origin[1].toUpperCase() +
+    `${body.origin[0].toUpperCase()}${body.origin[1].toUpperCase()}${date.getDate()}${
+      date.getMonth() + 1
+    }${date.getFullYear()}` +
     prevId +
     1;
+  const blCode = `BLC${date.getFullYear()}` + prevId + 1;
   const status = "Available";
   body.code = stuffingReportID;
   body.status = status;
   body.shipperId = body.shipper;
+  body.blCode = blCode;
   delete body.shipper;
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({
@@ -40,80 +41,41 @@ export const POST = async (req: NextRequest) => {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
-  const currentPage = Number(searchParams?.get("page"))||1;
+  const filteredValue = searchParams.get("filter") || "preview";
+  const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.stuffingreport.count({
-    where: searchValue
-      ? {
-          OR: [
-            { code: { contains: searchValue, mode: "insensitive" } },
-            { status: { contains: searchValue, mode: "insensitive" } },
-            { origin: { contains: searchValue, mode: "insensitive" } },
-            {
-              deliverysite: {
-                OR: [
-                  { country: { contains: searchValue, mode: "insensitive" } },
-                  {
-                    locationName: {
-                      contains: searchValue,
-                      mode: "insensitive",
-                    },
-                  },
-                  {
-                    user: {
-                      firstName: { contains: searchValue, mode: "insensitive" },
-                      lastName: { contains: searchValue, mode: "insensitive" },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        }
-      : {},
+    where: {
+      stuffingstatus: filteredValue,
+      ...(searchValue && {
+        OR: [
+          { code: { contains: searchValue, mode: "insensitive" } },
+          { status: { contains: searchValue, mode: "insensitive" } },
+          { origin: { contains: searchValue, mode: "insensitive" } },
+        ],
+      }),
+    },
   });
   const stuffingReports = await prisma.stuffingreport.findMany({
-    where: searchValue
-      ? {
-          OR: [
-            { code: { contains: searchValue, mode: "insensitive" } },
-            { status: { contains: searchValue, mode: "insensitive" } },
-            { origin: { contains: searchValue, mode: "insensitive" } },
-            {
-              deliverysite: {
-                OR: [
-                  { country: { contains: searchValue, mode: "insensitive" } },
-                  {
-                    locationName: {
-                      contains: searchValue,
-                      mode: "insensitive",
-                    },
-                  },
-                  {
-                    user: {
-                      firstName: { contains: searchValue, mode: "insensitive" },
-                      lastName: { contains: searchValue, mode: "insensitive" },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        }
-      : {},
+    where: {
+      stuffingstatus: filteredValue,
+      ...(searchValue && {
+        OR: [
+          { code: { contains: searchValue, mode: "insensitive" } },
+          { status: { contains: searchValue, mode: "insensitive" } },
+          { origin: { contains: searchValue, mode: "insensitive" } },
+        ],
+      }),
+    },
     include: {
-      deliverysite: {
-        include: {
-          user: true,
-        },
-      },
+      delivery: true,
     },
     take: pageSize,
     skip: offset,
-    orderBy:{
-      id:"desc"
-    }
+    orderBy: {
+      id: "desc",
+    },
   });
   const totalPages = Math.ceil(itemCount / pageSize);
   const processedData = stuffingReports.map((record) => {
@@ -123,9 +85,9 @@ export const GET = async (req: Request) => {
       code: record.code,
       status: record.status,
       origin: record.origin,
-      operatorId: record.deliverysite.user.id,
+      stureportstatus: record.stuffingstatus,
       destination:
-        record.deliverysite.country + "," + record.deliverysite.locationName,
+        record.delivery.deliveryName,
     };
   });
   return NextResponse.json({

@@ -2,9 +2,14 @@ import { NewStuffingItem } from "@/interfaces/stuffingItem";
 import { sifcoApi } from "./axios";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 export const stuffingReportEndpoint = "/stuffingreports";
-export const getAllStuffingReports = async (searchValues: string,currentPage:number) => {
+export const getAllStuffingReports = async (
+  searchValues: string,
+  FilterValue: string,
+  currentPage: number
+) => {
   const response = await sifcoApi.get(
-    stuffingReportEndpoint + `?search=${searchValues}&page=${currentPage}`
+    stuffingReportEndpoint +
+      `?search=${searchValues}&page=${currentPage}&filter=${FilterValue}`
   );
   return response.data.data;
 };
@@ -14,7 +19,7 @@ export const createStuffingReports = async (data: StuffingReport) => {
 };
 export const deleteStuffingReports = async (id: number) => {
   const response = await sifcoApi.delete(stuffingReportEndpoint + `/${id}`);
-  return response.data.message;
+  return { message: response.data.message, status: response.data.status };
 };
 export const getStuffingReportsItems = async (id: number) => {
   const response = await sifcoApi.get(stuffingReportEndpoint + `/${id}`);
@@ -29,6 +34,12 @@ export const updateStuffingReport = async (
   data: StuffingReport
 ) => {
   const response = await sifcoApi.put(stuffingReportEndpoint + `/${id}`, data);
+  return { message: response.data.message, status: response.data.status };
+};
+export const generateStuffingReport = async (id: number) => {
+  const response = await sifcoApi.put(
+    stuffingReportEndpoint + `/${id}/generate/${id}`
+  );
   return { message: response.data.message, status: response.data.status };
 };
 export const getStuffingReportsItemsDetail = async (
@@ -48,6 +59,15 @@ export const updateStuffingReportsItemsDetail = async (
   const response = await sifcoApi.put(
     stuffingReportEndpoint + `/${id}/detail/${itmId}`,
     data
+  );
+  return { message: response.data.message, status: response.data.status };
+};
+export const deleteStuffingReportsItemsDetail = async (
+  id: number,
+  itmId: number,
+) => {
+  const response = await sifcoApi.delete(
+    stuffingReportEndpoint + `/${id}/detail/${itmId}`
   );
   return { message: response.data.message, status: response.data.status };
 };
@@ -78,4 +98,15 @@ export const generateInvoice = async (
     data
   );
   return response.data.message;
+};
+export const PayInvoice = async (
+  Itemsid: number,
+  invoiceId: number,
+  data: { amountPaid: number; recievedBy: string }
+) => {
+  const response = await sifcoApi.put(
+    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
+    data
+  );
+  return { message: response.data.message, status: response.data.status };
 };

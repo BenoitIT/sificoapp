@@ -16,13 +16,16 @@ import {
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 
 const Page = () => {
   const [editAEDValue, setEditAEDValue] = useState(false);
   const [editrate, setEditRate] = useState(false);
+  const [editrate2, setEditRate2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [aed, setAed] = useState<number>();
   const [rate, setRate] = useState<number>();
+  const [rate2, setRate2] = useState<number>();
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
@@ -33,8 +36,9 @@ const Page = () => {
   }, [dispatch]);
   useEffect(() => {
     if (data) {
-      setAed(data?.aed);
-      setRate(data?.freightRate);
+      setAed(data?.aed || 1);
+      setRate(data?.freightRate || 1);
+      setRate2(data?.freightRateFullCont || 1);
     }
   }, [data]);
   const handleUpdateInfo = async () => {
@@ -42,6 +46,7 @@ const Page = () => {
     const payload = {
       aed: aed ?? data?.aed,
       freightRate: rate ?? data?.freightRate,
+      freightRateFullCont: rate2 ?? data?.freightRateFullCont,
     };
     try {
       const { message, status } = await updateDepndancies(payload);
@@ -121,7 +126,7 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div className="h-full w-full md:h-[100px] md:w-[750px] bg-white rounded-xl shadow py-2">
+        <div className="h-full w-full md:h-[150px] md:w-[750px] bg-white rounded-xl shadow py-2">
           <div
             className={
               "w-full text-gray-600 mx-4 md:mx-8 flex flex-col text-sm"
@@ -130,8 +135,8 @@ const Page = () => {
             <p className="font-semibold py-4 uppercase">Shipping rate</p>
             <div className="flex relative gap-2 flex-shrink">
               <p>
-                Rate{" "}
-                <span className="text-gray-900 font-semibold">
+                Rate (Groupage)
+                <span className="text-gray-900 font-semibold ml-2">
                   {data?.freightRate}
                 </span>
               </p>
@@ -148,7 +153,7 @@ const Page = () => {
               <div
                 className={
                   editrate
-                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2"
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 -top-1"
                     : "hidden"
                 }
               >
@@ -174,6 +179,53 @@ const Page = () => {
                 </Button>
               </div>
             </div>
+
+            <div className="flex relative gap-2 flex-shrink mp mt-4">
+              <p>
+                Rate (Full container)
+                <span className="text-gray-900 font-semibold ml-2">
+                  {data?.freightRateFullCont}
+                </span>
+              </p>
+              <span
+                className={
+                  editrate2
+                    ? "hidden"
+                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
+                }
+                onClick={() => setEditRate2(true)}
+              >
+                <LuPencilLine />
+              </span>
+              <div
+                className={
+                  editrate2
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 top-4"
+                    : "hidden"
+                }
+              >
+                <Input
+                  type="number"
+                  placeholder="Enter rate"
+                  onChange={(e) => setRate2(Number(e.target.value))}
+                  value={rate2}
+                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
+                />
+                <Button onClick={handleUpdateInfo} disabled={loading}>
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => {
+                    setEditRate2(false);
+                    setRate(data?.freightRate);
+                  }}
+                >
+                  <RxCross2 />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -186,4 +238,4 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;
