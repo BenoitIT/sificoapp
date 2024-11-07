@@ -17,6 +17,7 @@ import { updateShipper,getShipper,shippersEndpoint } from "@/app/httpservices/sh
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const dispatch=useDispatch();
@@ -177,4 +178,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;

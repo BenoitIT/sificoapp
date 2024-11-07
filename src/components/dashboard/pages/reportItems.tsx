@@ -24,16 +24,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { StuffingReport } from "@/interfaces/stuffingreport";
-import { NewSite } from "@/interfaces/sites";
-import {
-  deliverySitesEndpoint,
-  getAllsitesUnpaginated,
-} from "@/app/httpservices/deliverySites";
 import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
 import ExportButton from "@/components/ui/exportBtn";
+import { RadioGroup } from "@radix-ui/react-radio-group";
+import { RadioGroupItem } from "@/components/ui/radio-group";
+import { NewDelivery } from "@/interfaces/deliveries";
+import {
+  deliveryEndpoint,
+  getAllDeliveriesUnpaginated,
+} from "@/app/httpservices/deliveries";
 const StaffingReportsItems = () => {
   const router = useRouter();
   const params = useParams();
@@ -49,13 +51,19 @@ const StaffingReportsItems = () => {
   const { data: stuffingreport } = useSWR(stuffingReportEndpoint, () =>
     getStuffingReport(Number(staffReportId))
   );
-  const { data: destinations } = useSWR(deliverySitesEndpoint, getAllsitesUnpaginated, {
-    onSuccess: (data: NewSite[]) =>
-      data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-  });
+  const { data: deliveries } = useSWR(
+    deliveryEndpoint,
+    getAllDeliveriesUnpaginated,
+    {
+      onSuccess: (data: NewDelivery[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   const currentPath: string | null = usePathname();
   const handleAddNew = () => {
-    router.push(`${currentPath}/newitem`);
+    router.push(
+      `${currentPath}/newitem?category=${data?.stuffingRpt?.packagingType}`
+    );
   };
   useEffect(() => {
     setPayload(stuffingreport);
@@ -74,6 +82,9 @@ const StaffingReportsItems = () => {
     }));
     ErrorLogger(e.target.name, "");
   };
+  const handlePkGingTypeChange = (value: string) => {
+    setPayload({ ...payload, packagingType: value });
+  };
   const handleSelectChange = (value: string) => {
     setPayload({ ...payload, destination: Number(value) });
     delete validationErrors.destination;
@@ -91,6 +102,7 @@ const StaffingReportsItems = () => {
       try {
         delete payload.id;
         delete payload.code;
+        delete payload.destination;
         const { message, status } = await updateStuffingReport(
           Number(staffReportId),
           payload
@@ -102,17 +114,29 @@ const StaffingReportsItems = () => {
           toast.error(message);
         }
       } catch (err) {
-        toast.error("Failed to create new stuffing report");
+        console.error(err);
+        toast.error("Failed to update stuffing report");
       }
     }
   };
   return (
     <div>
       <div className="w-full flex justify-between mb-4 flex-col gap-2 md:flex-row">
-        <div className=" w-full md:w-[400px] flex flex-col text-[14px] bg-white px-4 py-2 rounded shadow gap-1">
+        <div className=" w-full md:w-[400px] flex flex-col text-[14px] bg-white px-4 h-fit py-4 rounded shadow gap-1">
           <p className=" text-gray-600">
-            Stuffing report ID:{" "}
+            Container number:{" "}
             <span className="font-medium"> {data?.stuffingRpt?.code}</span>
+          </p>
+          <p className=" text-gray-600">
+            BL Number:
+            <span className="font-medium"> {data?.stuffingRpt?.blCode}</span>
+          </p>
+          <p className=" text-gray-600">
+            Packaging type:
+            <span className="font-medium">
+              {" "}
+              {data?.stuffingRpt?.packagingType}
+            </span>
           </p>
           <p className=" text-gray-600">
             Container status:
@@ -128,16 +152,20 @@ const StaffingReportsItems = () => {
             </span>
           </p>
           <p className=" text-gray-600">
-            Delivery destination:
-            <span className="font-medium">
+            Stuffing report status:
+            <span className={"text-[#189bcc] capitalize"}>
               {" "}
-              {data?.stuffingRpt?.deliverysite?.country +
-                "," +
-                data?.stuffingRpt?.deliverysite?.locationName}
+              {data?.stuffingRpt?.stuffingstatus?.toLowerCase()}
             </span>
           </p>
         </div>
-        <div className="w-full md:w-[400px] flex flex-col-reverse gap-2">
+        <div
+          className={
+            data?.stuffingRpt?.stuffingstatus?.toLowerCase() == "preview"
+              ? "w-full md:w-[400px] flex flex-col-reverse gap-2"
+              : "hidden"
+          }
+        >
           <div className="flex justify-end">
             <SearchBox />
           </div>
@@ -171,7 +199,7 @@ const StaffingReportsItems = () => {
                             type="text"
                             placeholder={data?.stuffingRpt?.origin}
                             name="origin"
-                            value={payload?.origin}
+                            value={payload?.origin || data?.stuffingRpt?.origin}
                             onChange={handleChange}
                             className={
                               validationErrors.origin
@@ -190,33 +218,6 @@ const StaffingReportsItems = () => {
                           </span>
                         </div>
                         <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
-                          <Label>Delivery Destination</Label>
-                          <Select onValueChange={handleSelectChange}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue
-                                placeholder={
-                                  data?.stuffingRpt?.deliverysite?.country +
-                                  "," +
-                                  data?.stuffingRpt?.deliverysite?.locationName
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {destinations &&
-                                destinations?.map((location: NewSite) => (
-                                  <SelectItem
-                                    key={location.id!}
-                                    value={location.id!.toString()}
-                                  >
-                                    {location.country +
-                                      "," +
-                                      location.locationName}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
                           <Label>Container status</Label>
                           <Select onValueChange={handleSelectStatusChange}>
                             <SelectTrigger className="w-full">
@@ -233,6 +234,44 @@ const StaffingReportsItems = () => {
                             </SelectContent>
                           </Select>
                         </div>
+                        <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                          <Label>Delivery</Label>
+                          <Select onValueChange={handleSelectChange}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {deliveries &&
+                                deliveries?.map((location: NewDelivery) => (
+                                  <SelectItem
+                                    key={location.id!}
+                                    value={location.id!.toString()}
+                                  >
+                                    {location.country +
+                                      "," +
+                                      location.deliveryName}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-2 text-sm">
+                          <Label>Packaging type</Label>
+                          <RadioGroup
+                            defaultValue={data?.stuffingRpt?.packagingType}
+                            name="LCL"
+                            onValueChange={handlePkGingTypeChange}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="LCL" id="r1" />
+                              <Label htmlFor="r1">Groupage (LCL)</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="FCL" id="r2" />
+                              <Label htmlFor="r2">Full Container (FCL)</Label>
+                            </div>
+                          </RadioGroup>
+                        </div>
                       </div>
                       <div className="w-full flex justify-between">
                         <Button>save</Button>
@@ -242,7 +281,7 @@ const StaffingReportsItems = () => {
                 </PopoverContent>
               </Popover>
               <Button onClick={handleAddNew}>Add new item</Button>
-              <ExportButton/>
+              <ExportButton />
             </div>
           </div>
         </div>

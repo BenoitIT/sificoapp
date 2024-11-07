@@ -20,6 +20,7 @@ import useDebounce from "@/app/utilities/debouce";
 import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -29,14 +30,23 @@ const Page = () => {
   const role = session?.data?.role;
   const userId = session?.data?.id;
   const searchValue = searchParams?.get("search") || "";
+  const FilterValue = searchParams?.get("filter") || "";
+  const addData = searchParams?.get("added") || "";
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
-  const [reload,setReload]=useState(false);
+  const [reload, setReload] = useState(false);
   const { data, isLoading, error } = useSWR(
-    [stuffingReportEndpoint, searchValues, currentPage,reload],
-    () => getAllStuffingReports(searchValues, currentPage)
+    [
+      stuffingReportEndpoint,
+      searchValues,
+      currentPage,
+      reload,
+      addData,
+      FilterValue,
+    ],
+    () => getAllStuffingReports(searchValues, FilterValue, currentPage)
   );
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
@@ -52,10 +62,14 @@ const Page = () => {
     }
   }, [activePage]);
   const handleDelete = async (id: number) => {
-    const message = await deleteStuffingReports(id);
-    toast.success(message);
-    mutate(stuffingReportEndpoint);
-    setReload(!reload)
+    const response = await deleteStuffingReports(id);
+    if (response.status == 200) {
+      toast.success(response.message);
+      mutate(stuffingReportEndpoint);
+      setReload(!reload);
+    } else {
+      toast.error(response.message);
+    }
   };
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
@@ -107,4 +121,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default SuspensePage;
+export default withRolesAccess(SuspensePage, ["origin agent", "admin"]);

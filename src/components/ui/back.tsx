@@ -5,7 +5,7 @@ const Back = () => {
   const router = useRouter();
   return (
     <button
-      className="text-[#003472] text-xl lg:text-2xl bg-white shadow rounded px-2"
+      className="text-[#003472] text-xl lg:text-2xl bg-white shadow rounded p-2 w-fit"
       onClick={() => router.back()}
     >
       <TiArrowBack />

@@ -17,6 +17,7 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import useDebounce from "@/app/utilities/debouce";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -24,7 +25,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const {
     data: shippingCompanies,
     isLoading,
@@ -79,4 +80,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default SuspensePage;
+export default withRolesAccess(SuspensePage, ["origin agent", "admin"]) as React.FC;

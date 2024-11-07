@@ -28,7 +28,9 @@ const ReportPage = () => {
   });
   const dispatch = useDispatch();
   const { data, isLoading, error } = useSWR(
-    date?.from && date?.to &&userId? [reportEndpoint, date.from, date.to,userId] : null,
+    date?.from && date?.to && userId
+      ? [reportEndpoint, date.from, date.to, userId]
+      : null,
     () =>
       getSalesReportFromSingleAgent(
         date?.from as unknown as string,
@@ -47,7 +49,8 @@ const ReportPage = () => {
         </div>
         <div className="bg-white rounded shadow-sm flex justify-center w-full py-6">
           <p className="text-gray-800 uppercase font-medium md:text-base text-sm">
-            {data?.agentName}{"'s"} Shipping records in{" "}
+            {data?.agentName}
+            {"'s"} Shipping records in{" "}
             {new Date().getDate() != date?.to?.getDate() ? "" : "last "}
             <span className="font-bold">
               {date && date.from && date.to
@@ -78,9 +81,9 @@ const ReportPage = () => {
             icon={<GiTakeMyMoney className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
-            header="Customers"
-            amount={`${data?.customers}`}
-            perMonth="Involved"
+            header="Commission"
+            amount={`$ ${Intl.NumberFormat("en-Us").format(data?.customers)}`}
+            perMonth="Recieved"
             icon={<MdMoveDown className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper

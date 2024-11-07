@@ -27,6 +27,7 @@ import { usersBaseEndpoint } from "@/app/httpservices/axios";
 import { NewStaff } from "@/interfaces/staff";
 import { updateSite , getSite, deliverySitesEndpoint } from "@/app/httpservices/deliverySites";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
     const dispatch = useDispatch();
     const router = useRouter();
@@ -199,4 +200,4 @@ const Page = () => {
         </div>
     );
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;

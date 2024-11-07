@@ -24,9 +24,10 @@ export const GET = async (req: Request) => {
   });
   const totalMonitaryValue = totalRevenueMade._sum.totalUsd;
 
-  const totalCommission = await prisma.stuffingreportItems.aggregate({
+  const totalCommission = await prisma.commissions.aggregate({
     _sum: {
-      handling: true,
+      totalAmount: true,
+      amountPaid:true
     },
     where: {
       createdAt: {
@@ -35,7 +36,8 @@ export const GET = async (req: Request) => {
       },
     },
   });
-  const totalHandling = totalCommission._sum.handling;
+  const totalHandling = totalCommission._sum.totalAmount;
+  const totalPaidCommission = totalCommission._sum.amountPaid;
   const groupedSalesAgents = await prisma.stuffingreportItems.groupBy({
     by: ["salesAgentId"],
     _count: {
@@ -85,7 +87,7 @@ export const GET = async (req: Request) => {
     },
   });
   const customersResult = {
-    numberOfCustomers: customerIds.length,
+    totalPaidCommission: totalPaidCommission,
     customersInfo: customerDetails.map((customer) => ({
       id: customer.id,
       customerName: customer.name,

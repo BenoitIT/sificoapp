@@ -14,10 +14,11 @@ import { NewShipper, newShipperErrors } from "@/interfaces/shipper";
 import { useRouter } from "next/navigation";
 import { createNewShipper } from "@/app/httpservices/shipper";
 import { toast } from "react-toastify";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
-  const [newShipperpayload, setStaffData] = useState<NewShipper>({email:""});
-  const [loading,setLoading]=useState<boolean>(false)
+  const [newShipperpayload, setStaffData] = useState<NewShipper>({ email: "" });
+  const [loading, setLoading] = useState<boolean>(false);
   const [errors, setValidationErrors] = useState<newShipperErrors>({});
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
@@ -43,17 +44,17 @@ const Page = () => {
     if (shipperName.value === "") {
       ErrorLogger("name", "Shipper name is required.");
     } else if (
-      shipperPhone.value=="" ||
+      shipperPhone.value == "" ||
       !phoneRegx.test(shipperPhone.value)
     ) {
       ErrorLogger("phone", "Valid phone number is required.");
     } else {
       try {
-        setLoading(true)
+        setLoading(true);
         const message = await createNewShipper(newShipperpayload);
         toast.success(message);
-        setLoading(false)
-        router.back()
+        setLoading(false);
+        router.back();
         form.reset();
       } catch (error) {
         toast.success("Failed to add a new shipper");
@@ -159,4 +160,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;

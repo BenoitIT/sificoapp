@@ -1,7 +1,8 @@
 export const headers = [
   { header: "Date", field: "date" },
-  { header: "ID", field: "code" },
-  { header: "Status", field: "status" },
+  { header: "Container number", field: "code" },
+  { header: "Container status", field: "status" },
   { header: "Delivery origin", field: "origin" },
-  { header: "Destination", field: "destination" },
+  { header: "Delivery", field: "destination" },
+  { header: "Stuffing report status", field: "stureportstatus" },
 ];

@@ -5,6 +5,7 @@ import { getInvoice, invoiceEndpoint } from "@/app/httpservices/invoices";
 import { useParams } from "next/navigation";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import { withRolesAccess } from "@/components/auth/accessRights";
 
 const Page = () => {
   const params = useParams();
@@ -22,4 +23,4 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin", "finance","head of finance"]) as React.FC;

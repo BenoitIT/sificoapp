@@ -11,7 +11,8 @@ export const POST = async () => {
   const shippingdepandancyseed = {
     usd: 1,
     aed: 3.66,
-    freightRate: 100,
+    freightRate: 260,
+    freightRateFullCont: 270,
   };
   const saveShipper = await prisma.shipper.create({ data: shipperSeed });
   const shippingdepandance = await prisma.calculationDependancy.create({

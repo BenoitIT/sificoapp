@@ -27,6 +27,7 @@ import {
 } from "@/app/httpservices/deliverySites";
 import { NewSite } from "@/interfaces/sites";
 import useSWR from "swr";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const router = useRouter();
   const [newConsigneepayload, setStaffData] = useState<NewCustomer>({
@@ -214,19 +215,6 @@ const Page = () => {
                     className={"placeholder:text-gray-400"}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="itemscode">
-                    Shipping code<span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="itemscode"
-                    type="text"
-                    name="itemsCode"
-                    placeholder="xxxxx"
-                    onChange={handleChange}
-                    className={"placeholder:text-gray-400"}
-                  />
-                </div>
               </div>
               <div className="flex justify-between gap-4">
                 <Button
@@ -248,4 +236,4 @@ const Page = () => {
     </div>
   );
 };
-export default Page;
+export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;

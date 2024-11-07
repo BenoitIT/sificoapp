@@ -17,6 +17,7 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { useSession } from "next-auth/react";
 import useDebounce from "@/app/utilities/debouce";
 import exportDataInExcel from "@/app/utilities/exportdata";
+import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -27,7 +28,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const {
     data: staff,
     isLoading,
@@ -91,4 +92,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default SuspensePage;
+export default withRolesAccess(SuspensePage, ["admin"]) as React.FC;

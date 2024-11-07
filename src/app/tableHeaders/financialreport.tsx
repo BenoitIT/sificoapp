@@ -1,0 +1,15 @@
+export const FinancialRptHeaders = [
+  { header: "Container No.", field: "containerNo" },
+  { header: "Transport Fee", field: "transportFee" },
+  { header: "Clearing/Transit", field: "clearingTransit" },
+  { header: "Entry", field: "entry" },
+  { header: "Less Container", field: "lessContainer" },
+  { header: "Freight", field: "freight" },
+  { header: "Cash Advance", field: "cashAdvance" },
+  { header: "Nbr of Cstm", field: "nbrOfCustoms" },
+  { header: "Handling", field: "handling" },
+  { header: "Car Hanging", field: "carHanging" },
+  { header: "Profit", field: "profit" },
+  { header: "Charges to Mombasa", field: "chargesToMombasa" },
+  { header: "Bill of lading", field: "ysf" },
+];

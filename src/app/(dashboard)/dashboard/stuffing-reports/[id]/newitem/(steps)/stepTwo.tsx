@@ -1,3 +1,4 @@
+import useSWR from "swr";
 import {
   dependanceEndpoint,
   getDependancies,
@@ -9,8 +10,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { NewStuffingItem, StepFormProps } from "@/interfaces/stuffingItem";
+import { useSearchParams } from "next/navigation";
 import { ChangeEvent, FormEvent } from "react";
-import useSWR from "swr";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const StepTwoForm = ({
   setItemsData,
@@ -19,10 +27,15 @@ const StepTwoForm = ({
   setActiveForm,
   errors,
 }: StepFormProps) => {
+  const searchParams = useSearchParams();
+  const shipingMethod = searchParams?.get("category");
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
   );
+  const handleSelectGenderChange = (value: string) => {
+    setItemsData({ ...newItemPayload, type: value });
+  };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.type == "number") {
@@ -30,10 +43,15 @@ const StepTwoForm = ({
         ...prevState,
         [e.target.name]: Number(e.target.value),
       }));
-      if(e.target.name=="line"){
+      if (e.target.name == "line") {
+        const freightValue =
+          shipingMethod !== "FCL"
+            ? Number(e.target.value) * Number(data?.freightRate ?? 1)
+            : Number(e.target.value) * Number(data?.freightRateFullCont ?? 1);
         setItemsData((prevState: NewStuffingItem) => ({
           ...prevState,
-          freight: Number(e.target.value)*Number(data?.freightRate??1),
+          freight: freightValue,
+          cbm: Number(e.target.value) * Number(1.5),
         }));
       }
     } else {
@@ -64,7 +82,7 @@ const StepTwoForm = ({
     if (description.value === "") {
       ErrorLogger("description", "Description  is required.");
     } else if (Jb.value === "" || !Number(Jb.value)) {
-      ErrorLogger("jb", "JB is required.");
+      ErrorLogger("jb", "Job advance is required.");
     } else if (Line.value == "" || !Number(Line.value)) {
       ErrorLogger("line", "Numerical value for line is required.");
     } else if (blFee.value == "" || !Number(blFee.value)) {
@@ -102,43 +120,8 @@ const StepTwoForm = ({
               {errors?.description}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="handling">Handling</Label>
-              <Input
-                id="handling"
-                name="handling"
-                type="number"
-                placeholder="type.."
-                onChange={handleChange}
-                value={newItemPayload?.handling ?? ""}
-                className={
-                  errors?.handling
-                    ? "text-xs text-red-500 border-red-500"
-                    : "placeholder:text-gray-400"
-                }
-              />
-              <span
-                className={errors?.handling ? "text-xs text-red-500" : "hidden"}
-              >
-                {errors?.handling}
-              </span>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="cbm">CBM</Label>
-              <Input
-                id="cbm"
-                name="cbm"
-                type="number"
-                placeholder="type.."
-                value={newItemPayload?.cbm ?? ""}
-                onChange={handleChange}
-                className={"placeholder:text-gray-400"}
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="line">
                 Lines<span className="text-red-500">*</span>
@@ -148,7 +131,7 @@ const StepTwoForm = ({
                 name="line"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.line ?? ""}
+                value={newItemPayload?.line || ""}
                 onChange={handleChange}
                 className={
                   errors?.line
@@ -170,10 +153,8 @@ const StepTwoForm = ({
                 id="freight"
                 name="freight"
                 type="number"
-                disabled
                 placeholder="type.."
-                onChange={handleChange}
-                value={Number(newItemPayload.line! * data.freightRate) ?? ""}
+                value={Number(newItemPayload.freight) || ""}
                 className={
                   errors["freight"]
                     ? "text-xs text-red-500 border-red-500"
@@ -185,6 +166,18 @@ const StepTwoForm = ({
               >
                 {errors?.freight}
               </span>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="cbm">CBM</Label>
+              <Input
+                id="cbm"
+                name="cbm"
+                type="number"
+                placeholder="type.."
+                value={Number(newItemPayload.line! * 1.5) || ""}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -198,7 +191,7 @@ const StepTwoForm = ({
                 type="number"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.blFee ?? ""}
+                value={newItemPayload?.blFee || ""}
                 className={
                   errors?.blFee
                     ? "text-xs text-red-500 border-red-500"
@@ -213,7 +206,7 @@ const StepTwoForm = ({
             </div>
             <div className="grid gap-2">
               <Label htmlFor="jb">
-                JB<span className="text-red-500">*</span>
+                Job Advance<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="jb"
@@ -221,7 +214,7 @@ const StepTwoForm = ({
                 placeholder="type.."
                 type="number"
                 onChange={handleChange}
-                value={newItemPayload?.jb ?? ""}
+                value={newItemPayload?.jb || ""}
                 className={
                   errors?.jb
                     ? "text-xs text-red-500 border-red-500"
@@ -233,29 +226,119 @@ const StepTwoForm = ({
               </span>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="other">
-                Other<span className="text-red-500">*</span>
-              </Label>
+              <Select onValueChange={handleSelectGenderChange}>
+                <Label htmlFor="role">
+                  Type <span className="text-red-500">*</span>
+                </Label>
+                <SelectTrigger className="w-full placeholder:text-gray-300">
+                  {newItemPayload?.type ? (
+                    <SelectValue placeholder={newItemPayload?.type} />
+                  ) : (
+                    <SelectValue placeholder="Select..." />
+                  )}
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="lines">lines</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="handling">Handling</Label>
               <Input
-                id="other"
-                name="others"
+                id="handling"
+                name="handling"
                 type="number"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.others ?? ""}
+                value={newItemPayload?.handling || ""}
                 className={
-                  errors?.others
+                  errors?.handling
                     ? "text-xs text-red-500 border-red-500"
                     : "placeholder:text-gray-400"
                 }
               />
               <span
-                className={errors?.others ? "text-xs text-red-500" : "hidden"}
+                className={errors?.handling ? "text-xs text-red-500" : "hidden"}
               >
-                {errors?.others}
+                {errors?.handling}
               </span>
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="inspection">Inspection</Label>
+              <Input
+                id="inspection"
+                name="inspection"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.inspection || ""}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="carHanging">Car hanging</Label>
+              <Input
+                id="carHanging"
+                name="carHanging"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.carHanging || ""}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
           </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="recovery">Recovery</Label>
+              <Input
+                id="recovery"
+                name="recovery"
+                type="number"
+                placeholder="type.."
+                onChange={handleChange}
+                value={newItemPayload?.recovery || ""}
+                className={
+                  errors?.handling
+                    ? "text-xs text-red-500 border-red-500"
+                    : "placeholder:text-gray-400"
+                }
+              />
+              <span
+                className={errors?.handling ? "text-xs text-red-500" : "hidden"}
+              >
+                {errors?.handling}
+              </span>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="insurance">Insurance</Label>
+              <Input
+                id="insurance"
+                name="insurance"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.insurance || ""}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="localCharges">Local charges</Label>
+              <Input
+                id="localCharges"
+                name="localCharges"
+                type="number"
+                placeholder="type.."
+                value={newItemPayload?.localCharges || ""}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+          </div>
+
           <div className="flex justify-between gap-4">
             <Button
               type="button"
@@ -273,11 +356,11 @@ const StepTwoForm = ({
       </form>
     );
   }
-  if(isLoading){
-    <Loader/>
+  if (isLoading) {
+    <Loader />;
   }
-  if(error){
-    <ErrorSection/>
+  if (error) {
+    <ErrorSection />;
   }
 };
 export default StepTwoForm;

@@ -24,7 +24,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
-  const searchValues = useDebounce(search, 2000);
+  const searchValues = useDebounce(search, 1000);
   const userId=session?.data?.id;
   const [currentPage, setCurrentPage] = useState(1);
   const activePage = searchParams?.get("page");

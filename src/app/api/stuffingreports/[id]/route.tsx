@@ -11,20 +11,28 @@ export const DELETE = async (req: Request) => {
       },
     });
     if (stuffingRpt?.status?.toLowerCase() == "available") {
-      await prisma.stuffingreportItems.deleteMany({
+      const someItemsAdded = await prisma.stuffingreportItems.findMany({
         where: {
           stuffingreportid: Number(stuffingRptId),
         },
       });
-      const stuffingRpttoDelete = await prisma.stuffingreport.delete({
-        where: {
-          id: Number(stuffingRptId),
-        },
-      });
-      if (stuffingRpttoDelete) {
+      if (!someItemsAdded) {
+        const stuffingRpttoDelete = await prisma.stuffingreport.delete({
+          where: {
+            id: Number(stuffingRptId),
+          },
+        });
+        if (stuffingRpttoDelete) {
+          return NextResponse.json({
+            status: 200,
+            message: "Stuffing report is deleted successfully",
+          });
+        }
+      } else {
         return NextResponse.json({
-          status: 200,
-          message: "Stuffing report is deleted successfully",
+          status: 400,
+          message:
+            "This stuffing report has some clients items. Please remove each and every item",
         });
       }
     } else if (stuffingRpt?.status?.toLowerCase() !== "available") {
@@ -52,9 +60,6 @@ export const GET = async (req: Request) => {
       where: {
         id: Number(stuffingRptId),
       },
-      include: {
-        deliverysite: true,
-      },
     });
     const stuffingRptItems = await prisma.stuffingreportItems.findMany({
       where: {
@@ -64,28 +69,30 @@ export const GET = async (req: Request) => {
         container: {
           include: {
             shipper: true,
+            delivery: true,
           },
         },
+        shippingInstruction: true,
         consignee: true,
         salesAgent: true,
+        invoice: true,
       },
-      orderBy:{
-        id:"desc"
-      }
+      orderBy: {
+        id: "desc",
+      },
     });
 
     if (stuffingRptItems) {
       const modifiedResponse = stuffingRptItems.map((item) => {
         return {
           id: item.id,
-          delivery: item.container.destination,
           shipperId: item.container.shipper.name,
           consigneeId: item.consignee.name,
+          delivery: item.container.delivery.deliveryName,
           code: item.code,
           phone: item.consignee.phone,
           mark: item.mark,
-          salesAgent:
-            item.salesAgent.firstName + " " + item.salesAgent.lastName,
+          salesAgent: item.salesAgent.firstName,
           noOfPkgs: item.noOfPkgs,
           typeOfPkg: item.typeOfPkg,
           weight: item.weight,
@@ -98,9 +105,15 @@ export const GET = async (req: Request) => {
           blFee: item.blFee,
           jb: item.jb,
           invoiceNo: item.invoiceNo,
-          others: item.others,
+          carHanging: item.carHanging,
+          recovery: item.recovery,
+          localCharges: item.localCharges,
+          insurance: item.insurance,
+          inspection: item.inspection,
           totalUsd: item.totalUsd,
+          invoiceInfo: item.invoice,
           totalAed: item.totalAed,
+          instructionPrepared: item.shippingInstruction[0]?.prepared ?? false,
         };
       });
 
@@ -114,7 +127,11 @@ export const GET = async (req: Request) => {
           acc.jb += item.jb || 0;
           acc.handling += item.handling || 0;
           acc.line += item.line || 0;
-          acc.others += item.others || 0;
+          acc.inspection += item.inspection || 0;
+          acc.insurance += item.insurance || 0;
+          acc.localCharges += item.localCharges || 0;
+          acc.recovery += item.recovery || 0;
+          acc.carHanging += item.carHanging || 0;
           acc.totalUsd += item.totalUsd || 0;
           acc.totalAed += item.totalAed || 0;
           return acc;
@@ -128,9 +145,13 @@ export const GET = async (req: Request) => {
           handling: 0,
           line: 0,
           jb: 0,
-          others: 0,
+          inspection: 0,
+          insurance: 0,
+          localCharges: 0,
+          recovery: 0,
           totalUsd: 0,
           totalAed: 0,
+          carHanging: 0,
         }
       );
 
@@ -153,88 +174,168 @@ export const GET = async (req: Request) => {
 };
 
 export const POST = async (req: NextRequest) => {
-  const stuffingRptId = req.url.split("stuffingreports/")[1];
-  const body = await req.json();
-  const date = new Date();
-  const validation = stuffingItemSchema.safeParse(body);
-  if (!validation.success) {
+  try {
+    const stuffingRptId = req.url.split("stuffingreports/")[1];
+    const body = await req.json();
+    const date = new Date();
+    const validation = stuffingItemSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({
+        message:
+          validation.error.errors[0].path +
+          " " +
+          validation.error.errors[0].message,
+        status: 400,
+      });
+    }
+    const dollarExchangeRate = await prisma.calculationDependancy.findFirst({});
+    const previousItem = await prisma.stuffingreportItems.findFirst({
+      orderBy: {
+        id: "desc",
+      },
+    });
+    const checkIfStuffingReportCreated = await prisma.stuffingreport.findFirst({
+      where: {
+        id: Number(stuffingRptId),
+      },
+    });
+    if (checkIfStuffingReportCreated) {
+      const stuffingreportid = Number(stuffingRptId);
+      const consignee = body.consignee;
+      const mark = body.mark ?? "";
+      const salesAgent = body.salesAgent ?? "";
+      const code = body.code ?? "";
+      const noOfPkgs = body.noOfPkgs;
+      const typeOfPkg = body.typeOfPkg ?? "";
+      const weight = body.weight;
+      const handling = body.handling ?? 0;
+      const cbm = body.cbm ?? 0;
+      const description = body.description ?? "";
+      const freight = body.freight ?? 0;
+      const blFee = body.blFee ?? 0;
+      const jb = body.jb ?? 0;
+      const inspection = body.inspection ?? 0;
+      const insurance = body.insurance ?? 0;
+      const localCharges = body.localCharges ?? 0;
+      const recovery = body.recovery ?? 0;
+      const carHanging = body.carHanging ?? 0;
+      const totalUsd =
+        freight +
+        blFee +
+        jb +
+        inspection +
+        localCharges +
+        insurance +
+        carHanging +
+        recovery;
+      const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
+      const invoiceNo =
+        stuffingRptId +
+        "/" +
+        date.getFullYear() +
+        "/" +
+        Number((previousItem?.id ?? 0) + 1);
+      const stuffingReportCheck = await prisma.stuffingreport.findFirst({
+        where: {
+          id: Number(stuffingreportid),
+        },
+      });
+      if (stuffingReportCheck?.status?.toLowerCase() != "available") {
+        return NextResponse.json({
+          status: 400,
+          message: "No other shipment is allowed to be added",
+        });
+      }
+      const isConsigneeinTHisContainer =
+        await prisma.stuffingreportItems.findFirst({
+          where: {
+            consigneeId: Number(consignee),
+            stuffingreportid: Number(stuffingRptId),
+          },
+        });
+      if (isConsigneeinTHisContainer) {
+        return NextResponse.json({
+          status: 400,
+          message:
+            "You can not record the same customer twice on single stuffing report. We advice you to edit and extend first details provided on this customer.",
+        });
+      } else {
+        const stuffingreportItem = await prisma.stuffingreportItems.create({
+          data: {
+            stuffingreportid: stuffingreportid,
+            salesAgentId: salesAgent,
+            consigneeId: consignee,
+            code: code,
+            mark: mark,
+            noOfPkgs: noOfPkgs,
+            typeOfPkg: typeOfPkg,
+            weight: weight,
+            line: body.line ?? 0,
+            handling: handling,
+            type: body.type,
+            cbm: cbm,
+            description: description,
+            freight: freight,
+            blFee: blFee,
+            jb: jb,
+            inspection: inspection,
+            insurance: insurance,
+            localCharges: localCharges,
+            recovery: recovery,
+            invoiceNo: invoiceNo,
+            carHanging: carHanging,
+            totalUsd: totalUsd,
+            totalAed: totalAed,
+          },
+        });
+        const shiipingInstruction = await prisma.shippingInstruction.create({
+          data: {
+            prepaidFreight: 0,
+            prepaidBlFee: 0,
+            prepared: false,
+            finaldeliverId: body.destination,
+            deliveryTerm: "",
+            totalamountinword: "total",
+            itemId: stuffingreportItem.id,
+            portOfdischarge: "",
+          },
+        });
+        const shippingRate =
+          checkIfStuffingReportCreated.packagingType == "FCL"
+            ? dollarExchangeRate?.freightRateFullCont
+            : dollarExchangeRate?.freightRate;
+        const totalCommissionTobePaid = Number(shippingRate) * handling;
+
+        const commission = await prisma.commissions.create({
+          data: {
+            stuffingItemId: stuffingreportItem.id,
+            handling: handling,
+            rate: Number(shippingRate),
+            agentId: salesAgent,
+            totalAmount: totalCommissionTobePaid,
+          },
+        });
+        return NextResponse.json({
+          status: 201,
+          message: "New shipment is successfully saved!",
+          data: stuffingreportItem,
+          instructions: shiipingInstruction,
+          commission: commission,
+        });
+      }
+    } else {
+      return NextResponse.json({
+        status: 400,
+        message: "No stuffing report initialized",
+      });
+    }
+  } catch (err) {
+    console.log(err);
     return NextResponse.json({
-      message:
-        validation.error.errors[0].path +
-        " " +
-        validation.error.errors[0].message,
       status: 400,
+      message: "Failed to add new shipment",
     });
   }
-  const dollarExchangeRate = await prisma.calculationDependancy.findFirst({});
-  const previousItem = await prisma.stuffingreportItems.findFirst({
-    orderBy: {
-      id: "desc",
-    },
-  });
-  const stuffingreportid = Number(stuffingRptId);
-  const consignee = body.consignee;
-  const mark = body.mark ?? "";
-  const salesAgent = body.salesAgent ?? "";
-  const code = body.code ?? "";
-  const noOfPkgs = body.noOfPkgs;
-  const typeOfPkg = body.typeOfPkg ?? "";
-  const weight = body.weight;
-  const handling = body.handling ?? 0;
-  const cbm = body.cbm ?? 0;
-  const description = body.description ?? "";
-  const freight = body.freight ?? 0;
-  const blFee = body.blFee ?? 0;
-  const jb = body.blFee ?? 0;
-  const others = body.blFee ?? 0;
-  const totalUsd = handling + freight + blFee + jb + others;
-  const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
-  const invoiceNo =
-    stuffingRptId +
-    "/" +
-    date.getFullYear() +
-    "/" +
-    Number((previousItem?.id ?? 0) + 1);
-  const stuffingReportCheck = await prisma.stuffingreport.findFirst({
-    where: {
-      id: Number(stuffingreportid),
-    },
-  });
-  if (stuffingReportCheck?.status?.toLowerCase() != "available") {
-    return NextResponse.json({
-      status: 400,
-      message: "No other shipment is allowed to be added",
-    });
-  }
-  const stuffingreportItem = await prisma.stuffingreportItems.create({
-    data: {
-      stuffingreportid: stuffingreportid,
-      salesAgentId: salesAgent,
-      consigneeId: consignee,
-      code: code,
-      mark: mark,
-      noOfPkgs: noOfPkgs,
-      typeOfPkg: typeOfPkg,
-      weight: weight,
-      line: body.line ?? 0,
-      handling: handling,
-      type: body.type,
-      cbm: cbm,
-      description: description,
-      freight: freight,
-      blFee: blFee,
-      jb: jb,
-      invoiceNo: invoiceNo,
-      others: others,
-      totalUsd: totalUsd,
-      totalAed: totalAed,
-    },
-  });
-  return NextResponse.json({
-    status: 201,
-    message: "New shipment is successfully saved!",
-    data: stuffingreportItem,
-  });
 };
 export const PUT = async (req: Request) => {
   try {

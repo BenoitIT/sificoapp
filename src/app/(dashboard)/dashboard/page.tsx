@@ -17,6 +17,7 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import DatePickerWithRange from "@/components/ui/dateSelector";
 import { DateRange } from "react-day-picker";
+import { withRolesAccess } from "@/components/auth/accessRights";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
@@ -88,4 +89,4 @@ const AdminPage = () => {
   }
 };
 
-export default AdminPage;
+export default withRolesAccess(AdminPage, ["origin agent", "admin","finance","head of finance"])as React.FC;

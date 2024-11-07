@@ -3,6 +3,10 @@ import {
   consigneesEndpoint,
   getAllconsigneesUnPaginated,
 } from "@/app/httpservices/consignee";
+import {
+  deliverySitesEndpoint,
+  getAllsitesUnpaginated,
+} from "@/app/httpservices/deliverySites";
 import { getAllUsers } from "@/app/httpservices/users";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import Loader from "@/appComponents/pageBlocks/loader";
@@ -16,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NewShipper } from "@/interfaces/shipper";
+import { NewCustomer, NewShipper } from "@/interfaces/shipper";
+import { NewSite } from "@/interfaces/sites";
 import { NewStaff } from "@/interfaces/staff";
 import {
   NewStuffingItem,
@@ -41,16 +46,38 @@ const SetpOneForm = ({
     isLoading,
     error,
   } = useSWR(consigneesEndpoint, getAllconsigneesUnPaginated, {
-    onSuccess: (data: NewShipper[]) =>
+    onSuccess: (data: NewCustomer[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
   const { data: staff } = useSWR(usersBaseEndpoint, () => getAllUsers(""));
   const customerr = consignees?.find(
-    (customer: NewShipper) => customer?.id == newItemPayload?.consignee
+    (customer: NewCustomer) => customer?.id == newItemPayload?.consignee
+  );
+  const { data: destinations } = useSWR(
+    deliverySitesEndpoint,
+    getAllsitesUnpaginated,
+    {
+      onSuccess: (data: NewSite[]) =>
+        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
+  const locationn = destinations?.find(
+    (site: NewSite) => site?.id == newItemPayload?.destination
   );
   const salesAgent = staff?.find(
     (staff: NewStaff) => staff.id == newItemPayload?.salesAgent
   );
+  const handleSelectChange = (value: string) => {
+    const location = destinations?.find(
+      (site: NewSite) => site?.id == Number(value)
+    );
+    setItemsData((prevState: NewStuffingItem) => ({
+      ...prevState,
+      destination: Number(value),
+      code: location?.siteCode,
+    }));
+    delete errors.destination;
+  };
   const handleSelectConsigneeChange = (value: string | number) => {
     const customer = consignees?.find(
       (customer: NewShipper) => customer?.id == value
@@ -103,6 +130,8 @@ const SetpOneForm = ({
       ErrorLogger("typeOfPkg", "type of package is required.");
     } else if (!newItemPayload.consignee) {
       ErrorLogger("consignee", "Consignee must be chosen.");
+    } else if (!newItemPayload.destination) {
+      ErrorLogger("destination", "Final delivery place must be chosen.");
     } else if (weight.value == "" || !Number(weight.value)) {
       ErrorLogger("weight", "weight is required.");
     } else {
@@ -147,17 +176,41 @@ const SetpOneForm = ({
                 {errors?.consignee}
               </span>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="type">Type</Label>
-              <Input
-                id="type"
-                name="type"
-                type="text"
-                placeholder="type.."
-                value={newItemPayload?.type ?? ""}
-                onChange={handleChange}
-                className={"placeholder:text-gray-400"}
-              />
+            <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+              <Label>Final destination</Label>
+              <Select onValueChange={handleSelectChange}>
+                <SelectTrigger className="w-full">
+                  {locationn ? (
+                    <SelectValue
+                      placeholder={
+                        locationn
+                          ? locationn?.country + "-" + locationn?.locationName
+                          : ""
+                      }
+                    />
+                  ) : (
+                    <SelectValue placeholder="Select..." />
+                  )}
+                </SelectTrigger>
+                <SelectContent>
+                  {destinations &&
+                    destinations?.map((location: NewSite) => (
+                      <SelectItem
+                        key={location.id!}
+                        value={location.id!.toString()}
+                      >
+                        {location.country + "-" + location.locationName}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <span
+                className={
+                  errors["destination"] ? "text-xs text-red-500" : "hidden"
+                }
+              >
+                {errors["destination"]}
+              </span>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -167,8 +220,7 @@ const SetpOneForm = ({
                 id="code"
                 name="code"
                 placeholder="type.."
-                value={newItemPayload?.code ?? ""}
-                disabled
+                value={newItemPayload?.code || ""}
                 className={"placeholder:text-gray-400"}
               />
             </div>
@@ -178,7 +230,7 @@ const SetpOneForm = ({
                 id="mark"
                 name="mark"
                 placeholder="type.."
-                value={newItemPayload?.mark ?? ""}
+                value={newItemPayload?.mark || ""}
                 onChange={handleChange}
               />
             </div>
@@ -228,7 +280,7 @@ const SetpOneForm = ({
                 type="number"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.noOfPkgs ?? ""}
+                value={newItemPayload?.noOfPkgs || ""}
                 className={
                   errors?.noOfPkgs
                     ? "text-xs text-red-500 border-red-500"
@@ -252,7 +304,7 @@ const SetpOneForm = ({
                 name="typeOfPkg"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.typeOfPkg ?? ""}
+                value={newItemPayload?.typeOfPkg || ""}
                 className={
                   errors["typeOfPkg"]
                     ? "text-xs text-red-500 border-red-500"
@@ -276,7 +328,7 @@ const SetpOneForm = ({
                 name="weight"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.weight ?? ""}
+                value={newItemPayload?.weight || ""}
                 onChange={handleChange}
                 className={
                   errors["weight"]

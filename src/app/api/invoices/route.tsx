@@ -1,10 +1,11 @@
 import prisma from "../../../../prisma/client";
 import { NextResponse } from "next/server";
+export const revalidate = 0;
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
-  const currentPage=Number(searchParams?.get("page"))||1;
-  const pageSize = 13; 
+  const currentPage = Number(searchParams?.get("page")) || 1;
+  const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.invoice.count({
     where: searchValue
@@ -100,21 +101,26 @@ export const GET = async (req: Request) => {
     include: {
       details: {
         include: {
-          consignee: true,
-          container: {
+          consignee: {
             include: {
-              deliverysite: true,
+              location: true,
             },
           },
+          container: true,
         },
       },
       createdBy: true,
     },
-    skip:offset,
-    take:pageSize
+    skip: offset,
+    take: pageSize,
   });
   const totalPages = Math.ceil(itemCount / pageSize);
   const invoices = records.map((record) => {
+    const paymentStatus = record.paidInFull
+      ? "Paid"
+      : record.amountPaid > 0
+      ? "Partially paid"
+      : "Unpaid";
     return {
       id: record.id,
       date: record.createdAt.toDateString(),
@@ -123,17 +129,20 @@ export const GET = async (req: Request) => {
       origin: record.details.container.origin,
       createdBy: record.createdBy.lastName,
       createdById: record.createdBy.id,
+      paymentStatus: paymentStatus,
+      amountPaid: Intl.NumberFormat("en-Us").format(record.amountPaid),
       destination:
-        record.details.container.deliverysite.country +
+        record.details.consignee.location.country +
         "," +
-        record.details.container.deliverysite.locationName,
+        record.details.consignee.location.locationName,
       invoiceNo: record.details.invoiceNo,
-      totalUsd: record.details.totalUsd,
-      totalEud: record.details.totalAed,
+      releaseGenarated:record.releaseGenarated?true:false,
+      totalUsd: Intl.NumberFormat("en-Us").format(record.details.totalUsd),
+      totalEud: Intl.NumberFormat("en-Us").format(record.details.totalAed),
     };
   });
   return NextResponse.json({
     status: 200,
-    data: {invoices:invoices,count:totalPages}
+    data: { invoices: invoices, count: totalPages },
   });
 };

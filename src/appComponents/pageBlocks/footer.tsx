@@ -8,8 +8,8 @@ const Footer = () => {
           <div className="flex flex-col gap-6">
             <h1 className="text-white text-lg">ABOUT</h1>
             <p className="text-sm text-gray-400 font-light w-[300px] leading-relaxed">
-              SIFCO– Al Shamali International Freight Services LLC. is a member
-              of Al Shamali group of companies headed by leading business group
+              SIFCO– Super International Freight Services LLC. is a member
+              of Super group of companies headed by leading business group
               owned by Mr. Mohamed Al Shamali in Dubai and Middle East. Freight
               forwarding division is being fully managed by top professionals
               having vast experience in shipping industry.
