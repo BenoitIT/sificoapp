@@ -51,67 +51,87 @@ const Page = () => {
         className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg border border-gray-300"
         ref={divRef}
       >
-        <header className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Warehouse Release Letter
-          </h1>
-          <p className="text-gray-600">Date: 12-oct-2024</p>
-        </header>
         <section className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-700">To:</h2>
-          <p className="text-gray-600">[Recipient Name]</p>
-          <p className="text-gray-600">[Recipient Company]</p>
-          <p className="text-gray-600">[Recipient Address]</p>
-        </section>
-        <section className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700">
-            Subject: Load Release Authorization
-          </h3>
-          <p className="text-gray-700 mt-4 leading-relaxed">
-            This letter authorizes the release of the following items from our
-            warehouse:
-          </p>
-
-          <div className="overflow-x-auto mt-4">
-            <table className="min-w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="border-b py-2 px-4 text-left font-medium text-gray-700">
-                    Number of packages
-                  </th>
-                  <th className="border-b py-2 px-4 text-left font-medium text-gray-700">
-                    Weight
-                  </th>
-                  <th className="border-b py-2 px-4 text-left font-medium text-gray-700">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border-b py-2 px-4 text-gray-600">Item 1</td>
-                  <td className="border-b py-2 px-4 text-gray-600">10</td>
-                  <td className="border-b py-2 px-4 text-gray-600">
-                    Example Description
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+            SIFCO LTD
+          </h2>
+          <div className="flex flex-col gap-2">
+            <p className="text-gray-600 text-sm">Rwanda-Kigali</p>
+            <p className="text-gray-600 text-sm">
+              Email: info@superfreightservice.com
+            </p>
+            <p className="text-gray-600 text-sm">
+              Tel: +250788713189 / 0799373436
+            </p>
           </div>
         </section>
         <section className="mb-6">
-          <p className="text-gray-700 mt-4 leading-relaxed">
-            The bearer of this letter is authorized to receive the above items
-            from the warehouse. Please verify identity upon pickup.
+          <div className="flex flex-col gap-2">
+            <h3 className="font-semibold text-gray-700 text-sm mb-3">
+              Date: <span className="font-normal">08-Nov-2024</span>
+            </h3>
+            <h3 className="font-semibold text-gray-700 text-sm">
+              Warehouse Manager
+            </h3>
+            <h3 className="font-normal text-gray-700 text-sm">
+              Dear Sir/Madam
+            </h3>
+            <h3 className="font-semibold text-gray-700 text-sm mb-3">
+              Re: Authorization for Cargo Release
+            </h3>
+          </div>
+          <p className="text-gray-700 mt-4 leading-relaxed text-sm">
+            I hope this message finds you well. As the Finance Manager of Sifco
+            ltd, I am writing to authorize the release of cargo from your
+            facility to the designated consignee, [Consignee Name], as per our
+            agreed terms and conditions.
+          </p>
+        </section>
+        <section className="mb-6">
+          <div className="overflow-x-auto mt-4 text-gray-700 text-sm">
+            <p>Details of the cargo to be released are as follows:</p>
+            <div className="flex flex-col gap-1 mt-2">
+              <p>
+                <span className="font-semibold">Consignee Name:</span>
+                {"Consignee's "}full name
+              </p>
+              <p>
+                <span className="font-semibold">Bill of Lading Number:</span>BL
+                Number
+              </p>
+              <p>
+                <span className="font-semibold">Container number:</span>{" "}
+              </p>
+              <p>
+                <span className="font-semibold">Release Date:</span> Date of
+                Release
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="mb-6">
+          <p className="text-gray-700 mt-4 leading-relaxed text-sm w-[80%]">
+            Should you require any further information or clarification, please
+            do not hesitate to contact me directly.
+          </p>
+          <p className="text-gray-700 mt-4 leading-relaxed text-sm w-[80%]">
+            Thank you for your cooperation and prompt attention to this matter.
+          </p>
+          <p className="text-gray-700 mt-4 leading-relaxed text-sm w-[80%]">
+            N.B:{" "}
+            <span className="font-semibold">
+              Kindly keep in mind that this release authorization is based on
+              finance issues only
+            </span>
           </p>
         </section>
 
-        <footer className="mt-8 text-gray-700">
+        <footer className="mt-8 text-gray-700 text-sm">
           <p>Sincerely,</p>
-          <p className="font-semibold mt-2">[Warehouse Manager Name]</p>
+          <p className="font-semibold mt-2">Finance Manager</p>
           <p>Warehouse Manager</p>
-          <p className="text-gray-500">[Warehouse Address]</p>
-          <p className="text-gray-500">[Warehouse Contact Information]</p>
+          <p className="text-gray-500">SIFCO</p>
+          <p className="text-gray-500">07848263545</p>
         </footer>
       </div>
     </div>
