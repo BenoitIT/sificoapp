@@ -55,8 +55,12 @@ const Page = () => {
     }
   );
   useEffect(() => {
-    dispatch(setPageTitle("Stuffing report preview"));
-  }, [dispatch]);
+    if (data?.shipments && data?.stuffingRpt?.stuffingstatus !== "preview") {
+      dispatch(setPageTitle("Stuffing report"));
+    } else {
+      dispatch(setPageTitle("Stuffing report preview"));
+    }
+  }, [dispatch, data]);
   useEffect(() => {
     if (searchParams?.get("export") && Array.isArray(data?.shipments)) {
       exportDataInExcel(data?.shipments, headers, `${data?.stuffingRpt?.code}`);
@@ -78,7 +82,7 @@ const Page = () => {
       );
       if (response.status == 200) {
         toast.success(response.message);
-        mutate(cacheKey)
+        mutate(cacheKey);
       } else {
         toast.error(response.message);
       }
