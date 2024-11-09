@@ -17,6 +17,16 @@ export const getSingleShippinginstruction = async (id: number) => {
     console.log(err);
   }
 };
+export const getSingleShippinginstructioninLocation = async (id: number) => {
+  try {
+    const response = await sifcoApi.get(
+      `${shippinginstructionEndpoint}/location/${id}`
+    );
+    return response.data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 export const updateShippinginstruction = async (
   id: number,
   data: instruction

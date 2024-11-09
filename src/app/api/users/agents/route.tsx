@@ -5,6 +5,9 @@ export const GET = async () => {
     where: {
       role: "operation manager",
     },
+    include:{
+      deliverySite:true
+    }
   });
   return NextResponse.json({
     status: 200,

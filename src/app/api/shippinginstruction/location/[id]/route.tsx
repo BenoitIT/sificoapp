@@ -1,9 +1,18 @@
 import { convertTimestamp } from "@/app/utilities/dateFormat";
-import prisma from "../../../../prisma/client";
+import prisma from "../../../../../../prisma/client";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
-export const GET = async () => {
+export const GET = async (req: Request) => {
+    try{
+  const locationId = req.url.split("location/")[1];
   const shippingInstructions = await prisma.shippingInstruction.findMany({
+    where: {
+      finaldelivery: {
+        user: {
+          id: Number(locationId),
+        },
+      },
+    },
     include: {
       finaldelivery: true,
       stuffingReportItems: {
@@ -20,7 +29,7 @@ export const GET = async () => {
     salesAgent:
       instruction.stuffingReportItems.salesAgent.firstName +
       " " +
-      instruction.stuffingReportItems.salesAgent.lastName,
+      instruction.stuffingReportItems.salesAgent.firstName,
     destination:
       instruction.finaldelivery.country +
       "-" +
@@ -32,4 +41,7 @@ export const GET = async () => {
     status: 200,
     data: preccessedInstructions,
   });
+}catch(err){
+    console.error("errorro",err)
+}
 };

@@ -19,7 +19,6 @@ const DynamicTable = <T extends Record<string, string | number>>({
   stuffingRprt,
   preparedRprt,
 }: TableProps<T>) => {
-  console.log("data", data);
   return (
     <Table className="bg-white shadow rounded w-full  overflow-x-auto">
       <TableHeader>

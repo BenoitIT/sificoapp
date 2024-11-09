@@ -55,6 +55,7 @@ export default NextAuth({
         token.id = customUser?.user?.id;
         token.firstname = customUser?.user?.firstName;
         token.lastname = customUser?.user?.lastName;
+        token.phone = customUser?.user?.phone;
       }
       return token;
     },
@@ -68,6 +69,7 @@ export default NextAuth({
         email: token.email,
         firstname: token.firstname,
         lastname: token.lastname,
+        phone:token.phone
       };
       return { ...session, ...customSession };
     },

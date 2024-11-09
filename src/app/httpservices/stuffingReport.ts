@@ -65,6 +65,7 @@ export const updateStuffingReportsItemsDetail = async (
 export const deleteStuffingReportsItemsDetail = async (
   id: number,
   itmId: number,
+
 ) => {
   const response = await sifcoApi.delete(
     stuffingReportEndpoint + `/${id}/detail/${itmId}`

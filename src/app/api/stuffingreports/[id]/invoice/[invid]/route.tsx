@@ -65,6 +65,7 @@ export const GET = async (req: Request) => {
         date: stuffingRptItems.invoice[0]?.createdAt,
         amountPaid: stuffingRptItems.invoice[0]?.amountPaid,
         recievedBy: stuffingRptItems.invoice[0]?.recievedBy,
+        approvedAt: stuffingRptItems.invoice[0]?.approvedAt,
         paymentStatus: stuffingRptItems.invoice[0]?.paidInFull,
         totalAmountInWords:
           stuffingRptItems.invoice[0]?.totalAmountInWords || "total",

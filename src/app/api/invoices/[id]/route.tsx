@@ -42,19 +42,43 @@ export const GET = async (req: Request) => {
 export const PUT = async (req: Request) => {
   try {
     const invoiceId = req.url.split("invoices/")[1];
-    const updatedInvoice = await prisma.invoice.update({
+    const date = new Date();
+    const invoice = await prisma.invoice.findFirst({
       where: {
         id: Number(invoiceId),
       },
-      data: {
-        paymentApproved: true,
-        releaseGenarated: true,
+      include: {
+        details: true,
       },
     });
-    if (updatedInvoice) {
+    if (invoice) {
+      if (invoice.amountPaid >= invoice.details.totalUsd) {
+        const updatedInvoice = await prisma.invoice.update({
+          where: {
+            id: Number(invoiceId),
+          },
+          data: {
+            paymentApproved: true,
+            releaseGenarated: true,
+            approvedAt: date.toDateString(),
+          },
+        });
+        if (updatedInvoice) {
+          return NextResponse.json({
+            status: 200,
+            message: "Invoice payment is approved.",
+          });
+        }
+      } else {
+        return NextResponse.json({
+          status: 400,
+          message: "the invoice should be fully paid.",
+        });
+      }
+    } else {
       return NextResponse.json({
-        status: 200,
-        message: "Invoice payment is approved.",
+        status: 404,
+        message: "Invoice is no longer found.",
       });
     }
   } catch (err) {

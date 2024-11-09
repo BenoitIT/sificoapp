@@ -2,12 +2,13 @@ import { sifcoApi } from "./axios";
 export const commisionsEndpoint = "/commissions";
 export const getAllCommissions = async (
   searchValues?: string,
+  page?:number
 ) => {
   const response = await sifcoApi.get(
     commisionsEndpoint +
-      `?&search=${searchValues}`
+      `?page=${page}&search=${searchValues}`
   );
-  return response.data.data;
+  return {data:response.data.data,count:response.data.count};
 };
 export const updateCommisionInfo = async (
   id: number,

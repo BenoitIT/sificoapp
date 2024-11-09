@@ -27,6 +27,8 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import useDebounce from "@/app/utilities/debouce";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import Paginator from "@/components/pagination/paginator";
+import usePagination from "@/app/utilities/usePagination";
 const Page = () => {
   const dispatch = useDispatch();
   const session: any = useSession();
@@ -38,16 +40,25 @@ const Page = () => {
   const [selectedCommision, setSelectedComm] = useState<number>();
   const [amountToPay, setAmountToPay] = useState<number>();
   const [disable, setDisable] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
-    [commisionsEndpoint, searchValues],
-    () => getAllCommissions(searchValues)
+    [commisionsEndpoint, searchValues, currentPage],
+    () => getAllCommissions(searchValues, currentPage)
   );
+  const { handlePageChange, handleNextPage, handlePreviousPage } =
+    usePagination(data?.data, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Commission debursement"));
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
   }, [searchValue]);
+  useEffect(() => {
+    if (activePage) {
+      setCurrentPage(Number(activePage));
+    }
+  }, [activePage]);
   const handlePay = async (id: number) => {
     setSelectedComm(id);
   };
@@ -115,14 +126,23 @@ const Page = () => {
       Click: handlePay,
     },
   ];
-  if (data) {
+  if (data?.data) {
     return (
       <div className="w-full">
         <CommissionSection
           headers={commissionsHeaders}
-          data={data}
+          data={data?.data}
           action={actions}
         />
+        <div className="flex justify-end w-full mt-2">
+          <Paginator
+            activePage={currentPage}
+            totalPages={data?.count || 1}
+            onPageChange={handlePageChange}
+            onPreviousPageChange={handlePreviousPage}
+            onNextPageChange={handleNextPage}
+          />
+        </div>
       </div>
     );
   }
@@ -133,5 +153,8 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default withRolesAccess(Page, ["finance", "admin", "head of finance"]) as React.FC;
-
+export default withRolesAccess(Page, [
+  "finance",
+  "admin",
+  "head of finance",
+]) as React.FC;
