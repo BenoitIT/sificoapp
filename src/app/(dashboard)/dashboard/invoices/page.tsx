@@ -73,11 +73,11 @@ const Page = () => {
   const handleApprovePayment = async (id: number) => {
     try {
       const response = await updateInvoice(id);
-      if (response.status == 200) {
-        toast.success(response.message);
+      if (response?.status == 200) {
+        toast.success(response?.message);
         mutate(invoiceEndpoint);
       } else {
-        toast.error(response.message);
+        toast.error(response?.message);
       }
     } catch (err) {
       console.error(err);

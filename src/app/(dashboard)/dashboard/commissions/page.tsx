@@ -70,12 +70,12 @@ const Page = () => {
         paidBy: currentUserName,
       };
       const data = await updateCommisionInfo(selectedCommision, payload);
-      if (data.status == 200) {
-        toast.success(data.message);
+      if (data?.status == 200) {
+        toast.success(data?.message);
         setAmountToPay(0);
         mutate(commisionsEndpoint);
       } else {
-        toast.error(data.message);
+        toast.error(data?.message);
       }
     }
     setDisable(false);

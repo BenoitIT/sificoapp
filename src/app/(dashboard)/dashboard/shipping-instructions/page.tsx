@@ -12,12 +12,13 @@ import { headersShippingInstructions } from "@/app/tableHeaders/shiipingInstruct
 import useSWR from "swr";
 import {
   getAllshippinginstructions,
-  getSingleShippinginstructioninLocation,
+  getShippinginstructioninLocation,
   shippinginstructionEndpoint,
 } from "@/app/httpservices/shippinginstruction";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import { useSession } from "next-auth/react";
+import useDebounce from "@/app/utilities/debouce";
 
 const Page = () => {
   const router = useRouter();
@@ -29,18 +30,18 @@ const Page = () => {
   const role = session?.data?.role;
   const searchValue = searchParams?.get("search") || "";
   const activePage = searchParams?.get("page");
-
   const [search, setSearch] = useState(searchValue);
+  const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
-  const fetcher = useCallback(() => {
+  const fetcher = useCallback(async () => {
     if (role === "operation manager" && userId) {
-      return getSingleShippinginstructioninLocation(userId);
+      return getShippinginstructioninLocation(userId, searchValue, currentPage);
     } else {
-      return getAllshippinginstructions();
+      return getAllshippinginstructions(searchValues, currentPage);
     }
-  }, [role, userId]);
+  }, [role, userId, searchValues, currentPage]);
   const { data, isLoading, error } = useSWR(
-    role ? shippinginstructionEndpoint : null,
+    [role ? shippinginstructionEndpoint : null, searchValues, currentPage],
     fetcher
   );
 
@@ -76,13 +77,13 @@ const Page = () => {
     <div className="w-full">
       <ShippingInstruction
         headers={headersShippingInstructions}
-        data={data}
+        data={data?.data}
         action={actions}
       />
       <div className="flex justify-end w-full mt-2">
         <Paginator
           activePage={currentPage}
-          totalPages={1}
+          totalPages={data?.count || 1}
           onPageChange={handlePageChange}
           onPreviousPageChange={handlePreviousPage}
           onNextPageChange={handleNextPage}
@@ -101,5 +102,7 @@ const SuspensePage = () => (
 export default withRolesAccess(SuspensePage, [
   "origin agent",
   "admin",
-  "finance","head of finance"
+  "operation manager",
+  "finance",
+  "head of finance",
 ]) as React.FC;

@@ -92,16 +92,16 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const { message, status } = await updateUser(
+        const response = await updateUser(
           Number(staffId),
           newStaffPyaload
         );
-        if (status == 200) {
+        if (response?.status == 200) {
           form.reset();
-          toast.success(message);
+          toast.success(response?.message);
           router.back();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         toast.error("Failed to add new staff");

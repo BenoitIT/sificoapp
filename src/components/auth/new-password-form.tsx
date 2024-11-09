@@ -48,15 +48,15 @@ export const NewPasswordForm = () => {
       ErrorLogger("confirmPassword", "Passwords do not match.");
     else {
       try {
-        const {message,status} = await setNewPassword({
+        const response = await setNewPassword({
           token: token as string,
           password: password.value,
         });
-        if(status!=400){
-        toast.success(message);
+        if(response?.status!=400){
+        toast.success(response?.message);
         form.reset();
         }else{
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         console.error(err);

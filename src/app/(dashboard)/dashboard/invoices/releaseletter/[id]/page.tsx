@@ -1,8 +1,6 @@
 "use client";
-import Back from "@/components/ui/back";
 import jsPdf from "jspdf";
 import html2Canvas from "html2canvas";
-import { Button } from "@/components/ui/button";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";

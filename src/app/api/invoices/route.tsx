@@ -111,6 +111,9 @@ export const GET = async (req: Request) => {
       },
       createdBy: true,
     },
+    orderBy:{
+      id:"desc"
+    },
     skip: offset,
     take: pageSize,
   });

@@ -5,9 +5,13 @@ export const getAllContainerPaymentPerPlace = async (
   search: string,
   page: number
 ) => {
-  const response = await sifcoApi.get(
-    containersPyamentEndpoint +
-      `?code=${searchValues}&search=${search}&page=${page}`
-  );
-  return { data: response.data.data, count: response.data.count };
+  try {
+    const response = await sifcoApi.get(
+      containersPyamentEndpoint +
+        `?code=${searchValues}&search=${search}&page=${page}`
+    );
+    return { data: response.data.data, count: response.data.count };
+  } catch (err) {
+    console.log(err);
+  }
 };
