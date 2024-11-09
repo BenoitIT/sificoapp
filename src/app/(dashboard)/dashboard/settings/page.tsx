@@ -49,12 +49,12 @@ const Page = () => {
       freightRateFullCont: rate2 ?? data?.freightRateFullCont,
     };
     try {
-      const { message, status } = await updateDepndancies(payload);
-      if (status == 200) {
-        toast.success(message);
+      const response= await updateDepndancies(payload);
+      if (response?.status == 200) {
+        toast.success(response?.message);
         mutate(dependanceEndpoint);
       } else {
-        toast.error(message);
+        toast.error(response?.message);
       }
     } catch (err) {
       console.error(err);

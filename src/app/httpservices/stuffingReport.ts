@@ -64,7 +64,7 @@ export const updateStuffingReportsItemsDetail = async (
 };
 export const deleteStuffingReportsItemsDetail = async (
   id: number,
-  itmId: number,
+  itmId: number
 ) => {
   const response = await sifcoApi.delete(
     stuffingReportEndpoint + `/${id}/detail/${itmId}`
@@ -83,30 +83,42 @@ export const getStuffingReportsItemsInvoice = async (
   Itemsid: number,
   invoiceId: number
 ) => {
-  const response = await sifcoApi.get(
-    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`
-  );
-  return response.data.data;
+  try {
+    const response = await sifcoApi.get(
+      stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`
+    );
+    return response.data.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 export const generateInvoice = async (
   Itemsid: number,
   invoiceId: number,
   data: { vat: number; totalAmountInWords: string; detailsId: string }
 ) => {
-  const response = await sifcoApi.post(
-    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
-    data
-  );
-  return response.data.message;
+  try {
+    const response = await sifcoApi.post(
+      stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
+      data
+    );
+    return response.data.message;
+  } catch (err) {
+    console.log(err);
+  }
 };
 export const PayInvoice = async (
   Itemsid: number,
   invoiceId: number,
   data: { amountPaid: number; recievedBy: string }
 ) => {
-  const response = await sifcoApi.put(
-    stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
-    data
-  );
-  return { message: response.data.message, status: response.data.status };
+  try {
+    const response = await sifcoApi.put(
+      stuffingReportEndpoint + `/${Itemsid}/invoice/${invoiceId}`,
+      data
+    );
+    return { message: response.data.message, status: response.data.status };
+  } catch (err) {
+    console.log(err);
+  }
 };

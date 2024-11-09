@@ -1,9 +1,10 @@
-import prisma from "../../../../prisma/client";
+import prisma from "../../../../../../prisma/client";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
+  const locationId = req.url.match(/location\/(\d+)(?=\?)/)?.[1];
   const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
@@ -51,7 +52,15 @@ export const GET = async (req: Request) => {
             },
           ],
         }
-      : {},
+      : {
+          details: {
+            consignee: {
+              location: {
+                agent: Number(locationId),
+              },
+            },
+          },
+        },
   });
   const records = await prisma.invoice.findMany({
     where: searchValue
@@ -97,7 +106,15 @@ export const GET = async (req: Request) => {
             },
           ],
         }
-      : {},
+      : {
+          details: {
+            consignee: {
+              location: {
+                agent: Number(locationId),
+              },
+            },
+          },
+        },
     include: {
       details: {
         include: {
@@ -110,9 +127,6 @@ export const GET = async (req: Request) => {
         },
       },
       createdBy: true,
-    },
-    orderBy:{
-      id:"desc"
     },
     skip: offset,
     take: pageSize,
@@ -139,7 +153,7 @@ export const GET = async (req: Request) => {
         "," +
         record.details.consignee.location.locationName,
       invoiceNo: record.details.invoiceNo,
-      releaseGenarated:record.releaseGenarated?true:false,
+      releaseGenarated: record.releaseGenarated ? true : false,
       totalUsd: Intl.NumberFormat("en-Us").format(record.details.totalUsd),
       totalEud: Intl.NumberFormat("en-Us").format(record.details.totalAed),
     };

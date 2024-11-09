@@ -52,13 +52,13 @@ const Page = () => {
       ErrorLogger("deliveryName", "delivery name is required.");
     } else {
       try {
-        const { message, status } = await createNewDelivery(payload);
-        if (status == 201) {
-          toast.success(message);
+        const response = await createNewDelivery(payload);
+        if (response?.status == 201) {
+          toast.success(response?.message);
           router.back();
           form.reset();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         console.error(err);

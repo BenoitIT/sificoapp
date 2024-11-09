@@ -121,4 +121,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["origin agent", "admin"]);
+export default withRolesAccess(SuspensePage, ["origin agent", "admin","finance","head of finance"]);

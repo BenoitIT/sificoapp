@@ -81,13 +81,13 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const { message, status } = await addNewUser(newStaffPyaload);
-        if (status == 201) {
+        const response = await addNewUser(newStaffPyaload);
+        if (response?.status == 201) {
           form.reset();
-          toast.success(message);
+          toast.success(response?.message);
           router.back();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         toast.error("Failed to add new staff");

@@ -9,7 +9,9 @@ export const GET = async (req: Request) => {
   const currentMonth = date.getMonth() + 1;
   const currentYear = date.getFullYear();
   const searchValue = searchParams.get("search");
-
+  const currentPage = Number(searchParams?.get("page")) || 1;
+  const pageSize = 13;
+  const offset = (currentPage - 1) * pageSize;
   const start = new Date(
     `${currentYear}-${currentMonth
       .toString()
@@ -22,6 +24,30 @@ export const GET = async (req: Request) => {
   );
 
   try {
+    const commissionsCount = await prisma.commissions.count({
+      where: {
+        createdAt: {
+          gte: start,
+          lt: end,
+        },
+        agent: {
+          OR: [
+            {
+              firstName: {
+                contains: searchValue || "",
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                contains: searchValue || "",
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      },
+    });
     const commissions = await prisma.commissions.findMany({
       where: {
         createdAt: {
@@ -48,8 +74,13 @@ export const GET = async (req: Request) => {
       include: {
         agent: true,
       },
+      orderBy:{
+        id:"desc"
+      },
+      skip: offset,
+      take: pageSize,
     });
-
+    const totalPages = Math.ceil(commissionsCount / pageSize);
     const modifiedResponse = commissions.map((commission) => ({
       id: commission.id,
       date: convertTimestamp(commission.createdAt),
@@ -66,6 +97,7 @@ export const GET = async (req: Request) => {
     return NextResponse.json({
       status: 200,
       data: modifiedResponse,
+      count: totalPages,
     });
   } catch (err) {
     console.error(err);

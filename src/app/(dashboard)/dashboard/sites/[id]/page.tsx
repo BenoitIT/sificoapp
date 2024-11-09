@@ -82,13 +82,13 @@ const Page = () => {
             ErrorLogger("agent", "Agent must be chosen.");
         } else {
             try {
-                const {message,status} = await updateSite(Number(siteId),newSitePayload);
-                if(status==200){
-                toast.success(message);
+                const response = await updateSite(Number(siteId),newSitePayload);
+                if(response?.status==200){
+                toast.success(response?.message);
                 router.back();
                 form.reset();
                 }else{
-                    toast.error(message);  
+                    toast.error(response?.message);  
                 }
             } catch (err) {
                 console.error(err);

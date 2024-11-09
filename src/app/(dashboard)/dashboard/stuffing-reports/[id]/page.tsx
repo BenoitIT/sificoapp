@@ -187,4 +187,4 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default withRolesAccess(Page, ["origin agent", "admin"]);
+export default withRolesAccess(Page, ["origin agent", "admin","finance","head of finance"]);

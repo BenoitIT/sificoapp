@@ -68,16 +68,16 @@ const Page = () => {
       ErrorLogger("deliveryName", "Delivery name name is required.");
     } else {
       try {
-        const { message, status } = await updateDelivery(
+        const response = await updateDelivery(
           Number(deliveryId),
           payload
         );
-        if (status == 200) {
-          toast.success(message);
+        if (response?.status == 200) {
+          toast.success(response?.message);
           router.back();
           form.reset();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         console.error(err);

@@ -19,12 +19,12 @@ export const EditPasswordForm = ({ userId }: { userId: number }) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     try {
-      const { message, status } = await updatePassword(payload);
-      if (status == 200) {
-        toast.warn(message);
+      const response = await updatePassword(payload);
+      if (response?.status == 200) {
+        toast.warn(response?.message);
         form.reset();
       } else {
-        toast.warn(message);
+        toast.warn(response?.message);
       }
     } catch (err) {
       console.error(err);

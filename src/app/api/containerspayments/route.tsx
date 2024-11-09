@@ -7,14 +7,21 @@ export const GET = async (request: Request) => {
   const url = new URL(request.url);
   const code = url.searchParams.get("code") || "KGL";
   const searchValue = url.searchParams.get("search");
+  const currentPage = Number(url.searchParams?.get("page")) || 1;
+  const pageSize = 13;
+  const offset = (currentPage - 1) * pageSize;
   const whereClause: any = {
     stuffingstatus: "generated",
+    stuffingreportItems: {
+      some: {
+        code: code,
+        OR: [
+          { code: { contains: searchValue, mode: "insensitive" } },
+        ],
+      },
+    },
   };
-  if (code) {
-    whereClause.stuffingreportItems = {
-      some: { code: code },
-    };
-  }
+  
   if (searchValue) {
     whereClause.OR = [{ code: { contains: searchValue, mode: "insensitive" } }];
   }
@@ -26,7 +33,13 @@ export const GET = async (request: Request) => {
         include: { invoice: true },
       },
     },
+    skip: offset,
+    take: pageSize,
   });
+  const containersCount = await prisma.stuffingreport.count({
+    where: whereClause,
+  });
+  const totalPages = Math.ceil(containersCount / pageSize);
   const modifiedResponse = containers.map((container) => {
     const totalAmount = container.stuffingreportItems.reduce(
       (sum, item) => sum + item.totalUsd,
@@ -100,5 +113,6 @@ export const GET = async (request: Request) => {
   return NextResponse.json({
     status: 200,
     data: modifiedResponse,
+    count: totalPages,
   });
 };

@@ -32,13 +32,7 @@ export const menuItems = [
         icon: <BsListUl />,
         label: "Stuffing reports",
         href: "/dashboard/stuffing-reports",
-        visible: ["admin", "origin agent"],
-      },
-      {
-        icon: <BsListUl />,
-        label: "Stuffing reports",
-        href: "/opmanager/stuffing-reports",
-        visible: ["operation manager"],
+        visible: ["admin", "origin agent","finance","head of finance"],
       },
       {
         icon: <MdOutlineIntegrationInstructions />,
@@ -50,7 +44,7 @@ export const menuItems = [
         icon: <MdOutlineIntegrationInstructions />,
         label: "Shipping instructions",
         href: "/dashboard/shipping-instructions",
-        visible: ["admin", "origin agent"],
+        visible: ["admin", "origin agent","finance","head of finance"],
       },
       {
         icon: <TbUsersGroup />,

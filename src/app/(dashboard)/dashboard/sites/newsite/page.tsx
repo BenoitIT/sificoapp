@@ -76,13 +76,13 @@ const Page = () => {
       ErrorLogger("siteCode", "destination Code is required.");
     } else {
       try {
-        const { message, status } = await createNewSite(newSitePayload);
-        if (status == 201) {
-          toast.success(message);
+        const response= await createNewSite(newSitePayload);
+        if (response?.status == 201) {
+          toast.success(response?.message);
           router.back();
           form.reset();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (err) {
         console.error(err);

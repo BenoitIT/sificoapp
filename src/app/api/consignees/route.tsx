@@ -73,6 +73,9 @@ export const GET = async (req: Request) => {
           ],
         }
       : {},
+      orderBy:{
+        id:"desc"
+      },
     take: pageSize,
     skip: offset,
     include: {

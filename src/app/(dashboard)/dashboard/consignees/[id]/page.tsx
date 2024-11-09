@@ -95,17 +95,17 @@ const Page = () => {
     } else {
       try {
         setLoading(true);
-        const { message, status } = await updateShipper(
+        const response = await updateShipper(
           Number(cId),
           newConsigneepayload
         );
-        if (status == 200) {
-          toast.success(message);
+        if (response?.status == 200) {
+          toast.success(response?.message);
           setLoading(false);
           router.back();
           form.reset();
         } else {
-          toast.error(message);
+          toast.error(response?.message);
         }
       } catch (error) {
         toast.success("Failed to add a new shipper");

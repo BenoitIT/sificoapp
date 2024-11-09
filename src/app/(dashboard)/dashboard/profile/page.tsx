@@ -126,15 +126,15 @@ const Page = () => {
                 />
                 <Button
                   onClick={async () => {
-                    const { message, status } = await updateUser(
+                    const response = await updateUser(
                       Number(userId),
                       data
                     );
-                    if (status == 200) {
-                      toast.success(message);
+                    if (response?.status == 200) {
+                      toast.success(response?.message);
                       setEditPhone(false);
                     } else {
-                      toast.error(message);
+                      toast.error(response?.message);
                     }
                   }}
                 >
