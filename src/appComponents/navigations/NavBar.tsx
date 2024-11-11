@@ -5,6 +5,7 @@ import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 const NavBar = ({
   scollThresholdChanged,
 }: {
@@ -12,8 +13,20 @@ const NavBar = ({
 }) => {
   const [displayMenus, setDisplayMenus] = useState(true);
   const router = useRouter();
+  const session: any = useSession();
+  const role = session?.data?.role;
   const handleLogin = () => {
-    router.push("/auth/login");
+    if (session?.data && role == "operation manager") {
+      router.push("/opmanager");
+    } else if (session?.data && role == "operation manager") {
+      router.push("/dashboard");
+    } else {
+      router.push("/auth/login");
+    }
+  };
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/auth/login";
   };
   return (
     <div
@@ -32,23 +45,23 @@ const NavBar = ({
           <Image src="/images/logoo.png" width={100} height={100} alt="Logo" />
           <div
             onClick={() => setDisplayMenus(true)}
-            className={`${
-              !displayMenus ? "flex" : "hidden md:flex"
-            } ${
+            className={`${!displayMenus ? "flex" : "hidden md:flex"} ${
               scollThresholdChanged
-                ? "border-[#003472] px-6 h-8 hover:shadow-[#189bcc] text-[#003472]":"border-white hover:shadow-white"} justify-center items-center md:hidden px-[10px]  rounded border`}
+                ? "border-[#003472] px-6 h-8 hover:shadow-[#189bcc] text-[#003472]"
+                : "border-white hover:shadow-white"
+            } justify-center items-center md:hidden px-[10px]  rounded border`}
           >
             <HamburgerMenuIcon />
           </div>
           <div
             onClick={() => setDisplayMenus(false)}
-            className={`${
-              displayMenus ? "flex" : "hidden"
-            } ${
+            className={`${displayMenus ? "flex" : "hidden"} ${
               scollThresholdChanged
-                ? "border-[#003472] px-6 h-8 hover:shadow-[#189bcc] text-[#003472]":"border-white hover:shadow-white"} justify-center items-center md:hidden px-[10px]  rounded border `}
+                ? "border-[#003472] px-6 h-8 hover:shadow-[#189bcc] text-[#003472]"
+                : "border-white hover:shadow-white"
+            } justify-center items-center md:hidden px-[10px]  rounded border `}
           >
-            <Cross1Icon/>
+            <Cross1Icon />
           </div>
         </div>
         <div
@@ -79,13 +92,24 @@ const NavBar = ({
           </p>
           <p className="flex md:hidden hover:bg-blue-400 w-full md:hover:bg-transparent md:w-fit text-end md:text-start p-2 rounded-sm justify-end">
             <Link className="text-base capitalize" href="/auth/login">
-              Login
+              {role? "Dashboard" : "Login"}
             </Link>
           </p>
+          <p
+            className={`${
+              !session?.data ? "hidden" : "flex"
+            } md:hidden hover:bg-blue-400 w-full md:hover:bg-transparent md:w-fit text-end md:text-start p-2 rounded-sm justify-end`}
+          >
+            <span className="text-base capitalize" onClick={handleSignOut}>
+              Logout
+            </span>
+          </p>
         </div>
-        <div>
+        <div className="flex flex-col md:flex-row gap-2">
           <Button
-            className={`hidden md:block relative text-white text-sm capitalize ${
+            className={`hidden ${
+              role ? "md:hidden" : "md:block"
+            } relative text-white text-sm capitalize ${
               scollThresholdChanged
                 ? "bg-[#003472] px-6 w-20 h-8 hover:bg-[#189bcc]"
                 : "hover:bg-[#003472]  w-20  px-6 h-8 bg-[#189bcc]"
@@ -93,6 +117,30 @@ const NavBar = ({
             onClick={handleLogin}
           >
             <p className="absolute top-[5px]">login</p>
+          </Button>
+          <Button
+            className={`hidden ${
+              !role ? "md:hidden" : "md:block"
+            } relative text-white text-sm capitalize ${
+              scollThresholdChanged
+                ? "bg-[#003472] px-2 w-fit  h-8 hover:bg-[#189bcc]"
+                : "hover:bg-[#003472] px-2 w-fit  h-8 bg-[#189bcc]"
+            } hover:cursor-pointer`}
+            onClick={handleLogin}
+          >
+            <p className="-mt-[2px]">Dashboard</p>
+          </Button>
+          <Button
+            className={`hidden ${
+              !session?.data ? "md:hidden" : "md:block"
+            } relative text-white text-sm capitalize ${
+              scollThresholdChanged
+                ? "hover:bg-[#003472]  w-20 h-8 bg-[#189bcc]"
+                : "bg-[#003472]  w-20  h-8 hover:bg-[#189bcc]"
+            } hover:cursor-pointer`}
+            onClick={handleSignOut}
+          >
+            <p className="absolute top-[5px]">Logout</p>
           </Button>
         </div>
       </div>

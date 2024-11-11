@@ -7,9 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import useSWR, { mutate } from "swr";
-import jsPdf from "jspdf";
 import html2Canvas from "html2canvas";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -35,6 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import jsPDF from "jspdf";
 import { GiTakeMyMoney } from "react-icons/gi";
 interface invoiceProps {
   itemsId: number;
@@ -49,6 +48,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
   const [vat, setVat] = useState<string>("");
   const [totalInwords, setTotalInwords] = useState<string>("");
   const [paidAmount, setPaidAmount] = useState<number>();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const { data, isLoading, error } = useSWR(cacheKey, () =>
     getStuffingReportsItemsInvoice(itemsId, invoiceId)
   );
@@ -73,16 +73,34 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
         const message = await generateInvoice(itemsId, invoiceId, payload);
         toast.success(message);
       }
+      console.warn("loaded",isImageLoaded)
       if (invoice) {
-        const canvas = await html2Canvas(invoice);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        const canvas = await html2Canvas(invoice, {
+          allowTaint: true,
+          useCORS: true,
+          logging: true,
+          scale: 2,
+          onclone: (document) => {
+            const img = document.querySelector("img");
+            if (img) {
+              img.style.display = "block";
+              img.crossOrigin = "anonymous";
+            }
+          },
+        });
+
         const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPdf({
+        const pdf = new jsPDF({
           orientation: "portrait",
           unit: "px",
           format: "a4",
         });
+
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas.height * width) / canvas.width;
+
         pdf.addImage(imgData, "PNG", 0, 0, width, height);
         pdf.save(`${data?.consigneeId}-invoice.pdf`);
       }
@@ -118,7 +136,17 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
       toast.error("Amount to pay should be provided.");
     }
   };
-
+  const logoSection = (
+    <div className="w-[300px]">
+      <img
+        src="/images/logoo.png"
+        alt="logo"
+        style={{ width: "250px", height: "auto" }}
+        onLoad={() => setIsImageLoaded(true)}
+        crossOrigin="anonymous"
+      />
+    </div>
+  );
   if (data) {
     return (
       <div className="w-full text-black text-sm">
@@ -228,12 +256,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
           ref={invoiceRef}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:w-[100%] w-full">
-            <Image
-              src="/images/logoo.png"
-              alt="logo"
-              width={250}
-              height={250}
-            />
+            {logoSection}
             <div className="md:text-sm text-xs w-full">
               <div className=" mb-2 w-full">
                 <h1 className="text-xs md:text-base font-bold uppercase text-right w-full">

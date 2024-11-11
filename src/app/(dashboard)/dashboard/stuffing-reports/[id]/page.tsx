@@ -9,7 +9,7 @@ import {
   useParams,
   useSearchParams,
 } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
 import {
@@ -29,9 +29,14 @@ import { useSession } from "next-auth/react";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import { Button } from "@/components/ui/button";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  generateTableHTML,
+  printStyles,
+} from "@/app/utilities/stiffingReportprintFormat";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
+  const reportRef = useRef(null);
   const currentPath = usePathname();
   const dispatch = useDispatch();
   const searchParams: any = useSearchParams();
@@ -134,6 +139,64 @@ const Page = () => {
   useEffect(() => {
     setRole(UserRole);
   }, [UserRole]);
+
+  const printReport = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      toast.error("Please allow popups for printing");
+      return;
+    }
+    const headerInfo = {
+      containerNumber: data?.stuffingRpt?.code || "",
+      blNumber: data?.stuffingRpt?.blCode || "",
+      packagingType: data?.stuffingRpt?.packagingType || "",
+      containerStatus: data?.stuffingRpt?.stuffingstatus || "",
+      reportStatus: data?.stuffingRpt?.status || "",
+    };
+    const headerTemplate = `
+      <div class="header-info">
+        <p>Container number: ${headerInfo.containerNumber}</p>
+        <p>BL Number: ${headerInfo.blNumber}</p>
+        <p>Packaging type: ${headerInfo.packagingType}</p>
+        <p>Container status: <span class="status-${headerInfo.containerStatus.toLowerCase()}">${
+      headerInfo.containerStatus
+    }</span></p>
+        <p>Stuffing report status: <span class="status-${headerInfo.reportStatus.toLowerCase()}">${
+      headerInfo.reportStatus
+    }</span></p>
+      </div>
+    `;
+
+    // Generate clean table HTML
+    const tableHTML = generateTableHTML(data.shipments, headers, data.totals);
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Stuffing Report - ${headerInfo.containerNumber}</title>
+          ${printStyles}
+        </head>
+        <body>
+          <div class="print-container">
+            ${headerTemplate}
+            <div class="table-container">
+              ${tableHTML}
+            </div>
+          </div>
+          <script>
+            window.onload = () => {
+              window.print();
+              window.onafterprint = () => {
+                window.close();
+              };
+            }
+          </script>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+  };
   if (data?.shipments && data?.stuffingRpt?.stuffingstatus == "preview") {
     return (
       <div className="w-full overflow-scroll">
@@ -168,16 +231,28 @@ const Page = () => {
   }
   if (data?.shipments && data?.stuffingRpt?.stuffingstatus !== "preview") {
     return (
-      <div className="w-full overflow-scroll">
-        <StaffingReportsItems
-          headers={headers}
-          data={data?.shipments}
-          allowItemsSummationFooter={true}
-          summation={data?.totals}
-          stuffingRprt={true}
-          preparedRprt={true}
-        />
-      </div>
+      <>
+        <div className="w-full overflow-scroll" ref={reportRef}>
+          <StaffingReportsItems
+            headers={headers}
+            data={data?.shipments}
+            allowItemsSummationFooter={true}
+            summation={data?.totals}
+            stuffingRprt={true}
+            preparedRprt={true}
+          />
+        </div>
+        <div className="mt-6">
+          <Button
+            variant="secondary"
+            onClick={printReport}
+            disabled={loading}
+            className="disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            Print report
+          </Button>
+        </div>
+      </>
     );
   }
   if (isLoading) {
@@ -187,4 +262,9 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default withRolesAccess(Page, ["origin agent", "admin","finance","head of finance"]);
+export default withRolesAccess(Page, [
+  "origin agent",
+  "admin",
+  "finance",
+  "head of finance",
+]);
