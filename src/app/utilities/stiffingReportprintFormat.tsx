@@ -42,24 +42,24 @@ export const generateTableHTML = (data: any[], headers: any[], totals: any) => {
   const totalsRow = `
       <tr class="totals-row">
         <td colspan="8">Total</td>
-        <td>${totals.noOfPkgs || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.noOfPkgs) || ""}</td>
         <td>PKGS</td>
-        <td>${totals.weight || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.weight) || ""}</td>
         <td>${totals.line || ""}</td>
         <td>${totals.handling || ""}</td>
         <td>LINES</td>
-        <td>${totals.cbm || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.cbm) || ""}</td>
         <td></td>
-        <td>${totals.freight || ""}</td>
-        <td>${totals.blFee || ""}</td>
-        <td>${totals.jb || ""}</td>
-        <td>${totals.carHanging || ""}</td>
-        <td>${totals.recovery || ""}</td>
-        <td>${totals.insurance || ""}</td>
-        <td>${totals.inspection || ""}</td>
-        <td>${totals.localCharges || ""}</td>
-        <td>${totals.totalUsd || ""}</td>
-        <td>${totals.totalAed || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.freight) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.blFee) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.jb) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.carHanging) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.recovery) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.insurance) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.inspection) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.localCharges) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.totalUsd) || ""}</td>
+        <td>${Intl.NumberFormat("en-Us").format(totals.totalAed) || ""}</td>
       </tr>
     `;
 

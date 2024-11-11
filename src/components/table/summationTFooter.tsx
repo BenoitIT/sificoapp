@@ -14,22 +14,46 @@ export const ItemsSummationTableFooter = ({ summation }: footer) => {
         </TableCell>
         <TableCell>{summation?.noOfPkgs}</TableCell>
         <TableCell>PKGS</TableCell>
-        <TableCell className="text-center">{summation?.weight}</TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.weight ?? 0)}
+        </TableCell>
         <TableCell className="text-center">{summation?.line}</TableCell>
         <TableCell className="text-center">{summation?.handling}</TableCell>
         <TableCell className="text-center">LINES</TableCell>
-        <TableCell className="text-center">{summation?.cbm}</TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.cbm ?? 0)}
+        </TableCell>
         <TableCell className="text-center"></TableCell>
-        <TableCell className="text-center">{summation?.freight}</TableCell>
-        <TableCell className="text-center">{summation?.blFee}</TableCell>
-        <TableCell className="text-center">{summation?.jb}</TableCell>
-        <TableCell className="text-center">{summation?.carHanging}</TableCell>
-        <TableCell className="text-center">{summation?.recovery}</TableCell>
-        <TableCell className="text-center">{summation?.insurance}</TableCell>
-        <TableCell className="text-center">{summation?.inspection}</TableCell>
-        <TableCell className="text-center">{summation?.carLashing}</TableCell>
-        <TableCell className="text-center">{summation?.totalUsd}</TableCell>
-        <TableCell className="text-center">{summation?.totalAed}</TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.freight ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.blFee ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.jb ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.carHanging ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.recovery ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.insurance ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.inspection ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.carLashing ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.totalUsd ?? 0)}
+        </TableCell>
+        <TableCell className="text-center">
+          {Intl.NumberFormat("en-Us").format(summation?.totalAed ?? 0)}
+        </TableCell>
         <TableCell className="text-center"></TableCell>
         <TableCell className="text-center"></TableCell>
       </TableRow>
