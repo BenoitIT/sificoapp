@@ -230,10 +230,11 @@ export const POST = async (req: NextRequest) => {
         recovery;
       const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
       const invoiceNo =
+        "INV" +
         stuffingRptId +
-        "/" +
+        "" +
         date.getFullYear() +
-        "/" +
+        "" +
         Number((previousItem?.id ?? 0) + 1);
       const stuffingReportCheck = await prisma.stuffingreport.findFirst({
         where: {
