@@ -6,7 +6,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import useSWR from "swr";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useEffect, useRef, useState } from "react";
@@ -33,8 +32,8 @@ const ShippingInstruction = () => {
   const itemsId = params?.instid;
   const cacheKey = `/shippinginstruction/${itemsId}`;
   const dispatch = useDispatch();
-  const shippingInstruction = documentRef?.current;
   const [totalInwords, setTotalInwords] = useState<string>("");
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const { data, isLoading, error } = useSWR(cacheKey, () =>
     getSingleShippinginstruction(Number(itemsId))
   );
@@ -42,25 +41,57 @@ const ShippingInstruction = () => {
     dispatch(setPageTitle("Shipping instruction"));
   }, [dispatch]);
   const downLoadShippingInstruction = async () => {
-    if (shippingInstruction) {
-      const canvas = await html2Canvas(shippingInstruction);
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: "a4",
-      });
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, width, height);
-      pdf.save(
-        `${data?.stuffingReportItems?.consignee?.name}-shipping-instruction.pdf`
-      );
+    if (documentRef.current) {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        const canvas = await html2Canvas(documentRef.current, {
+          allowTaint: true,
+          useCORS: true,
+          logging: true,
+          scale: 2,
+          onclone: (document) => {
+            const img = document.querySelector("img");
+            if (img) {
+              img.style.display = "block";
+              img.crossOrigin = "anonymous";
+            }
+          },
+        });
+        console.warn("loaded", isImageLoaded);
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "px",
+          format: "a4",
+        });
+
+        const width = pdf.internal.pageSize.getWidth();
+        const height = (canvas.height * width) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, width, height);
+        pdf.save(
+          `${data?.stuffingReportItems?.consignee?.name}-shipping-instruction.pdf`
+        );
+      } catch (error) {
+        console.error("PDF generation error:", error);
+      }
     }
   };
   const handleOpenInvoice = async () => {
     router.push(`${currentPath}/invoice/${itemsId}`);
   };
+  const logoSection = (
+    <div className="w-[300px]">
+      <img
+        src="/images/logoo.png"
+        alt="logo"
+        style={{ width: "250px", height: "auto" }}
+        onLoad={() => setIsImageLoaded(true)}
+        crossOrigin="anonymous"
+      />
+    </div>
+  );
   if (error) {
     return <ErrorSection />;
   }
@@ -122,12 +153,7 @@ const ShippingInstruction = () => {
           ref={documentRef}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:w-[100%] w-full">
-            <Image
-              src="/images/logoo.png"
-              alt="logo"
-              width={250}
-              height={250}
-            />
+            {logoSection}
             <div className="md:text-sm text-xs w-full">
               <div className=" mb-2 w-full">
                 <h1 className="text-xs md:text-base font-bold uppercase text-right w-full">
@@ -513,12 +539,12 @@ const ShippingInstruction = () => {
                       (data?.prepaidFreight ?? 0) +
                       data?.stuffingReportItems?.blFee -
                       (data?.prepaidBlFee ?? 0) +
-                      (data?.stuffingReportItems?.insurance??0) +
-                      (data?.stuffingReportItems?.recovery??0) +
-                      (data?.stuffingReportItems?.carHanging??0) +
-                      (data?.stuffingReportItems?.jb??0)+
-                      (data?.stuffingReportItems?.inspection??0) +
-                      (data?.stuffingReportItems?.localCharges??0)
+                      (data?.stuffingReportItems?.insurance ?? 0) +
+                      (data?.stuffingReportItems?.recovery ?? 0) +
+                      (data?.stuffingReportItems?.carHanging ?? 0) +
+                      (data?.stuffingReportItems?.jb ?? 0) +
+                      (data?.stuffingReportItems?.inspection ?? 0) +
+                      (data?.stuffingReportItems?.localCharges ?? 0)
                   )}
                 </TableCell>
               </TableRow>
@@ -576,8 +602,8 @@ const ShippingInstruction = () => {
           <div className="m-4 flex flex-col gap-1 text-sm text-black">
             <p>
               1. If goods not cleared within 15 days of arrival at final
-              destination, Super International Freight Services company ltd
-              hold the right to auction the goods to recover our freight dues.
+              destination, Super International Freight Services company ltd hold
+              the right to auction the goods to recover our freight dues.
             </p>
 
             <p>
@@ -597,15 +623,15 @@ const ShippingInstruction = () => {
             </p>
 
             <p>
-              5. Super International Freight Services company ltd will hold
-              the right to dispose the goods if not moved within 45 days.
+              5. Super International Freight Services company ltd will hold the
+              right to dispose the goods if not moved within 45 days.
             </p>
 
             <p>
               6. Customers are requested to submit full set of invoices/packing
               list for goods purchased, failure to do so would result in delays
-              and additional cost for which super International Freight
-              Services LLC will not be responsible.
+              and additional cost for which super International Freight Services
+              LLC will not be responsible.
             </p>
 
             <p>
@@ -619,8 +645,8 @@ const ShippingInstruction = () => {
             <p>
               9. Fragile/Glass items, Tiles/engines cargo must be packed in
               proper condition for safe transportation by Air & Sea. In case of
-              improper packing Super International Freight Services company
-              ltd will not be responsible for any damages or claims.
+              improper packing Super International Freight Services company ltd
+              will not be responsible for any damages or claims.
             </p>
           </div>
         </div>
