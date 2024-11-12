@@ -106,6 +106,9 @@ model stuffingreport {
   blCode              String
   deliverySite        deliverySite?         @relation(fields: [deliverySiteId], references: [id])
   deliverySiteId      Int?
+  transportFee        Int                   @default(0)
+  extraCharges        Int                   @default(0)
+  freightRate         Int                   @default(260)
 }
 
 model stuffingreportItems {
@@ -177,9 +180,11 @@ model Commissions {
 }
 
 model CalculationDependancy {
-  id                  Int   @id @default(autoincrement())
-  usd                 Int   @default(1)
-  aed                 Float @default(3.66)
-  freightRate         Float @default(260)
-  freightRateFullCont Float @default(270)
+  id                   Int   @id @default(autoincrement())
+  usd                  Int   @default(1)
+  aed                  Float @default(3.66)
+  freightRate          Float @default(260)
+  freightRateFullCont  Float @default(270)
+  groupageTransportFee Int   @default(0)
+  fullTransportFee     Int   @default(0)
 }

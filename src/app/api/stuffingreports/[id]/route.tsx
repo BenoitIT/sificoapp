@@ -110,7 +110,7 @@ export const GET = async (req: Request) => {
           localCharges: Intl.NumberFormat("en-Us").format(item.localCharges),
           insurance: Intl.NumberFormat("en-Us").format(item.insurance),
           inspection: Intl.NumberFormat("en-Us").format(item.inspection),
-          totalUsd: Intl.NumberFormat("en-Us").format(item.totalUsd),
+          totalUsd: item.totalUsd,
           invoiceInfo: item.invoice,
           totalAed: Intl.NumberFormat("en-Us").format(item.totalAed),
           instructionPrepared: item.shippingInstruction[0]?.prepared ?? false,
@@ -351,7 +351,7 @@ export const PUT = async (req: Request) => {
     if (stuffingreport) {
       return NextResponse.json({
         status: 200,
-        message: "Stuffing report information are updated succesfully",
+        message: "Information are updated succesfully",
       });
     }
     return NextResponse.json({

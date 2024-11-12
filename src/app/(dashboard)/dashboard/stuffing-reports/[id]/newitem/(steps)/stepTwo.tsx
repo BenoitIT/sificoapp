@@ -47,7 +47,7 @@ const StepTwoForm = ({
         const freightValue =
           shipingMethod !== "FCL"
             ? Number(e.target.value) * Number(data?.freightRate ?? 1)
-            : Number(e.target.value) * Number(data?.freightRateFullCont ?? 1);
+            : 1 * Number(data?.freightRateFullCont ?? 1);
         setItemsData((prevState: NewStuffingItem) => ({
           ...prevState,
           freight: freightValue,

@@ -7,5 +7,6 @@ export interface StuffingReport {
     status?: string;
     code?:string;
     shipper?:number|null,
-    operatorId?:number
+    operatorId?:number,
+    extraCharges?:number
   }

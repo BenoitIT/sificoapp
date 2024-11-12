@@ -17,6 +17,7 @@ export const POST = async (req: NextRequest) => {
   const previousstuffingReport = await prisma.stuffingreport.findFirst({
     orderBy: { id: "desc" },
   });
+  const dependacies = await prisma.calculationDependancy.findFirst({});
   const prevId = previousstuffingReport?.id ?? 0;
   const stuffingReportID =
     `${body.origin[0].toUpperCase()}${body.origin[1].toUpperCase()}${date.getDate()}${
@@ -30,6 +31,10 @@ export const POST = async (req: NextRequest) => {
   body.status = status;
   body.shipperId = body.shipper;
   body.blCode = blCode;
+  body.transportFee =
+    body.packagingType == "LCL"
+      ? dependacies?.groupageTransportFee
+      : dependacies?.fullTransportFee;
   delete body.shipper;
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({
@@ -86,8 +91,7 @@ export const GET = async (req: Request) => {
       status: record.status,
       origin: record.origin,
       stureportstatus: record.stuffingstatus,
-      destination:
-        record.delivery.deliveryName,
+      destination: record.delivery.deliveryName,
     };
   });
   return NextResponse.json({

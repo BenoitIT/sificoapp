@@ -22,10 +22,14 @@ const Page = () => {
   const [editAEDValue, setEditAEDValue] = useState(false);
   const [editrate, setEditRate] = useState(false);
   const [editrate2, setEditRate2] = useState(false);
+  const [editTransport1, setEditTransport1] = useState(false);
+  const [editTransport2, setEditTransport2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [aed, setAed] = useState<number>();
   const [rate, setRate] = useState<number>();
   const [rate2, setRate2] = useState<number>();
+  const [groupageTransFee, setGroupageFee] = useState<number>();
+  const [fullConatinerTransFee, setConatinerTransFee] = useState<number>();
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
@@ -39,6 +43,8 @@ const Page = () => {
       setAed(data?.aed || 1);
       setRate(data?.freightRate || 1);
       setRate2(data?.freightRateFullCont || 1);
+      setGroupageFee(data?.groupageTransportFee);
+      setConatinerTransFee(data?.fullTransportFee);
     }
   }, [data]);
   const handleUpdateInfo = async () => {
@@ -47,9 +53,11 @@ const Page = () => {
       aed: aed ?? data?.aed,
       freightRate: rate ?? data?.freightRate,
       freightRateFullCont: rate2 ?? data?.freightRateFullCont,
+      groupageTransportFee: groupageTransFee ?? data?.groupageTransportFee,
+      fullTransportFee: fullConatinerTransFee ?? data?.fullTransportFee,
     };
     try {
-      const response= await updateDepndancies(payload);
+      const response = await updateDepndancies(payload);
       if (response?.status == 200) {
         toast.success(response?.message);
         mutate(dependanceEndpoint);
@@ -161,7 +169,7 @@ const Page = () => {
                   type="number"
                   placeholder="Enter rate"
                   onChange={(e) => setRate(Number(e.target.value))}
-                  value={rate}
+                  value={rate|| ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -208,7 +216,7 @@ const Page = () => {
                   type="number"
                   placeholder="Enter rate"
                   onChange={(e) => setRate2(Number(e.target.value))}
-                  value={rate2}
+                  value={rate2|| ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -220,6 +228,110 @@ const Page = () => {
                   onClick={() => {
                     setEditRate2(false);
                     setRate(data?.freightRate);
+                  }}
+                >
+                  <RxCross2 />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-full w-full md:h-[150px] md:w-[750px] bg-white rounded-xl shadow py-2">
+          <div
+            className={
+              "w-full text-gray-600 mx-4 md:mx-8 flex flex-col text-sm"
+            }
+          >
+            <p className="font-semibold py-4 uppercase">Transport Fee</p>
+            <div className="flex relative gap-2 flex-shrink">
+              <p>
+                Groupage
+                <span className="text-gray-900 font-semibold ml-2">
+                  {data?.groupageTransportFee}
+                </span>
+              </p>
+              <span
+                className={
+                  editTransport1
+                    ? "hidden"
+                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
+                }
+                onClick={() => setEditTransport1(true)}
+              >
+                <LuPencilLine />
+              </span>
+              <div
+                className={
+                  editTransport1
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 -top-1"
+                    : "hidden"
+                }
+              >
+                <Input
+                  type="number"
+                  placeholder="Enter rate"
+                  onChange={(e) =>{
+                    setGroupageFee(Number(e.target.value))}}
+                  value={groupageTransFee|| ""}
+                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
+                />
+                <Button onClick={handleUpdateInfo} disabled={loading}>
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => {
+                    setEditTransport1(false);
+                    setGroupageFee(data?.groupageTransportFee);
+                  }}
+                >
+                  <RxCross2 />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex relative gap-2 flex-shrink mp mt-4">
+              <p>
+                Full container
+                <span className="text-gray-900 font-semibold ml-2">
+                  {data?.fullTransportFee}
+                </span>
+              </p>
+              <span
+                className={
+                  editTransport2
+                    ? "hidden"
+                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
+                }
+                onClick={() => setEditTransport2(true)}
+              >
+                <LuPencilLine />
+              </span>
+              <div
+                className={
+                  editTransport2
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 top-4"
+                    : "hidden"
+                }
+              >
+                <Input
+                  type="number"
+                  placeholder="Enter rate"
+                  onChange={(e) => setConatinerTransFee(Number(e.target.value))}
+                  value={fullConatinerTransFee|| ""}
+                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
+                />
+                <Button onClick={handleUpdateInfo} disabled={loading}>
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => {
+                    setEditTransport2(false);
+                    setConatinerTransFee(data?.fullTransportFe);
                   }}
                 >
                   <RxCross2 />
