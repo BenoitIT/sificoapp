@@ -40,7 +40,7 @@ const Page = () => {
     }
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
-    usePagination(data?.customers, currentPage);
+    usePagination(data, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Deliveries"));
   }, [dispatch]);
@@ -109,5 +109,5 @@ export default withRolesAccess(SuspensePage, [
   "origin agent",
   "admin",
   "finance",
-  "head of finance"
-])as React.FC;
+  "head of finance",
+]) as React.FC;
