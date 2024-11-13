@@ -83,7 +83,7 @@ export const GET = async (req: Request) => {
         containerNo: report.code,
         transportFee: formatCurrency(report.transportFee),
         clearingTransit: formatCurrency(totals.localCharges),
-        lessContainer: formatCurrency(lessContainer),
+        lessContainer: formatCurrency(Math.abs(lessContainer)),
         freight: formatCurrency(totals.freight),
         cashAdvance: formatCurrency(totals.cashAdvance),
         nbrOfCustoms: report.stuffingreportItems.length,
