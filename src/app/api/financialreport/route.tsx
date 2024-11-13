@@ -73,14 +73,11 @@ export const GET = async (req: Request) => {
           : 0;
       const profitAmount =
         totals.freight -
-        lessContainer -
         report.transportFee -
-        report.extraCharges -
         totals.localCharges -
         totals.cashAdvance -
         totals.carHanging -
         handlingTotalAmount;
-
       return {
         id: report.id,
         containerNo: report.code,
