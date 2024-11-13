@@ -1,6 +1,6 @@
 import prisma from "../../../../../prisma/client";
 import { NextResponse } from "next/server";
-const revalidate=0;
+export const revalidate=0;
 export const GET = async () => {
   const users = await prisma.user.findMany({
     where: {
