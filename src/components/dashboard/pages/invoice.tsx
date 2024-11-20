@@ -537,7 +537,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                 </TableCell>
                 <TableCell>
                   {vat !== ""
-                    ? data?.freight +
+                    ? Intl.NumberFormat("en-Us").format(data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
                         100 +
@@ -547,8 +547,8 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                       data?.inspection +
                       data?.recovery +
                       data?.insurance +
-                      data?.jb
-                    : data?.blFee +
+                      data?.jb)
+                    : Intl.NumberFormat("en-Us").format(data?.blFee +
                       data?.localCharges +
                       data?.carHanging +
                       data?.inspection +
@@ -558,7 +558,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                       data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100}
+                        100)}
                 </TableCell>
               </TableRow>
             </TableFooter>

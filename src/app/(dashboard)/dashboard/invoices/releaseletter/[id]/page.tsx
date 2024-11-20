@@ -25,7 +25,7 @@ const Page = () => {
     dispatch(setPageTitle("Release letter"));
   }, [dispatch]);
 
-  const downLoadResease = async () => {
+  const downLoadResease = async (name:string) => {
     try {
       const currentRelease = divRef?.current;
       if (currentRelease) {
@@ -39,7 +39,7 @@ const Page = () => {
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas?.height * width) / canvas.width;
         pdf.addImage(imgData, "PNG", 0, 0, width, height);
-        pdf.save(`release-letter.pdf`);
+        pdf.save(`${name}-release-letter.pdf`);
       }
     } catch (err) {
       console.error(err);

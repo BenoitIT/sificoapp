@@ -12,6 +12,7 @@ import { ChangeEvent,useState } from "react";
 import { instruction } from "@/interfaces/instruction";
 import { updateShippinginstruction } from "@/app/httpservices/shippinginstruction";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 export const ShippingReportPreparationDetails = ({
   cacheKey,
   totalInwords,
@@ -23,6 +24,8 @@ export const ShippingReportPreparationDetails = ({
   itemsId: any;
   setTotalInwords: (val: string) => void;
 }) => {
+  const session:any=useSession();
+  const role=session?.data?.role;
   const [payload, setPayload] = useState<instruction>({
     deliveryTerm: "house to house",
     prepared: true,
@@ -70,7 +73,7 @@ export const ShippingReportPreparationDetails = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>Prepare</Button>
+        <Button className={role=="operation manager"?"hidden":""}>Prepare</Button>
       </PopoverTrigger>
       <PopoverContent className="w-[24rem] mr-4 shadow-lg border border-gray-300 border-t-0">
         <div className="grid gap-4">
