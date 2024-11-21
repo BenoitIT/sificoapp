@@ -24,21 +24,24 @@ import { MdLibraryAddCheck } from "react-icons/md";
 import { IoMdDoneAll } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 const Page = () => {
   const dispatch = useDispatch();
+  const param = useParams();
   const session: any = useSession();
   const currentPath = usePathname();
   const router = useRouter();
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const role = session?.data?.role;
+  const contId = param?.contid;
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
   const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
-    [invoiceEndpoint, searchValues, currentPage],
-    () => getAllinvoices(searchValues, currentPage),
+    [invoiceEndpoint, searchValues, currentPage, contId],
+    () => getAllinvoices(Number(contId), searchValues, currentPage),
     {
       onSuccess: (data: invoice[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
@@ -47,7 +50,9 @@ const Page = () => {
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.invoices, currentPage);
   useEffect(() => {
-    dispatch(setPageTitle("Invoices"));
+    dispatch(
+      setPageTitle(`${data?.invoices[0]?.containerId ?? ""}` + `-` + "Invoices")
+    );
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -140,4 +145,8 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["finance", "admin","head of finance"]) as React.FC;
+export default withRolesAccess(SuspensePage, [
+  "finance",
+  "admin",
+  "head of finance",
+]) as React.FC;

@@ -31,6 +31,8 @@ export interface NewStuffingItem {
   totalUsd?:number;
   instructionPrepared?: boolean;
   invoiceInfo?:any[]
+  portOfdischarge?:string;
+  totalinwords?:string;
 }
 export interface NewStuffingItemErrors {
   shipper?: string | null;

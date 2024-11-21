@@ -38,10 +38,18 @@ const StepTwoForm = ({
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    let sanitizedValue = e.target.value;
     if (e.target.type == "number") {
+      if (sanitizedValue.startsWith("0") && sanitizedValue.length > 1) {
+        sanitizedValue = sanitizedValue.replace(/^0+/, "");
+      }
+      if (Number(sanitizedValue) <= 0) {
+        sanitizedValue = "0";
+      }
+      const numericValue = sanitizedValue;
       setItemsData((prevState: NewStuffingItem) => ({
         ...prevState,
-        [e.target.name]: Number(e.target.value),
+        [e.target.name]: numericValue,
       }));
       if (e.target.name == "line") {
         const freightValue =
@@ -81,11 +89,11 @@ const StepTwoForm = ({
     const blFee = form.elements.namedItem("blFee") as HTMLInputElement;
     if (description.value === "") {
       ErrorLogger("description", "Description  is required.");
-    } else if (Jb.value === "" || !Number(Jb.value)) {
+    } else if (Jb.value === "") {
       ErrorLogger("jb", "Job advance is required.");
-    } else if (Line.value == "" || !Number(Line.value)) {
+    } else if (Line.value == "") {
       ErrorLogger("line", "Numerical value for line is required.");
-    } else if (blFee.value == "" || !Number(blFee.value)) {
+    } else if (blFee.value == "") {
       ErrorLogger("blFee", "Numerical value for blFee is required.");
     } else {
       setActiveForm(3);
@@ -131,7 +139,7 @@ const StepTwoForm = ({
                 name="line"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.line || ""}
+                value={newItemPayload?.line}
                 onChange={handleChange}
                 className={
                   errors?.line
@@ -154,7 +162,7 @@ const StepTwoForm = ({
                 name="freight"
                 type="number"
                 placeholder="type.."
-                value={Number(newItemPayload.freight) || ""}
+                value={Number(newItemPayload.freight)}
                 className={
                   errors["freight"]
                     ? "text-xs text-red-500 border-red-500"
@@ -189,9 +197,10 @@ const StepTwoForm = ({
                 id="blFee"
                 name="blFee"
                 type="number"
+                min={0}
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.blFee || ""}
+                value={newItemPayload?.blFee}
                 className={
                   errors?.blFee
                     ? "text-xs text-red-500 border-red-500"
@@ -214,7 +223,7 @@ const StepTwoForm = ({
                 placeholder="type.."
                 type="number"
                 onChange={handleChange}
-                value={newItemPayload?.jb || ""}
+                value={newItemPayload?.jb}
                 className={
                   errors?.jb
                     ? "text-xs text-red-500 border-red-500"
@@ -253,7 +262,7 @@ const StepTwoForm = ({
                 type="number"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.handling || ""}
+                value={newItemPayload?.handling}
                 className={
                   errors?.handling
                     ? "text-xs text-red-500 border-red-500"
@@ -273,7 +282,7 @@ const StepTwoForm = ({
                 name="inspection"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.inspection || ""}
+                value={newItemPayload?.inspection}
                 onChange={handleChange}
                 className={"placeholder:text-gray-400"}
               />
@@ -285,7 +294,7 @@ const StepTwoForm = ({
                 name="carHanging"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.carHanging || ""}
+                value={newItemPayload?.carHanging}
                 onChange={handleChange}
                 className={"placeholder:text-gray-400"}
               />
@@ -300,7 +309,7 @@ const StepTwoForm = ({
                 type="number"
                 placeholder="type.."
                 onChange={handleChange}
-                value={newItemPayload?.recovery || ""}
+                value={newItemPayload?.recovery}
                 className={
                   errors?.handling
                     ? "text-xs text-red-500 border-red-500"
@@ -320,7 +329,7 @@ const StepTwoForm = ({
                 name="insurance"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.insurance || ""}
+                value={newItemPayload?.insurance}
                 onChange={handleChange}
                 className={"placeholder:text-gray-400"}
               />
@@ -332,7 +341,7 @@ const StepTwoForm = ({
                 name="localCharges"
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.localCharges || ""}
+                value={newItemPayload?.localCharges}
                 onChange={handleChange}
                 className={"placeholder:text-gray-400"}
               />

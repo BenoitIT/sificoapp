@@ -178,6 +178,17 @@ export const POST = async (req: NextRequest) => {
     const stuffingRptId = req.url.split("stuffingreports/")[1];
     const body = await req.json();
     const date = new Date();
+    body.noOfPkgs = Number(body.noOfPkgs);
+    body.weight=Number(body.weight);
+    body.handling  = Number(body.handling ?? 0);
+    body.blFee = Number(body.blFee ?? 0);
+    body.jb = Number(body.jb ?? 0);
+    body.inspection = Number(body.inspection ?? 0);
+    body.insurance = Number(body.insurance ?? 0);
+    body.localCharges = Number(body.localCharges ?? 0);
+    body.recovery = Number(body.recovery ?? 0);
+    body.carHanging = Number(body.carHanging ?? 0);
+    body.line=Number(body.line ?? 0);
     const validation = stuffingItemSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json({
@@ -207,7 +218,7 @@ export const POST = async (req: NextRequest) => {
       const code = body.code ?? "";
       const noOfPkgs = body.noOfPkgs;
       const typeOfPkg = body.typeOfPkg ?? "";
-      const weight = body.weight;
+      const weight =body.weight;
       const handling = body.handling ?? 0;
       const cbm = body.cbm ?? 0;
       const description = body.description ?? "";
@@ -287,6 +298,8 @@ export const POST = async (req: NextRequest) => {
             carHanging: carHanging,
             totalUsd: totalUsd,
             totalAed: totalAed,
+            totalinwords:body.totalinwords,
+            portOfdischarge:body.portOfdischarge
           },
         });
         const shiipingInstruction = await prisma.shippingInstruction.create({
@@ -296,7 +309,6 @@ export const POST = async (req: NextRequest) => {
             prepared: false,
             finaldeliverId: body.destination,
             deliveryTerm: "",
-            totalamountinword: "total",
             itemId: stuffingreportItem.id,
             portOfdischarge: "",
           },

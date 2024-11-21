@@ -122,3 +122,17 @@ export const PayInvoice = async (
     console.log(err);
   }
 };
+export const getAllContainers = async (
+  searchValues: string,
+  currentPage: number
+) => {
+  try {
+    const response = await sifcoApi.get(
+      stuffingReportEndpoint +
+        `/all?search=${searchValues}&page=${currentPage}`
+    );
+    return response.data.data;
+  } catch (err) {
+    console.error(err);
+  }
+};

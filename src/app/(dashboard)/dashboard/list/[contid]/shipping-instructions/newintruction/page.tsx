@@ -1,5 +1,4 @@
 "use client";
-import useSWR from "swr";
 import {
   Card,
   CardContent,
@@ -11,50 +10,57 @@ import { useEffect, useState } from "react";
 import {
   NewStuffingItem,
   NewStuffingItemErrors,
+  StuffingReportTotals,
 } from "@/interfaces/stuffingItem";
 import SetpOneForm from "./(steps)/stepOne";
 import StepTwoForm from "./(steps)/stepTwo";
-import { useParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import {
-  getStuffingReportsItemsDetail,
-  stuffingReportEndpoint,
-} from "@/app/httpservices/stuffingReport";
+import StepThree from "./(steps)/review";
+import { getStuffingReportsItems } from "@/app/httpservices/stuffingReport";
+import useSWR from "swr";
+import { StuffingReport } from "@/interfaces/stuffingreport";
+import { useParams } from "next/navigation";
 import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
-  const params: any = useParams();
-  const itemsId = params?.id;
-  const invoiceId = params?.itmid;
-  const { data: item } = useSWR(stuffingReportEndpoint, () =>
-    getStuffingReportsItemsDetail(Number(itemsId), Number(invoiceId))
-  );
-  const [newItemPayload, setItemsData] = useState<NewStuffingItem>({});
+  const params = useParams();
+  const staffReportId = params?.contid;
+  const [newItemPayload, setItemsData] = useState<NewStuffingItem>({
+    type: "lines",
+  });
   const [errors, setValidationErrors] = useState<NewStuffingItemErrors>({});
   const [activeForm, setActiveForm] = useState<number>(1);
+  const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
+  const { data, isLoading, error } = useSWR(
+    [cacheKey],
+    () => getStuffingReportsItems(Number(staffReportId)),
+    {
+      onSuccess: (data: {
+        shipments: NewStuffingItem[];
+        stuffingRpt: StuffingReport;
+        totals: StuffingReportTotals;
+      }) => data.shipments.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
+    }
+  );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle("Update stuff"));
+    dispatch(setPageTitle("New shipping instruction"));
   }, [dispatch]);
-  useEffect(() => {
-    setItemsData(item);
-  }, [item]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: NewStuffingItemErrors) => ({
       ...prevState,
       [errorKey]: errorMessage,
     }));
   };
-
+ console.info(isLoading)
+ console.info(error)
   return (
-    <div className="w-full min-h-[88vh] flex justify-center items-center">
+    <div className="w-full min-h-[88vh] flex justify-center items-center flex-col gap-2">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">
-            Invoice: {newItemPayload?.invoiceNo}
-          </CardTitle>
+          <CardTitle className="text-xl text-center">New instruction</CardTitle>
           <CardDescription className="text-center">
-            Update needed details in provided fields. Note that all fields with
+            Enter all details in provided fields. Note that all fields with
             <br />
             <span className="text-sm">
               (<span className="text-red-500 text-base">*</span>) are mandatory
@@ -71,7 +77,7 @@ const Page = () => {
               newItemPayload={newItemPayload}
               setActiveForm={setActiveForm}
             />
-          ) : (
+          ) : activeForm == 2 ? (
             <StepTwoForm
               setItemsData={setItemsData}
               setValidationErrors={setValidationErrors}
@@ -80,10 +86,17 @@ const Page = () => {
               newItemPayload={newItemPayload}
               setActiveForm={setActiveForm}
             />
+          ) : (
+            <StepThree
+              newItemPayload={newItemPayload}
+              setActiveForm={setActiveForm}
+              currentTotals={data?.totals}
+              setItemsData={setItemsData}
+            />
           )}
         </CardContent>
       </Card>
     </div>
   );
 };
-export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;
+export default withRolesAccess(Page, ["origin agent"]) as React.FC;

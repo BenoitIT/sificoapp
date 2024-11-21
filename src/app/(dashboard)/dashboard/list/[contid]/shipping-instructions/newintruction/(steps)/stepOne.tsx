@@ -103,10 +103,17 @@ const SetpOneForm = ({
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    let sanitizedValue = e.target.value;
     if (e.target.type == "number") {
+      if (sanitizedValue.startsWith("0") && sanitizedValue.length > 1) {
+        sanitizedValue = sanitizedValue.replace(/^0+/, "");
+      }
+      if (Number(sanitizedValue) <= 0) {
+        sanitizedValue = "0";
+      }
       setItemsData((prevState: NewStuffingItem) => ({
         ...prevState,
-        [e.target.name]: Number(e.target.value),
+        [e.target.name]: Number(sanitizedValue),
       }));
     } else {
       setItemsData((prevState: NewStuffingItem) => ({
@@ -132,7 +139,7 @@ const SetpOneForm = ({
       ErrorLogger("consignee", "Consignee must be chosen.");
     } else if (!newItemPayload.destination) {
       ErrorLogger("destination", "Final delivery place must be chosen.");
-    } else if (weight.value == "" || !Number(weight.value)) {
+    } else if (weight.value == "") {
       ErrorLogger("weight", "weight is required.");
     } else {
       setActiveForm(2);
@@ -326,9 +333,10 @@ const SetpOneForm = ({
               <Input
                 id="weight"
                 name="weight"
+                min={0}
                 type="number"
                 placeholder="type.."
-                value={newItemPayload?.weight || ""}
+                value={newItemPayload?.weight}
                 onChange={handleChange}
                 className={
                   errors["weight"]

@@ -1,6 +1,11 @@
 "use client";
 import { FaEye } from "react-icons/fa";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import {
+  useRouter,
+  usePathname,
+  useSearchParams,
+  useParams,
+} from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { Suspense, useEffect, useState, useCallback } from "react";
@@ -18,10 +23,16 @@ import {
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import { useSession } from "next-auth/react";
+import { FaEdit } from "react-icons/fa";
+import { deleteStuffingReportsItemsDetail } from "@/app/httpservices/stuffingReport";
+import { toast } from "react-toastify";
+import { mutate } from "swr";
 import useDebounce from "@/app/utilities/debouce";
+import { MdDelete } from "react-icons/md";
 
 const Page = () => {
   const router = useRouter();
+  const param = useParams();
   const currentPath = usePathname();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -33,11 +44,16 @@ const Page = () => {
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
+  const contId = param?.contid;
   const fetcher = useCallback(async () => {
     if (role === "operation manager" && userId) {
       return getShippinginstructioninLocation(userId, searchValue, currentPage);
     } else {
-      return getAllshippinginstructions(userId,searchValues, currentPage);
+      return getAllshippinginstructions(
+        Number(contId),
+        searchValues,
+        currentPage
+      );
     }
   }, [role, userId, searchValues, currentPage]);
   const { data, isLoading, error } = useSWR(
@@ -65,9 +81,30 @@ const Page = () => {
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
   };
-
+  const handleEdit = async (id: number | string) => {
+    router.push(`${currentPath}/edit/${id}`);
+  };
+  const handleDelete = async (id: number) => {
+    const response = await deleteStuffingReportsItemsDetail(Number(id), id);
+    if (response.status == 200) {
+      toast.success(response.message);
+      mutate(shippinginstructionEndpoint);
+    } else {
+      toast.error(response.message);
+    }
+  };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
+    {
+      icon: <FaEdit className={role !== "origin agent" ? "hidden" : ""} />,
+      Click: handleEdit,
+      name: "edit",
+    },
+    {
+      icon: <MdDelete className={role !== "origin agent" ? "hidden" : ""} />,
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
 
   if (isLoading) return <Loader />;

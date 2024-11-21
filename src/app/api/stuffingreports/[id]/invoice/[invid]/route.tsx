@@ -68,7 +68,7 @@ export const GET = async (req: Request) => {
         approvedAt: stuffingRptItems.invoice[0]?.approvedAt,
         paymentStatus: stuffingRptItems.invoice[0]?.paidInFull,
         totalAmountInWords:
-          stuffingRptItems.invoice[0]?.totalAmountInWords || "total",
+          stuffingRptItems.totalinwords  || "total",
         jb: stuffingRptItems.jb,
         invoiceNo: stuffingRptItems.invoiceNo,
         carHanging: stuffingRptItems.carHanging,
@@ -104,7 +104,6 @@ export const POST = async (req: NextRequest) => {
     const newInvoice = await prisma.invoice.create({
       data: {
         vat: body.vat,
-        totalAmountInWords: body.totalAmountInWords,
         detailsId: body.detailsId,
         staffid: body.createdBy,
       },
@@ -112,7 +111,6 @@ export const POST = async (req: NextRequest) => {
     if (newInvoice) {
       return NextResponse.json({
         status: 201,
-        message: "Invoice is generated successfully.",
       });
     }
   } catch (err) {

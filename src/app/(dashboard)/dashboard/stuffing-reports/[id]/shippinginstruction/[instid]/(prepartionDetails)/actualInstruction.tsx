@@ -22,13 +22,17 @@ import html2Canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
+import { useSession } from "next-auth/react";
 
 const ShippingInstruction = () => {
+  const session: any = useSession();
   const documentRef = useRef<HTMLDivElement>(null);
   const params = useParams();
   const router = useRouter();
   const currentPath = usePathname();
   const itemsId = params?.instid;
+  const containerid = params?.id;
+  const staffId = session?.data?.id;
   const cacheKey = `/shippinginstruction/${itemsId}`;
   const dispatch = useDispatch();
   const [totalInwords, setTotalInwords] = useState<string>("");
@@ -77,6 +81,10 @@ const ShippingInstruction = () => {
       }
     }
   };
+  const payload = {
+    detailsId: data?.stuffingReportItems?.invoiceNo,
+    createdBy: staffId,
+  };
   const handleOpenInvoice = async () => {
     router.push(`${currentPath}/invoice/${itemsId}`);
   };
@@ -116,10 +124,10 @@ const ShippingInstruction = () => {
           <div className="flex gap-2 flex-wrap">
             <div className={data?.prepared ? "hidden" : "flex"}>
               <ShippingReportPreparationDetails
-                totalInwords={totalInwords}
                 cacheKey={cacheKey}
                 itemsId={itemsId}
-                setTotalInwords={setTotalInwords}
+                containerid={containerid}
+                invPayload={payload}
               />
             </div>
             <div className={!data?.prepared ? "hidden" : "flex"}>
@@ -275,8 +283,8 @@ const ShippingInstruction = () => {
                   colSpan={2}
                   className="border-l border-r border-black border-b"
                 >
-                  {data?.portOfdischarge?.length > 0
-                    ? data?.portOfdischarge
+                  {data?.stuffingReportItems?.portOfdischarge?.length > 0
+                    ? data?.stuffingReportItems?.portOfdischarge
                     : "-"}
                 </TableCell>
               </TableRow>
@@ -555,7 +563,7 @@ const ShippingInstruction = () => {
                   <span className="font-bold">
                     Amount in words:
                     <span className="ml-2 capitalize">
-                      {data?.totalamountinword}
+                      {data?.stuffingReportItems?.totalinwords}
                     </span>
                   </span>
                 </TableCell>

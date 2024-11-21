@@ -2,12 +2,13 @@ import { instruction } from "@/interfaces/instruction";
 import { sifcoApi } from "./axios";
 export const shippinginstructionEndpoint = "/shippinginstruction";
 export const getAllshippinginstructions = async (
+  contId:number,
   searchValue?: string,
   pageNum?: number
 ) => {
   try {
     const response = await sifcoApi.get(
-      shippinginstructionEndpoint + `?search=${searchValue}&page=${pageNum}`
+      shippinginstructionEndpoint + `?contid=${contId}&search=${searchValue}&page=${pageNum}`
     );
     return { data: response.data.data, count: response.data.count };
   } catch (err) {

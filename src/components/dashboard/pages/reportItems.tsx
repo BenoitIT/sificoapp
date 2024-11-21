@@ -6,8 +6,7 @@ import {
 } from "@/app/httpservices/stuffingReport";
 import TabularSection from "@/appComponents/pageBlocks/tabularSection";
 import { Button } from "@/components/ui/button";
-import { SearchBox } from "@/components/ui/searchBox";
-import { useRouter, usePathname, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   Popover,
   PopoverContent,
@@ -27,8 +26,7 @@ import { StuffingReport } from "@/interfaces/stuffingreport";
 import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
-import { useSession } from "next-auth/react";
-import ExportButton from "@/components/ui/exportBtn";
+import Back from "@/components/ui/back";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { NewDelivery } from "@/interfaces/deliveries";
@@ -37,10 +35,7 @@ import {
   getAllDeliveriesUnpaginated,
 } from "@/app/httpservices/deliveries";
 const StaffingReportsItems = () => {
-  const router = useRouter();
   const params = useParams();
-  const session: any = useSession();
-  const role = session?.data?.role;
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
   const staffReportId = params?.id;
@@ -59,12 +54,6 @@ const StaffingReportsItems = () => {
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
-  const currentPath: string | null = usePathname();
-  const handleAddNew = () => {
-    router.push(
-      `${currentPath}/newitem?category=${data?.stuffingRpt?.packagingType}`
-    );
-  };
   useEffect(() => {
     setPayload(stuffingreport);
   }, [stuffingreport]);
@@ -101,7 +90,6 @@ const StaffingReportsItems = () => {
     } else {
       try {
         delete payload.id;
-        delete payload.code;
         delete payload.destination;
         const { message, status } = await updateStuffingReport(
           Number(staffReportId),
@@ -132,7 +120,7 @@ const StaffingReportsItems = () => {
             <span className="font-medium"> {data?.stuffingRpt?.blCode}</span>
           </p>
           <p className=" text-gray-600">
-            Packaging type:
+            Container type:
             <span className="font-medium">
               {" "}
               {data?.stuffingRpt?.packagingType}
@@ -158,132 +146,151 @@ const StaffingReportsItems = () => {
               {data?.stuffingRpt?.stuffingstatus?.toLowerCase()}
             </span>
           </p>
-        </div>
-        <div
-          className={
-            data?.stuffingRpt?.stuffingstatus?.toLowerCase() == "preview"
-              ? "w-full md:w-[400px] flex flex-col-reverse gap-2"
-              : "hidden"
-          }
-        >
-          <div className="flex justify-end">
-            <SearchBox />
-          </div>
-          <div
-            className={
-              role == "origin agent"
-                ? "flex gap-2 justify-end w-full"
-                : "hidden"
-            }
-          >
-            <div className="flex gap-2 justify-end w-full">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button>Update</Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 mr-4 shadow-md">
-                  <form className="w-full" onSubmit={handleSubmit}>
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none">
-                          Update {data?.stuffingRpt?.code}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Edit delivery information for the stuffs
-                        </p>
-                      </div>
-                      <div className="grid gap-3">
-                        <div className="grid gap-2 text-sm text-gray-700">
-                          <Label>Origin</Label>
-                          <Input
-                            type="text"
-                            placeholder={data?.stuffingRpt?.origin}
-                            name="origin"
-                            value={payload?.origin || data?.stuffingRpt?.origin}
-                            onChange={handleChange}
-                            className={
-                              validationErrors.origin
-                                ? "text-xs text-red-500 border-red-500"
-                                : "placeholder:text-black"
-                            }
-                          />
-                          <span
-                            className={
-                              validationErrors.origin
-                                ? "text-xs text-red-500"
-                                : "hidden"
-                            }
-                          >
-                            {validationErrors.origin}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
-                          <Label>Container status</Label>
-                          <Select onValueChange={handleSelectStatusChange}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue
-                                placeholder={data?.stuffingRpt?.status}
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="available">
-                                Available
-                              </SelectItem>
-                              <SelectItem value="closed">Closed</SelectItem>
-                              <SelectItem value="full">Full</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
-                          <Label>Delivery</Label>
-                          <Select onValueChange={handleSelectChange}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {deliveries &&
-                                deliveries?.map((location: NewDelivery) => (
-                                  <SelectItem
-                                    key={location.id!}
-                                    value={location.id!.toString()}
-                                  >
-                                    {location.country +
-                                      "," +
-                                      location.deliveryName}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="grid gap-2 text-sm">
-                          <Label>Packaging type</Label>
-                          <RadioGroup
-                            defaultValue={data?.stuffingRpt?.packagingType}
-                            name="LCL"
-                            onValueChange={handlePkGingTypeChange}
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="LCL" id="r1" />
-                              <Label htmlFor="r1">Groupage (LCL)</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="FCL" id="r2" />
-                              <Label htmlFor="r2">Full Container (FCL)</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                      </div>
-                      <div className="w-full flex justify-between">
-                        <Button>save</Button>
-                      </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <span className="mt-1 ml-2 md:ml-0 font-bold text-blue-950 cursor-pointer">
+                Update container Info
+              </span>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 mr-4 shadow-md">
+              <form className="w-full" onSubmit={handleSubmit}>
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none">
+                      Update {data?.stuffingRpt?.code}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Edit delivery information for the stuffs
+                    </p>
+                  </div>
+                  <div className="grid gap-3">
+                    <div className="grid gap-2 text-sm text-gray-700">
+                      <Label>
+                        Container Number <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder="Ex: TFTZ3574483"
+                        name="code"
+                        onChange={handleChange}
+                        value={payload?.code || data?.stuffingRpt?.code}
+                        className={
+                          validationErrors.code
+                            ? "text-xs text-red-500 border-red-500"
+                            : "placeholder:text-gray-400"
+                        }
+                      />
+                      <span
+                        className={
+                          validationErrors.code
+                            ? "text-xs text-red-500"
+                            : "hidden"
+                        }
+                      >
+                        {validationErrors.code}
+                      </span>
                     </div>
-                  </form>
-                </PopoverContent>
-              </Popover>
-              <Button onClick={handleAddNew}>Add new item</Button>
-              <ExportButton />
-            </div>
-          </div>
+                    <div className="grid gap-2 text-sm text-gray-700">
+                      <Label>BL Number</Label>
+                      <Input
+                        type="text"
+                        placeholder="write..."
+                        name="blCode"
+                        onChange={handleChange}
+                        value={payload?.blCode || data?.stuffingRpt?.blCode}
+                        className={
+                          validationErrors.blCode
+                            ? "text-xs text-red-500 border-red-500"
+                            : "placeholder:text-gray-400"
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-2 text-sm text-gray-700">
+                      <Label>Origin</Label>
+                      <Input
+                        type="text"
+                        placeholder={data?.stuffingRpt?.origin}
+                        name="origin"
+                        value={payload?.origin || data?.stuffingRpt?.origin}
+                        onChange={handleChange}
+                        className={
+                          validationErrors.origin
+                            ? "text-xs text-red-500 border-red-500"
+                            : "placeholder:text-black"
+                        }
+                      />
+                      <span
+                        className={
+                          validationErrors.origin
+                            ? "text-xs text-red-500"
+                            : "hidden"
+                        }
+                      >
+                        {validationErrors.origin}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                      <Label>Container status</Label>
+                      <Select onValueChange={handleSelectStatusChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={data?.stuffingRpt?.status}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="available">Available</SelectItem>
+                          <SelectItem value="closed">Closed</SelectItem>
+                          <SelectItem value="full">Full</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
+                      <Label>Delivery</Label>
+                      <Select onValueChange={handleSelectChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {deliveries &&
+                            deliveries?.map((location: NewDelivery) => (
+                              <SelectItem
+                                key={location.id!}
+                                value={location.id!.toString()}
+                              >
+                                {location.country + "," + location.deliveryName}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid gap-2 text-sm">
+                      <Label>Packaging type</Label>
+                      <RadioGroup
+                        defaultValue={data?.stuffingRpt?.packagingType}
+                        name="LCL"
+                        onValueChange={handlePkGingTypeChange}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="LCL" id="r1" />
+                          <Label htmlFor="r1">Groupage (LCL)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="FCL" id="r2" />
+                          <Label htmlFor="r2">Full Container (FCL)</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between">
+                    <Button>save</Button>
+                  </div>
+                </div>
+              </form>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div className="flex gap-2 h-fit">
+          <Back />
         </div>
       </div>
     </div>

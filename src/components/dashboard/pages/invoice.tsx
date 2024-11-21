@@ -13,7 +13,6 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  generateInvoice,
   getStuffingReportsItemsInvoice,
   PayInvoice,
 } from "@/app/httpservices/stuffingReport";
@@ -41,7 +40,6 @@ interface invoiceProps {
 }
 const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
   const session: any = useSession();
-  const staffId = session?.data?.id;
   const currentUserName = session?.data?.firstname;
   const cacheKey = `stuffingreports/${itemsId}/invoice/${invoiceId}`;
   const dispatch = useDispatch();
@@ -62,18 +60,8 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
     if (totalInwords == "" && !data?.totalAmountInWords) {
       return toast.error("Write total amount in words please.");
     }
-    const payload = {
-      vat: Number(vat),
-      totalAmountInWords: totalInwords,
-      detailsId: data?.invoiceNo,
-      createdBy: staffId,
-    };
+
     try {
-      if (totalInwords) {
-        const message = await generateInvoice(itemsId, invoiceId, payload);
-        toast.success(message);
-      }
-      console.warn("loaded",isImageLoaded)
       if (invoice) {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -97,7 +85,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
           unit: "px",
           format: "a4",
         });
-
+        console.info(isImageLoaded)
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas.height * width) / canvas.width;
 
