@@ -83,12 +83,6 @@ export const menuItems = [
         visible: ["admin", "finance", "head of finance"],
       },
       {
-        icon: <BsCashCoin />,
-        label: "Invoices",
-        href: "/opmanager/containerslist",
-        visible: ["operation manager"],
-      },
-      {
         icon: <SiPayoneer />,
         label: "Containers payments",
         href: "/dashboard/containerspayment",

@@ -269,9 +269,9 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
               </div>
             </div>
           </div>
-          <div className="w-full text-base font-semibold py-3 mt-2">
+          <div className="w-full text-base font-semibold py-3 mt-14">
             <p className="text-center uppercase">
-              <span className="ml-0 lg:-ml-[250px]">Invoice</span>
+              <span className="ml-0 lg:-ml-[250px] text-3xl">Invoice</span>
             </p>
           </div>
           <Table>
