@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mutate } from "swr";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,39 +7,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChangeEvent,useState } from "react";
+import { useState } from "react";
 import { instruction } from "@/interfaces/instruction";
 import { updateShippinginstruction } from "@/app/httpservices/shippinginstruction";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { generateInvoice } from "@/app/httpservices/stuffingReport";
 export const ShippingReportPreparationDetails = ({
   cacheKey,
-  totalInwords,
+  containerid,
   itemsId,
-  setTotalInwords,
+  invPayload,
 }: {
-  totalInwords: string;
+  containerid: any;
   cacheKey: string;
   itemsId: any;
-  setTotalInwords: (val: string) => void;
+  invPayload: any;
 }) => {
+  const session: any = useSession();
+  const role = session?.data?.role;
   const [payload, setPayload] = useState<instruction>({
     deliveryTerm: "house to house",
     prepared: true,
   });
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.type == "number") {
-      setPayload((prev: instruction) => ({
-        ...prev,
-        [e.target.name]: Number(e.target.value),
-      }));
-    } else {
-      setPayload((prev: instruction) => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-      }));
-    }
-  };
+
   const handleRadioChange = (value: string) => {
     setPayload((prev) => ({
       ...prev,
@@ -48,9 +38,6 @@ export const ShippingReportPreparationDetails = ({
     }));
   };
   const handleSubmit = async () => {
-    if (totalInwords !== "") {
-      payload.totalamountinword = totalInwords;
-    }
     try {
       const { message, status }: any = await updateShippinginstruction(
         Number(itemsId),
@@ -59,6 +46,8 @@ export const ShippingReportPreparationDetails = ({
       if (status == 200) {
         toast.success(message);
         mutate(cacheKey);
+        const info = await generateInvoice(containerid, itemsId, invPayload);
+        toast.success(info);
       } else {
         toast.error(message);
       }
@@ -70,50 +59,19 @@ export const ShippingReportPreparationDetails = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>Prepare</Button>
+        <Button className={role == "operation manager" ? "hidden" : ""}>
+          Generate
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[24rem] mr-4 shadow-lg border border-gray-300 border-t-0">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none uppercase text-sm">
-              Fill the following fields
+              Confirm the following fields
             </h4>
             <p className="text-sm text-gray-800">
               .....................................................
             </p>
-          </div>
-          <div className="grid gap-2 text-sm text-gray-600 uppercase">
-            <Label>PORT OF DISCHARGE</Label>
-            <Input
-              type="text"
-              placeholder="Ex: Mombasa"
-              className="w-full border border-gray-400 placeholder:text-gray-300"
-              name="portOfdischarge"
-              onChange={handleChange}
-              value={payload?.portOfdischarge}
-            />
-          </div>
-          <div className="grid gap-2 text-sm text-gray-600 uppercase">
-            <Label>Prepared freight</Label>
-            <Input
-              type="number"
-              placeholder="Ex: 100"
-              className="w-full border border-gray-400 placeholder:text-gray-300"
-              name="prepaidFreight"
-              onChange={handleChange}
-              value={payload?.prepaidFreight}
-            />
-          </div>
-          <div className="grid gap-2 text-sm text-gray-600 uppercase">
-            <Label>prepared B/L Fee</Label>
-            <Input
-              type="number"
-              placeholder="Ex: 100"
-              className="w-full border border-gray-400 placeholder:text-gray-300"
-              name="prepaidBlFee"
-              onChange={handleChange}
-              value={payload?.prepaidBlFee}
-            />
           </div>
           <div className="grid gap-2 text-sm text-gray-600 uppercase">
             <Label>DELEIVERY TERM</Label>
@@ -132,19 +90,9 @@ export const ShippingReportPreparationDetails = ({
               </div>
             </RadioGroup>
           </div>
-          <div className="grid gap-2 text-sm text-gray-600 uppercase">
-            <Label>Total amount in word</Label>
-            <Input
-              type="text"
-              value={totalInwords}
-              onChange={(e) => setTotalInwords(e.target.value)}
-              placeholder="Ex: Twenty thousands dollars"
-              className="w-full border border-gray-400 placeholder:text-gray-300"
-            />
-          </div>
           <div className="w-full flex justify-between">
             <span className="text-sm text-blue-400">Click for preview</span>
-            <Button onClick={handleSubmit}>Save</Button>
+            <Button onClick={handleSubmit}>Confirm</Button>
           </div>
         </div>
       </PopoverContent>

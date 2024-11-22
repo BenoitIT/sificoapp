@@ -54,6 +54,7 @@ export const GET = async (req: Request) => {
           totalLines: acc.totalLines + Number(item.line),
           blFee: acc.blFee + Number(item.blFee),
           carHanging: acc.carHanging + Number(item.carHanging),
+          totalUsd: acc.totalUsd + Number(item.totalUsd),
         }),
         {
           localCharges: 0,
@@ -63,6 +64,7 @@ export const GET = async (req: Request) => {
           totalLines: 0,
           blFee: 0,
           carHanging: 0,
+          totalUsd: 0,
         }
       );
 
@@ -72,8 +74,9 @@ export const GET = async (req: Request) => {
           ? (42 - totals.totalLines - totals.handling) * report.freightRate
           : 0;
       const profitAmount =
-        totals.freight -
+        totals.totalUsd -
         report.transportFee -
+        report.seaFeee -
         totals.localCharges -
         totals.cashAdvance -
         totals.carHanging -
@@ -84,7 +87,7 @@ export const GET = async (req: Request) => {
         transportFee: formatCurrency(report.transportFee),
         clearingTransit: formatCurrency(totals.localCharges),
         lessContainer: formatCurrency(Math.abs(lessContainer)),
-        freight: formatCurrency(totals.freight),
+        totalUsdamt: formatCurrency(totals.totalUsd),
         cashAdvance: formatCurrency(totals.cashAdvance),
         nbrOfCustoms: report.stuffingreportItems.length,
         handling: formatCurrency(handlingTotalAmount),
@@ -94,7 +97,7 @@ export const GET = async (req: Request) => {
           report.extraCharges === 0
             ? "Not charged"
             : formatCurrency(report.extraCharges),
-        ysf: formatCurrency(totals.blFee),
+        ysf: formatCurrency(report.seaFeee),
       };
     });
     return NextResponse.json({

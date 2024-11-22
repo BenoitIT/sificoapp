@@ -126,24 +126,24 @@ const StepTwoForm = ({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="noOfPkgs">
-                JB<span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="line">Line</Label>
               <Input
-                id="jb"
-                name="jb"
-                placeholder="type.."
+                id="line"
+                name="line"
                 type="number"
-                value={newItemPayload?.jb}
+                placeholder="type.."
+                value={newItemPayload?.line}
                 onChange={handleChange}
                 className={
-                  errors?.jb
+                  errors?.line
                     ? "text-xs text-red-500 border-red-500"
                     : "placeholder:text-gray-400"
                 }
               />
-              <span className={errors?.jb ? "text-xs text-red-500" : "hidden"}>
-                {errors?.jb}
+              <span
+                className={errors?.line ? "text-xs text-red-500" : "hidden"}
+              >
+                {errors?.line}
               </span>
             </div>
             <div className="grid gap-2">
@@ -172,25 +172,26 @@ const StepTwoForm = ({
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="line">Line</Label>
+            
+          <div className="grid gap-2">
+              <Label htmlFor="noOfPkgs">
+                JB<span className="text-red-500">*</span>
+              </Label>
               <Input
-                id="line"
-                name="line"
-                type="number"
+                id="jb"
+                name="jb"
                 placeholder="type.."
-                value={newItemPayload?.line}
+                type="number"
+                value={newItemPayload?.jb}
                 onChange={handleChange}
                 className={
-                  errors?.line
+                  errors?.jb
                     ? "text-xs text-red-500 border-red-500"
                     : "placeholder:text-gray-400"
                 }
               />
-              <span
-                className={errors?.line ? "text-xs text-red-500" : "hidden"}
-              >
-                {errors?.line}
+              <span className={errors?.jb ? "text-xs text-red-500" : "hidden"}>
+                {errors?.jb}
               </span>
             </div>
             <div className="grid gap-2">
@@ -313,6 +314,44 @@ const StepTwoForm = ({
                 className={"placeholder:text-gray-400"}
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="tot">Total amount</Label>
+              <Input
+                id="tot"
+                name="tot"
+                type="number"
+                placeholder="type.."
+                onChange={handleChange}
+                value={newItemPayload?.totalUsd}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="portOfdischarge">port of discharge</Label>
+              <Input
+                id="portOfdischarge"
+                name="portOfdischarge"
+                type="text"
+                placeholder="type.."
+                value={newItemPayload?.portOfdischarge}
+                onChange={handleChange}
+                className={"placeholder:text-gray-400"}
+              />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="totalinwords">Total amount in word</Label>
+            <Input
+              id="totalinwords"
+              name="totalinwords"
+              type="text"
+              placeholder="type.."
+              value={newItemPayload?.totalinwords}
+              onChange={handleChange}
+              className={"placeholder:text-gray-400"}
+            />
           </div>
           <div className="flex justify-between gap-4">
             <Button

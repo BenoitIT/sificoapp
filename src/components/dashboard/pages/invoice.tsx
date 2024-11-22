@@ -13,7 +13,6 @@ import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  generateInvoice,
   getStuffingReportsItemsInvoice,
   PayInvoice,
 } from "@/app/httpservices/stuffingReport";
@@ -41,7 +40,6 @@ interface invoiceProps {
 }
 const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
   const session: any = useSession();
-  const staffId = session?.data?.id;
   const currentUserName = session?.data?.firstname;
   const cacheKey = `stuffingreports/${itemsId}/invoice/${invoiceId}`;
   const dispatch = useDispatch();
@@ -62,18 +60,8 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
     if (totalInwords == "" && !data?.totalAmountInWords) {
       return toast.error("Write total amount in words please.");
     }
-    const payload = {
-      vat: Number(vat),
-      totalAmountInWords: totalInwords,
-      detailsId: data?.invoiceNo,
-      createdBy: staffId,
-    };
+
     try {
-      if (totalInwords) {
-        const message = await generateInvoice(itemsId, invoiceId, payload);
-        toast.success(message);
-      }
-      console.warn("loaded",isImageLoaded)
       if (invoice) {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -97,7 +85,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
           unit: "px",
           format: "a4",
         });
-
+        console.info(isImageLoaded)
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas.height * width) / canvas.width;
 
@@ -281,9 +269,9 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
               </div>
             </div>
           </div>
-          <div className="w-full text-base font-semibold py-3 mt-2">
+          <div className="w-full text-base font-semibold py-3 mt-14">
             <p className="text-center uppercase">
-              <span className="ml-0 lg:-ml-[250px]">Invoice</span>
+              <span className="ml-0 lg:-ml-[250px] text-3xl">Invoice</span>
             </p>
           </div>
           <Table>
@@ -537,7 +525,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                 </TableCell>
                 <TableCell>
                   {vat !== ""
-                    ? data?.freight +
+                    ? Intl.NumberFormat("en-Us").format(data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
                         100 +
@@ -547,8 +535,8 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                       data?.inspection +
                       data?.recovery +
                       data?.insurance +
-                      data?.jb
-                    : data?.blFee +
+                      data?.jb)
+                    : Intl.NumberFormat("en-Us").format(data?.blFee +
                       data?.localCharges +
                       data?.carHanging +
                       data?.inspection +
@@ -558,7 +546,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                       data?.freight +
                       (data?.freight *
                         (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100}
+                        100)}
                 </TableCell>
               </TableRow>
             </TableFooter>

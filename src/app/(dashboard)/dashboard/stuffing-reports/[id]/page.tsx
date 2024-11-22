@@ -1,6 +1,6 @@
 "use client";
 import useSWR, { mutate } from "swr";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import StaffingReportsItems from "@/components/dashboard/pages/reportItems";
 import { headers } from "@/app/tableHeaders/staffingItems";
 import {
@@ -13,7 +13,6 @@ import { useEffect, useRef, useState } from "react";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
 import {
-  deleteStuffingReportsItemsDetail,
   generateStuffingReport,
   getStuffingReportsItems,
 } from "@/app/httpservices/stuffingReport";
@@ -72,29 +71,6 @@ const Page = () => {
       router.back();
     }
   }, [searchParams, data?.shipments, router, data?.stuffingRpt?.code]);
-  const handleEdit = async (id: number | string) => {
-    if (data?.status != "closed") {
-      router.push(`${currentPath}/edit/${id}`);
-    } else {
-      toast.error("This stuffing report is closed");
-    }
-  };
-  const handleDelete = async (id: number) => {
-    if (data?.status != "closed") {
-      const response = await deleteStuffingReportsItemsDetail(
-        Number(staffReportId),
-        id
-      );
-      if (response.status == 200) {
-        toast.success(response.message);
-        mutate(cacheKey);
-      } else {
-        toast.error(response.message);
-      }
-    } else {
-      toast.error("Could not delete this product.");
-    }
-  };
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/shippinginstruction/${id}`);
   };
@@ -118,15 +94,6 @@ const Page = () => {
   };
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
-    {
-      icon: <FaEdit className={role !== "origin agent" ? "hidden" : ""} />,
-      Click: handleEdit,
-    },
-    {
-      icon: <FaTrash className={role !== "origin agent" ? "hidden" : ""} />,
-      Click: handleDelete,
-      name: "delete",
-    },
   ];
   useEffect(() => {
     const allShippingInstructionAvailable =
@@ -157,13 +124,7 @@ const Page = () => {
       <div class="header-info">
         <p>Container number: ${headerInfo.containerNumber}</p>
         <p>BL Number: ${headerInfo.blNumber}</p>
-        <p>Packaging type: ${headerInfo.packagingType}</p>
-        <p>Container status: <span class="status-${headerInfo.containerStatus.toLowerCase()}">${
-      headerInfo.containerStatus
-    }</span></p>
-        <p>Stuffing report status: <span class="status-${headerInfo.reportStatus.toLowerCase()}">${
-      headerInfo.reportStatus
-    }</span></p>
+        <p>Container type: ${headerInfo.packagingType}</p>
       </div>
     `;
 

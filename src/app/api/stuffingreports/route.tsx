@@ -4,7 +4,6 @@ import stuffingreportValidationSchema from "../validations/stuffingreport";
 export const revalidate = 0;
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
-  const date = new Date();
   const validation = stuffingreportValidationSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json({
@@ -14,27 +13,18 @@ export const POST = async (req: NextRequest) => {
         validation.error.errors[0].message,
       status: 400,
     });
-  const previousstuffingReport = await prisma.stuffingreport.findFirst({
-    orderBy: { id: "desc" },
-  });
   const dependacies = await prisma.calculationDependancy.findFirst({});
-  const prevId = previousstuffingReport?.id ?? 0;
-  const stuffingReportID =
-    `${body.origin[0].toUpperCase()}${body.origin[1].toUpperCase()}${date.getDate()}${
-      date.getMonth() + 1
-    }${date.getFullYear()}` +
-    prevId +
-    1;
-  const blCode = `BLC${date.getFullYear()}` + prevId + 1;
   const status = "Available";
-  body.code = stuffingReportID;
   body.status = status;
   body.shipperId = body.shipper;
-  body.blCode = blCode;
   body.transportFee =
     body.packagingType == "LCL"
       ? dependacies?.groupageTransportFee
       : dependacies?.fullTransportFee;
+  body.seaFeee =
+    body.packagingType == "LCL"
+      ? dependacies?.groupageSeaFee
+      : dependacies?.fullContSeaFee;
   delete body.shipper;
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({

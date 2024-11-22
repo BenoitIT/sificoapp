@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
 interface LetterProps {
-  downLoadResease: () => void;
+  downLoadResease: (name:string) => void;
   divRef: any;
   itemsId: number;
   invoiceId: number;
@@ -31,7 +31,7 @@ const Letter = ({
         <div className="w-full flex flex-col-reverse md:flex-row  justify-between mb-4 gap-2">
           <Back />
           <div className="flex gap-2 justify-end w-full">
-            <Button variant="secondary" onClick={downLoadResease}>
+            <Button variant="secondary" onClick={()=>downLoadResease(data?.consigneeId)}>
               Download
             </Button>
           </div>

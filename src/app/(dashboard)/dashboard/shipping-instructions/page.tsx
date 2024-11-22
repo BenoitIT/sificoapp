@@ -37,7 +37,7 @@ const Page = () => {
     if (role === "operation manager" && userId) {
       return getShippinginstructioninLocation(userId, searchValue, currentPage);
     } else {
-      return getAllshippinginstructions(searchValues, currentPage);
+      return getAllshippinginstructions(userId,searchValues, currentPage);
     }
   }, [role, userId, searchValues, currentPage]);
   const { data, isLoading, error } = useSWR(

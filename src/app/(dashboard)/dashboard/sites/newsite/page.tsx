@@ -146,7 +146,7 @@ const Page = () => {
                 </span>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="siteCode">destination code</Label>
+                <Label htmlFor="siteCode">Location code</Label>
                 <Input
                   id="siteCode"
                   name="siteCode"

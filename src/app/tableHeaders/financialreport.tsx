@@ -3,7 +3,7 @@ export const FinancialRptHeaders = [
   { header: "Transport Fee", field: "transportFee" },
   { header: "Clearing/Transit/Entry", field: "clearingTransit" },
   { header: "Less Container", field: "lessContainer" },
-  { header: "Freight fee", field: "freight" },
+  { header: "Total Amount", field: "totalUsdamt" },
   { header: "Job Advance", field: "cashAdvance" },
   { header: "Nbr of Cstm", field: "nbrOfCustoms" },
   { header: "Handling", field: "handling" },

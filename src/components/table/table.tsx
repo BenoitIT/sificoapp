@@ -64,7 +64,7 @@ const DynamicTable = <T extends Record<string, string | number>>({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           data.map((row, rowIndex) => (
             <TableRow key={rowIndex} className="text-gray-700">
               <TableCell

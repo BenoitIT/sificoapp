@@ -30,6 +30,10 @@ const Page = () => {
   const [rate2, setRate2] = useState<number>();
   const [groupageTransFee, setGroupageFee] = useState<number>();
   const [fullConatinerTransFee, setConatinerTransFee] = useState<number>();
+  const [groupageSeaFee, setGroupageSeaFee] = useState<number>();
+  const [fullConatinerSeaFee, setConatinerSeaFee] = useState<number>();
+  const [editSeaFee1, setEditSeaFee1] = useState(false);
+  const [editSeaFee2, setEditSeaFee2] = useState(false);
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
@@ -45,6 +49,8 @@ const Page = () => {
       setRate2(data?.freightRateFullCont || 1);
       setGroupageFee(data?.groupageTransportFee);
       setConatinerTransFee(data?.fullTransportFee);
+      setGroupageSeaFee(data?.groupageSeaFee);
+      setConatinerSeaFee(data?.fullContSeaFee);
     }
   }, [data]);
   const handleUpdateInfo = async () => {
@@ -55,6 +61,8 @@ const Page = () => {
       freightRateFullCont: rate2 ?? data?.freightRateFullCont,
       groupageTransportFee: groupageTransFee ?? data?.groupageTransportFee,
       fullTransportFee: fullConatinerTransFee ?? data?.fullTransportFee,
+      groupageSeaFee: groupageSeaFee ?? data?.groupageSeaFee,
+      fullContSeaFee: fullConatinerSeaFee ?? data?.fullContSeaFee,
     };
     try {
       const response = await updateDepndancies(payload);
@@ -169,7 +177,7 @@ const Page = () => {
                   type="number"
                   placeholder="Enter rate"
                   onChange={(e) => setRate(Number(e.target.value))}
-                  value={rate|| ""}
+                  value={rate || ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -216,7 +224,7 @@ const Page = () => {
                   type="number"
                   placeholder="Enter rate"
                   onChange={(e) => setRate2(Number(e.target.value))}
-                  value={rate2|| ""}
+                  value={rate2 || ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -271,9 +279,10 @@ const Page = () => {
                 <Input
                   type="number"
                   placeholder="Enter rate"
-                  onChange={(e) =>{
-                    setGroupageFee(Number(e.target.value))}}
-                  value={groupageTransFee|| ""}
+                  onChange={(e) => {
+                    setGroupageFee(Number(e.target.value));
+                  }}
+                  value={groupageTransFee || ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -320,7 +329,7 @@ const Page = () => {
                   type="number"
                   placeholder="Enter rate"
                   onChange={(e) => setConatinerTransFee(Number(e.target.value))}
-                  value={fullConatinerTransFee|| ""}
+                  value={fullConatinerTransFee || ""}
                   className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
                 />
                 <Button onClick={handleUpdateInfo} disabled={loading}>
@@ -332,6 +341,111 @@ const Page = () => {
                   onClick={() => {
                     setEditTransport2(false);
                     setConatinerTransFee(data?.fullTransportFe);
+                  }}
+                >
+                  <RxCross2 />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-full w-full md:h-[150px] md:w-[750px] bg-white rounded-xl shadow py-2">
+          <div
+            className={
+              "w-full text-gray-600 mx-4 md:mx-8 flex flex-col text-sm"
+            }
+          >
+            <p className="font-semibold py-4 uppercase">BL Fee</p>
+            <div className="flex relative gap-2 flex-shrink">
+              <p>
+                Sea Fee(Groupage)
+                <span className="text-gray-900 font-semibold ml-2">
+                  {data?.groupageSeaFee}
+                </span>
+              </p>
+              <span
+                className={
+                  editSeaFee1
+                    ? "hidden"
+                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
+                }
+                onClick={() => setEditSeaFee1(true)}
+              >
+                <LuPencilLine />
+              </span>
+              <div
+                className={
+                  editSeaFee1
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-4 -top-1 ml-8"
+                    : "hidden"
+                }
+              >
+                <Input
+                  type="number"
+                  placeholder="Enter rate"
+                  onChange={(e) => {
+                    setGroupageSeaFee(Number(e.target.value));
+                  }}
+                  value={groupageSeaFee || ""}
+                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
+                />
+                <Button onClick={handleUpdateInfo} disabled={loading}>
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => {
+                    setEditSeaFee1(false);
+                    setGroupageSeaFee(data?.groupageSeaFee);
+                  }}
+                >
+                  <RxCross2 />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex relative gap-2 flex-shrink mp mt-4">
+              <p>
+                Sea Fee (Full container)
+                <span className="text-gray-900 font-semibold ml-2">
+                  {data?.fullContSeaFee}
+                </span>
+              </p>
+              <span
+                className={
+                  editSeaFee2
+                    ? "hidden"
+                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
+                }
+                onClick={() => setEditSeaFee2(true)}
+              >
+                <LuPencilLine />
+              </span>
+              <div
+                className={
+                  editSeaFee2
+                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 top-4"
+                    : "hidden"
+                }
+              >
+                <Input
+                  type="number"
+                  placeholder="Enter rate"
+                  onChange={(e) => setConatinerSeaFee(Number(e.target.value))}
+                  value={fullConatinerSeaFee || ""}
+                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
+                />
+                <Button onClick={handleUpdateInfo} disabled={loading}>
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => {
+                    setEditSeaFee2(false);
+                    setConatinerSeaFee(data?.fullContSeaFee);
                   }}
                 >
                   <RxCross2 />

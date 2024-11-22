@@ -4,19 +4,31 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { NewStuffingItem } from "@/interfaces/stuffingItem";
 import { useParams, useRouter } from "next/navigation";
-import { FormEvent } from "react";
+import { FormEvent, ChangeEvent } from "react";
 import { toast } from "react-toastify";
+import { Input } from "@/components/ui/input";
+
 interface StepFormProps {
   newItemPayload: NewStuffingItem;
+  setItemsData: (
+    value:
+      | Partial<NewStuffingItem>
+      | ((prevState: NewStuffingItem) => Partial<NewStuffingItem>)
+  ) => void;
   setActiveForm: (val: number) => void;
   currentTotals: any;
 }
-const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
+const StepThree = ({
+  setActiveForm,
+  newItemPayload,
+  setItemsData,
+}: StepFormProps) => {
   const params = useParams();
   const router = useRouter();
-  const staffReportId = params?.id;
+  const staffReportId = params?.contid;
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("idd",staffReportId)
     e.preventDefault();
     try {
       delete newItemPayload.id;
@@ -36,6 +48,26 @@ const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
       toast.error("Failed to record shipment.");
     }
   };
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.type == "number") {
+      setItemsData((prev: NewStuffingItem) => ({
+        ...prev,
+        [e.target.name]: Number(e.target.value),
+      }));
+    } else {
+      setItemsData((prev: NewStuffingItem) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+    }
+  };
+  const handletxtChange=(e:ChangeEvent<HTMLInputElement>)=>{
+    setItemsData((prev: NewStuffingItem) => ({
+      ...prev,
+      totalinwords: e.target.value,
+    }));
+  }
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <p className="text-center pb-1 mb-6 font-semibold text-gray-700 border-b border-gray-400">
@@ -173,6 +205,12 @@ const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
             </span>
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="mark">Inspection</Label>
+            <span className="w-full flex-shrink text-sm text-gray-600">
+              {newItemPayload?.inspection ?? "-"}
+            </span>
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="mark">Recovery</Label>
             <span className="w-full flex-shrink text-sm text-gray-600">
               {newItemPayload?.recovery ?? "-"}
@@ -189,6 +227,47 @@ const StepThree = ({ setActiveForm, newItemPayload }: StepFormProps) => {
             <span className="w-full flex-shrink text-sm text-gray-600">
               {newItemPayload?.localCharges ?? "-"}
             </span>
+          </div>
+        </div>
+        <div className="w-full flex justify-between p-2 bg-blue-900 text-white rounded text-sm">
+          <span className="uppercase ">
+            TOTAL Amount in usd
+            ........................................................................................
+          </span>
+          <span>
+            {Intl.NumberFormat("en-US").format(
+              Number(newItemPayload?.freight ?? 0) +
+                Number(newItemPayload?.blFee ?? 0) +
+                Number(newItemPayload?.jb ?? 0) +
+                Number(newItemPayload?.inspection ?? 0) +
+                Number(newItemPayload?.localCharges ?? 0) +
+                Number(newItemPayload?.insurance ?? 0) +
+                Number(newItemPayload?.carHanging ?? 0) +
+                Number(newItemPayload?.recovery ?? 0)
+            )}
+          </span>
+        </div>
+        <div className="grid grid-col-1 md:grid-cols-2 w-full gap-3 text-sm my-2">
+          <div className="grid gap-2 text-sm text-gray-600 uppercase">
+            <Label>Total amount in word</Label>
+            <Input
+              type="text"
+              value={newItemPayload?.totalinwords}
+              onChange={handletxtChange}
+              placeholder="Ex: Twenty thousands dollars"
+              className="w-full border border-gray-400 placeholder:text-gray-300"
+            />
+          </div>
+          <div className="grid gap-2 text-sm text-gray-600 uppercase">
+            <Label>PORT OF DISCHARGE</Label>
+            <Input
+              type="text"
+              placeholder="Ex: Mombasa"
+              className="w-full border border-gray-400 placeholder:text-gray-300"
+              name="portOfdischarge"
+              onChange={handleChange}
+              value={newItemPayload?.portOfdischarge}
+            />
           </div>
         </div>
         <div className="flex justify-between gap-4">

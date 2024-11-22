@@ -39,8 +39,20 @@ export const PUT = async (req: Request) => {
     const freight = body.freight ?? 0;
     const blFee = body.blFee ?? 0;
     const jb = body.blFee ?? 0;
-    const others = body.blFee ?? 0;
-    const totalUsd = freight + blFee + jb + others;
+    const inspection = body.inspection ?? 0;
+    const insurance = body.insurance ?? 0;
+    const localCharges = body.localCharges ?? 0;
+    const recovery = body.recovery ?? 0;
+    const carHanging = body.carHanging ?? 0;
+    const totalUsd =
+      freight +
+      blFee +
+      jb +
+      inspection +
+      localCharges +
+      insurance +
+      carHanging +
+      recovery;
     const totalAed = totalUsd * (dollarExchangeRate?.aed ?? 3.66);
     const stuffingRptItems = await prisma.stuffingreportItems.update({
       where: {
@@ -62,6 +74,13 @@ export const PUT = async (req: Request) => {
         freight: freight,
         blFee: blFee,
         jb: jb,
+        inspection: inspection,
+        insurance: insurance,
+        localCharges: localCharges,
+        recovery: recovery,
+        carHanging: carHanging,
+        totalinwords: body.totalinwords,
+        portOfdischarge: body.portOfdischarge,
         totalUsd: totalUsd,
         totalAed: totalAed,
       },
