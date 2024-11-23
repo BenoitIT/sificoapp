@@ -13,13 +13,11 @@ export const ItemsSummationTableFooter = ({ summation }: footer) => {
           Total
         </TableCell>
         <TableCell>{summation?.noOfPkgs}</TableCell>
-        <TableCell>PKGS</TableCell>
         <TableCell className="text-center">
           {Intl.NumberFormat("en-Us").format(summation?.weight ?? 0)}
         </TableCell>
         <TableCell className="text-center">{summation?.line}</TableCell>
         <TableCell className="text-center">{summation?.handling}</TableCell>
-        <TableCell className="text-center">LINES</TableCell>
         <TableCell className="text-center">
           {Intl.NumberFormat("en-Us").format(summation?.cbm ?? 0)}
         </TableCell>
@@ -46,7 +44,7 @@ export const ItemsSummationTableFooter = ({ summation }: footer) => {
           {Intl.NumberFormat("en-Us").format(summation?.inspection ?? 0)}
         </TableCell>
         <TableCell className="text-center">
-          {Intl.NumberFormat("en-Us").format(summation?.carLashing ?? 0)}
+          {Intl.NumberFormat("en-Us").format(summation?.localCharges ?? 0)}
         </TableCell>
         <TableCell className="text-center">
           {Intl.NumberFormat("en-Us").format(summation?.totalUsd ?? 0)}

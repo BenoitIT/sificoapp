@@ -70,13 +70,14 @@ export const GET = async (req: Request) => {
 
       const handlingTotalAmount = totals.handling * report.freightRate;
       const lessContainer =
-        totals.totalLines < 42
-          ? (42 - totals.totalLines - totals.handling) * report.freightRate
+        totals.totalLines- totals.handling < 42
+          ? (42-(totals.totalLines - totals.handling)) * report.freightRate
           : 0;
       const profitAmount =
         totals.totalUsd -
         report.transportFee -
         report.seaFeee -
+        report.extraCharges -
         totals.localCharges -
         totals.cashAdvance -
         totals.carHanging -

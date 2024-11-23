@@ -111,7 +111,7 @@ export const GET = async (req: Request) => {
     orderBy: {
       id: "desc",
     },
-    take: 10,
+    take: 5,
   });
   const simpleShippingRecord = recentShipping.map((shipping) => ({
     customerName: shipping.consignee.name,

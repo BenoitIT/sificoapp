@@ -58,7 +58,7 @@ const Page = () => {
     <div className="w-full min-h-[88vh] flex justify-center items-center flex-col gap-2">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">New instruction</CardTitle>
+          <CardTitle className="text-xl text-center">New shipping instruction</CardTitle>
           <CardDescription className="text-center">
             Enter all details in provided fields. Note that all fields with
             <br />

@@ -25,6 +25,9 @@ export const POST = async (req: NextRequest) => {
     body.packagingType == "LCL"
       ? dependacies?.groupageSeaFee
       : dependacies?.fullContSeaFee;
+  body.freightRate =="LCL"
+    ? dependacies?.freightRate
+    : dependacies?.freightRateFullCont;
   delete body.shipper;
   const stuffingReport = await prisma.stuffingreport.create({ data: body });
   return NextResponse.json({

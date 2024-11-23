@@ -108,7 +108,7 @@ model stuffingreport {
   transportFee        Int                   @default(0)
   seaFeee             Int                   @default(3700)
   extraCharges        Int                   @default(0)
-  freightRate         Int                   @default(260)
+  freightRate         Int                   @default(250)
 }
 
 model stuffingreportItems {
@@ -127,7 +127,7 @@ model stuffingreportItems {
   line             Float
   handling         Float
   type             String
-  cbm              Int
+  cbm              Float
   description      String
   freight          Float
   blFee            Float

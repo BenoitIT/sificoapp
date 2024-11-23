@@ -15,7 +15,7 @@ const SalesPanel = ({ shippingData }: recentShipping) => {
     <div className=" lg:mt-0 lg:w-[40%] w-full">
       <CardSales
         title="Recent shippings"
-        subtitle={`You have made ${shippingData?.length} shipping${
+        subtitle={`Showing ${shippingData?.length} most recent shipping${
           shippingData?.length > 1 ? "s" : ""
         } this month.`}
       >

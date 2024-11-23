@@ -92,7 +92,7 @@ export const GET = async (req: Request) => {
       consigneeName: record.details.consignee?.name || "-",
       containerId: record.details.container?.code || "N/A",
       origin: record.details.container?.origin || "-",
-      createdBy: record.createdBy?.firstName || "-",
+      createdBy: record.recievedBy || "-",
       createdById: record.createdBy?.id || 0,
       paymentStatus,
       amountPaid: Intl.NumberFormat("en-US").format(record.amountPaid),

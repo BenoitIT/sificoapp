@@ -119,13 +119,13 @@ const DynamicTable = <T extends Record<string, string | number>>({
                                   ((action.name === "Approve payment" &&
                                     row?.paymentApproved) ||
                                   (action.name === "Approve payment" &&
-                                    row?.releaseGenarated)
+                                    row?.releaseGenerated)
                                     ? "hidden"
                                     : "")
                                 } 
                                 ${
                                   action.name === "View release letter" &&
-                                  !row?.releaseGenarated
+                                  !row?.releaseGenerated
                                     ? "hidden"
                                     : ""
                                 }`
