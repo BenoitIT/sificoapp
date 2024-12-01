@@ -16,11 +16,9 @@ export const generateTableHTML = (data: any[], headers: any[], totals: any) => {
         <td>${row.mark || ""}</td>
         <td>${row.salesAgent || "-"}</td>
         <td>${row.noOfPkgs || "-"}</td>
-        <td>${row.typeOfPkg || "-"}</td>
         <td>${row.weight || "-"}</td>
         <td>${row.line || "-"}</td>
         <td>${row.handling || "-"}</td>
-        <td>${row.type || "-"}</td>
         <td>${row.cbm || "-"}</td>
         <td>${row.description || "-"}</td>
         <td>${row.freight || "-"}</td>
@@ -43,11 +41,9 @@ export const generateTableHTML = (data: any[], headers: any[], totals: any) => {
       <tr class="totals-row">
         <td colspan="8">Total</td>
         <td>${Intl.NumberFormat("en-Us").format(totals.noOfPkgs) || ""}</td>
-        <td>PKGS</td>
         <td>${Intl.NumberFormat("en-Us").format(totals.weight) || ""}</td>
         <td>${totals.line || ""}</td>
         <td>${totals.handling || ""}</td>
-        <td>LINES</td>
         <td>${Intl.NumberFormat("en-Us").format(totals.cbm) || ""}</td>
         <td></td>
         <td>${Intl.NumberFormat("en-Us").format(totals.freight) || ""}</td>

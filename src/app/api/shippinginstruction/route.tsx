@@ -1,4 +1,4 @@
-import { convertTimestamp } from "@/app/utilities/dateFormat";
+import { convertDate, convertTimestamp } from "@/app/utilities/dateFormat";
 import prisma from "../../../../prisma/client";
 import { NextResponse } from "next/server";
 
@@ -74,7 +74,7 @@ export const GET = async (req: Request) => {
       "-" +
       instruction.finaldelivery.locationName,
     createdAt: convertTimestamp(instruction.createdAt?.toString()),
-    updatedAt: convertTimestamp(instruction.updatedAt),
+    updatedAt: convertDate(instruction.updatedAt),
   }));
 
   return NextResponse.json({

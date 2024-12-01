@@ -81,7 +81,7 @@ export interface StuffingReportTotals {
   jb: number;
   inspection: number;
   insurance: number;
-  carLashing: number;
+  localCharges: number;
   recovery: number;
   carHanging:number;
   totalUsd: number;

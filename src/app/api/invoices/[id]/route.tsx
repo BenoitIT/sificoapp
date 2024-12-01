@@ -72,7 +72,7 @@ export const PUT = async (req: Request) => {
       } else {
         return NextResponse.json({
           status: 400,
-          message: "the invoice should be fully paid.",
+          message: "The invoice should be fully paid.",
         });
       }
     } else {
