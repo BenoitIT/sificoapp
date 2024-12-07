@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest) => {
     { expiresIn: "300s" }
   );
   const { data, error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "sifcoltd@sifcoltd.com",
     to: user.email,
     subject: "Password reset link",
     react: resetPasswordEmailTemplate({

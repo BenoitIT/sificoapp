@@ -1,5 +1,3 @@
-
-
 export interface NewShipper {
   id?: number;
   name?: string;
@@ -21,7 +19,7 @@ export interface NewCustomer {
   email?: string;
   phone?: string;
   tinnumber?: string;
-  itemsCode?:string;
+  itemsCode?: string;
 }
 export interface newCustomerErrors {
   name?: string | null;
