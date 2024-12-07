@@ -14,7 +14,7 @@ export default function Error({
   return (
     <div className="bg-grey-200 w-full h-[100vh] flex justify-center items-center p-auto">
       <div className="bg-white shadow-md py-[8vh] px-[2vw] rounded-md flex flex-col justify-center gap-3">
-        <h2>{error?.message}</h2>
+        <h2 className="text-gray-700">{error?.message}</h2>
         {!error?.message.includes("access this page") ? (
           <button
             className="bg-blue-900 p-2 text-white rounded text-sm"

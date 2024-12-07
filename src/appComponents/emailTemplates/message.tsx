@@ -1,13 +1,12 @@
 import * as React from "react";
 
 interface EmailTemplateProps {
-  token: string;
-  appUrl: string;
+  message: string;
 }
 
-export const resetPasswordEmailTemplate: React.FC<
-  Readonly<EmailTemplateProps>
-> = ({ token }) => {
+export const EmailMessageTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
+  message,
+}) => {
   return (
     <div style={{ width: "95%", maxWidth: "600px", margin: "auto" }}>
       <main
@@ -32,20 +31,8 @@ export const resetPasswordEmailTemplate: React.FC<
             margin: "0 0 15px",
           }}
         >
-          This serves to allow password reseting activity. click the link below
-          to continue.
+          {message}
         </p>
-        <div
-          style={{
-            lineHeight: "1.75",
-            color: "#718096",
-            textAlign: "left",
-            margin: "0 0 15px",
-          }}
-        >
-          Password link:{" "}
-          <a href={`https://sifcoltd.com/auth/new-password/${token}`}>Reset your forgotten password</a>
-        </div>
         <p
           style={{
             lineHeight: "1.75",

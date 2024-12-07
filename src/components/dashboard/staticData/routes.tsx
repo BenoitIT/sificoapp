@@ -11,6 +11,7 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 import { GiPayMoney } from "react-icons/gi";
 import { SiPayoneer } from "react-icons/si";
 import { GiStorkDelivery } from "react-icons/gi";
+import { RiMessage2Line } from "react-icons/ri";
 
 export const menuItems = [
   {
@@ -104,6 +105,12 @@ export const menuItems = [
         icon: <TbReport />,
         label: "Performance report",
         href: "/dashboard/reports",
+        visible: ["admin"],
+      },
+      {
+        icon: <RiMessage2Line />,
+        label: "Messages",
+        href: "/dashboard/messages",
         visible: ["admin"],
       },
     ],

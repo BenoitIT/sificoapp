@@ -1,4 +1,5 @@
 "use client";
+import { createNewMessage } from "@/app/httpservices/messages";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,10 +13,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ContactInfo } from "@/interfaces/contactForm";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 
 const ContactUsForm = () => {
   const [errors, setErrors] = useState<ContactInfo>({});
   const [payload, setPayload] = useState<ContactInfo>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const phoneRegx =
     /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
@@ -36,15 +39,12 @@ const ContactUsForm = () => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const firstName = form.elements.namedItem("firstName") as HTMLInputElement;
-    const email = form.elements.namedItem("email") as HTMLInputElement;
     const phone = form.elements.namedItem("phone") as HTMLInputElement;
     const message = form.elements.namedItem("message") as HTMLInputElement;
     if (firstName.value == "") {
       ErrorLogger("firstName", "First name is required.");
     } else if (firstName.value.length < 2) {
       ErrorLogger("firstName", "First name should not be single character");
-    } else if (email.value == "") {
-      ErrorLogger("email", "Email address is required.");
     } else if (phone.value == "") {
       ErrorLogger("phone", "Phone number is required.");
     } else if (!phoneRegx.test(phone.value)) {
@@ -54,7 +54,15 @@ const ContactUsForm = () => {
     } else if (message.value.length < 3) {
       ErrorLogger("message", "Only descriptive message is required.");
     } else {
-      console.log("payload", payload);
+      setLoading(true);
+      const response = await createNewMessage(payload);
+      if (response?.status == 201) {
+        toast.success(response?.message);
+        form.reset();
+      } else {
+        toast.error(response?.message);
+      }
+      setLoading(false);
     }
   };
   return (
@@ -114,9 +122,7 @@ const ContactUsForm = () => {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">
-              Email<span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               name="email"
@@ -184,11 +190,8 @@ const ContactUsForm = () => {
               {errors["message"]}
             </span>
           </div>
-          <Button
-            type="submit"
-            className="w-full"
-          >
-            Send Message
+          <Button type="submit" className="w-full">
+            {loading?"Loading...":"Send Message"}
           </Button>
         </form>
       </CardContent>

@@ -42,7 +42,7 @@ export const POST = async (req: NextRequest) => {
   body.password = await bcrypt.hash(unIncryptedPassword, 10);
   const user = await prisma.user.create({ data: body });
   const { data, error } = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "sifcoltd@sifcoltd.com",
     to: user.email,
     subject: "User account creation",
     react: EmailTemplate({

@@ -150,13 +150,13 @@ model stuffingreportItems {
 
 model Invoice {
   id               Int                 @id @default(autoincrement())
-  vat              Float                 @default(0)
+  vat              Float               @default(0)
   details          stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
   createdBy        User                @relation(fields: [staffid], references: [id])
   staffid          Int
   detailsId        String              @unique
   paidInFull       Boolean             @default(false)
-  amountPaid       Float                 @default(0)
+  amountPaid       Float               @default(0)
   paidAt           String              @default("")
   recievedBy       String              @default("")
   paymentApproved  Boolean             @default(false)
@@ -173,7 +173,7 @@ model Commissions {
   rate           Float
   totalAmount    Float
   stuffingItemId Int
-  amountPaid     Float      @default(0)
+  amountPaid     Float    @default(0)
   paymentStatus  String   @default("unpaid")
   paidAt         String   @default("")
   paidBy         String   @default("")
@@ -186,8 +186,19 @@ model CalculationDependancy {
   aed                  Float @default(3.66)
   freightRate          Float @default(260)
   freightRateFullCont  Float @default(0)
-  groupageTransportFee Float   @default(4800)
-  fullTransportFee     Float   @default(0)
-  groupageSeaFee       Float   @default(4700)
-  fullContSeaFee       Float   @default(4700)
+  groupageTransportFee Float @default(4800)
+  fullTransportFee     Float @default(0)
+  groupageSeaFee       Float @default(4700)
+  fullContSeaFee       Float @default(4700)
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  message   String
+  createdAt DateTime @default(now())
+  responded Boolean  @default(false)
 }

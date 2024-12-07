@@ -21,7 +21,7 @@ const Menu = () => {
       >
         <Image src="/images/logoo.png" alt="logo" width={100} height={100} />
       </Link>
-      <div className="mt-12 text-sm ml-2">
+      <div className="mt-14 text-sm ml-2">
         {menuItems[0].items.map((item) => {
           if (item.visible.includes(role)) {
             return (
