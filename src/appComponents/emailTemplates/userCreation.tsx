@@ -39,7 +39,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
           }}
         >
           This serves to notify you that an account has been created for you on
-          Super International Freight Services LLC shipping platform.
+          Super International Freight Services LTD shipping platform.
         </p>
         <p
           style={{
