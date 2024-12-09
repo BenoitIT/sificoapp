@@ -5,31 +5,13 @@ export const revalidate = 0;
 
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
-  const date = new Date();
-  const currentMonth = date.getMonth() + 1;
-  const currentYear = date.getFullYear();
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
-  const start = new Date(
-    `${currentYear}-${currentMonth
-      .toString()
-      .padStart(2, "0")}-01T00:00:00.000Z`
-  );
-  const end = new Date(
-    `${currentYear}-${(currentMonth + 1)
-      .toString()
-      .padStart(2, "0")}-01T00:00:00.000Z`
-  );
-
   try {
     const commissionsCount = await prisma.commissions.count({
       where: {
-        createdAt: {
-          gte: start,
-          lt: end,
-        },
         agent: {
           OR: [
             {
@@ -50,10 +32,6 @@ export const GET = async (req: Request) => {
     });
     const commissions = await prisma.commissions.findMany({
       where: {
-        createdAt: {
-          gte: start,
-          lt: end,
-        },
         agent: {
           OR: [
             {
