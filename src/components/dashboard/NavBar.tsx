@@ -1,5 +1,4 @@
 "use client";
-import { IoIosNotifications } from "react-icons/io";
 import { useAppSelector } from "@/redux/store";
 import { useSession } from "next-auth/react";
 const Navbar = () => {
@@ -12,9 +11,6 @@ const Navbar = () => {
         {pageTitle}
       </div>
       <div className="flex items-center gap-2 md:gap-4 justify-end w-full">
-        <div className="border rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative">
-          <IoIosNotifications className="w-5 h-5 text-[#003472]" />
-        </div>
         <div className="flex flex-col">
           <span className="text-xs md:text-sm leading-3 font-medium text-gray-700 hidden md:flex capitalize">
             {session?.data?.lastname && session?.data?.firstname
