@@ -1,13 +1,13 @@
 export interface StuffingReport {
     id?:number;
     origin?: string;
-    deliveryId?: number;
+    finaldeliverId?: number;
     destination?: any;
     packagingType?:string;
     status?: string;
     code?:string;
     blCode?:string;
-    shipper?:number|null,
+    shipperId?:number|null,
     operatorId?:number,
     extraCharges?:number
   }

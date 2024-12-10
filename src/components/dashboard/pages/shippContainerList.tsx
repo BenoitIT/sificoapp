@@ -29,11 +29,8 @@ import {
   createStuffingReports,
   stuffingReportEndpoint,
 } from "@/app/httpservices/stuffingReport";
-import {
-  getAllDeliveriesUnpaginated,
-  deliveryEndpoint,
-} from "@/app/httpservices/deliveries";
-import { NewDelivery } from "@/interfaces/deliveries";
+import { deliverySitesEndpoint, getAllsitesUnpaginated } from "@/app/httpservices/deliverySites";
+import { NewSite } from "@/interfaces/sites";
 const ContainerListShipp = () => {
   const session: any = useSession();
   const role = session?.data?.role;
@@ -51,17 +48,17 @@ const ContainerListShipp = () => {
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
-  const { data: deliveries } = useSWR(
-    deliveryEndpoint,
-    getAllDeliveriesUnpaginated,
+  const { data: destinations } = useSWR(
+    deliverySitesEndpoint,
+    getAllsitesUnpaginated,
     {
-      onSuccess: (data: NewDelivery[]) =>
+      onSuccess: (data: NewSite[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
   const handleSelectChange = (value: string) => {
-    setPayload({ ...payload, deliveryId: Number(value) });
-    delete validationErrors.deliveryId;
+    setPayload({ ...payload, finaldeliverId: Number(value) });
+    delete validationErrors.finaldeliverId;
   };
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
@@ -72,11 +69,11 @@ const ContainerListShipp = () => {
   const handleSelectShipperChange = (value: string | number) => {
     setPayload((prevState: StuffingReport) => ({
       ...prevState,
-      shipper: Number(value),
+      shipperId: Number(value),
     }));
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,
-      shipper: null,
+      shipperId: null,
     }));
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -93,8 +90,8 @@ const ContainerListShipp = () => {
     const origin = form.elements.namedItem("origin") as HTMLInputElement;
     if (origin.value === "") {
       ErrorLogger("origin", "Delivery origin must be specified.");
-    } else if (!payload.shipper) {
-      ErrorLogger("shipper", "Shipper must be chosen.");
+    } else if (!payload.shipperId) {
+      ErrorLogger("shipperId", "Shipper must be chosen.");
     } else {
       try {
         delete payload.id;
@@ -227,12 +224,12 @@ const ContainerListShipp = () => {
                         </Select>
                         <span
                           className={
-                            validationErrors["shipper"]
+                            validationErrors["shipperId"]
                               ? "text-xs text-red-500"
                               : "hidden"
                           }
                         >
-                          {validationErrors?.shipper}
+                          {validationErrors?.shipperId}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
@@ -245,15 +242,13 @@ const ContainerListShipp = () => {
                             />
                           </SelectTrigger>
                           <SelectContent>
-                            {deliveries &&
-                              deliveries?.map((location: NewDelivery) => (
+                            {destinations &&
+                              destinations?.map((location: NewSite) => (
                                 <SelectItem
                                   key={location.id!}
                                   value={location.id!.toString()}
                                 >
-                                  {location.country +
-                                    "," +
-                                    location.deliveryName}
+                                 {location.country + "-" + location.locationName}
                                 </SelectItem>
                               ))}
                           </SelectContent>

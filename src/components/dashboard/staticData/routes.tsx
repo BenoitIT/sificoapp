@@ -10,7 +10,6 @@ import { MdOutlineIntegrationInstructions } from "react-icons/md";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { GiPayMoney } from "react-icons/gi";
 import { SiPayoneer } from "react-icons/si";
-import { GiStorkDelivery } from "react-icons/gi";
 import { RiMessage2Line } from "react-icons/ri";
 
 export const menuItems = [
@@ -57,12 +56,6 @@ export const menuItems = [
         icon: <LiaSitemapSolid />,
         label: "Destination sites",
         href: "/dashboard/sites",
-        visible: ["admin", "origin agent"],
-      },
-      {
-        icon: <GiStorkDelivery />,
-        label: "Deliveries",
-        href: "/dashboard/deliveries",
         visible: ["admin", "origin agent"],
       },
       {

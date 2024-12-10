@@ -51,11 +51,17 @@ const StepTwoForm = ({
         ...prevState,
         [e.target.name]: numericValue,
       }));
+      if (e.target.name == "freight") {
+        setItemsData((prevState: NewStuffingItem) => ({
+          ...prevState,
+          freight: Number(numericValue),
+        }));
+      }
       if (e.target.name == "line") {
         const freightValue =
           shipingMethod !== "FCL"
             ? Number(e.target.value) * Number(data?.freightRate ?? 1)
-            : 1 * Number(data?.freightRateFullCont ?? 1);
+            : 1 * 0;
         setItemsData((prevState: NewStuffingItem) => ({
           ...prevState,
           freight: freightValue,
@@ -162,7 +168,9 @@ const StepTwoForm = ({
                 name="freight"
                 type="number"
                 placeholder="type.."
+                disabled={shipingMethod !== "FCL"}
                 value={Number(newItemPayload.freight)}
+                onChange={handleChange}
                 className={
                   errors["freight"]
                     ? "text-xs text-red-500 border-red-500"

@@ -30,7 +30,7 @@ export const GET = async (req: Request) => {
       }),
     },
     include: {
-      delivery: true,
+      deliverySite: true,
     },
     take: pageSize,
     skip: offset,
@@ -46,7 +46,8 @@ export const GET = async (req: Request) => {
       code: record.code,
       status: record.status,
       origin: record.origin,
-      destination: record.delivery.deliveryName,
+      destination:
+        record.deliverySite.country + "-" + record.deliverySite.locationName,
     };
   });
   return NextResponse.json({

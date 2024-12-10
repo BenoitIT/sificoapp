@@ -3,38 +3,56 @@ import { NextRequest, NextResponse } from "next/server";
 import stuffingreportValidationSchema from "../validations/stuffingreport";
 export const revalidate = 0;
 export const POST = async (req: NextRequest) => {
-  const body = await req.json();
-  const validation = stuffingreportValidationSchema.safeParse(body);
-  if (!validation.success)
+  try {
+    const body = await req.json();
+    const validation = stuffingreportValidationSchema.safeParse(body);
+    if (!validation.success)
+      return NextResponse.json({
+        message:
+          validation.error.errors[0].path +
+          " " +
+          validation.error.errors[0].message,
+        status: 400,
+      });
+    const dependacies = await prisma.calculationDependancy.findFirst({});
+    const status = "Available";
+    body.status = status;
+    body.transportFee =
+      body.packagingType == "LCL"
+        ? dependacies?.groupageTransportFee
+        : dependacies?.fullTransportFee;
+    body.seaFeee =
+      body.packagingType == "LCL"
+        ? dependacies?.groupageSeaFee
+        : dependacies?.fullContSeaFee;
+    body.freightRate == "LCL"
+      ? dependacies?.freightRate
+      : dependacies?.freightRateFullCont;
+    body.blCode = body.blCode ?? "-";
+    delete body.shipper;
+    const stuffingReport = await prisma.stuffingreport.create({ data:{
+      packagingType:body.packagingType,
+      code:body.code,
+      origin:body.origin,
+      shipperId:body.shipperId,
+      deliverySiteId:body.finaldeliverId,
+      status:body.status,
+      transportFee:body.transportFee,
+      seaFeee: body.seaFeee,
+      blCode:body.blCode,
+    } });
     return NextResponse.json({
-      message:
-        validation.error.errors[0].path +
-        " " +
-        validation.error.errors[0].message,
-      status: 400,
+      status: 201,
+      message: "New stuffing report is initialized",
+      data: stuffingReport,
     });
-  const dependacies = await prisma.calculationDependancy.findFirst({});
-  const status = "Available";
-  body.status = status;
-  body.shipperId = body.shipper;
-  body.transportFee =
-    body.packagingType == "LCL"
-      ? dependacies?.groupageTransportFee
-      : dependacies?.fullTransportFee;
-  body.seaFeee =
-    body.packagingType == "LCL"
-      ? dependacies?.groupageSeaFee
-      : dependacies?.fullContSeaFee;
-  body.freightRate =="LCL"
-    ? dependacies?.freightRate
-    : dependacies?.freightRateFullCont;
-  delete body.shipper;
-  const stuffingReport = await prisma.stuffingreport.create({ data: body });
-  return NextResponse.json({
-    status: 201,
-    message: "New stuffing report is initialized",
-    data: stuffingReport,
-  });
+  } catch (er) {
+    console.error(er);
+    return NextResponse.json({
+      status: 400,
+      message: "Failed to initialize shipping instruction",
+    });
+  }
 };
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
@@ -67,7 +85,7 @@ export const GET = async (req: Request) => {
       }),
     },
     include: {
-      delivery: true,
+      deliverySite: true,
     },
     take: pageSize,
     skip: offset,
@@ -84,7 +102,8 @@ export const GET = async (req: Request) => {
       status: record.status,
       origin: record.origin,
       stureportstatus: record.stuffingstatus,
-      destination: record.delivery.deliveryName,
+      destination:
+        record.deliverySite.country + "-" + record.deliverySite.locationName,
     };
   });
   return NextResponse.json({
