@@ -69,7 +69,7 @@ export const GET = async (req: Request) => {
         container: {
           include: {
             shipper: true,
-            delivery: true,
+            deliverySite: true,
           },
         },
         shippingInstruction: true,
@@ -88,7 +88,7 @@ export const GET = async (req: Request) => {
           id: item.id,
           shipperId: item.container.shipper.name,
           consigneeId: item.consignee.name,
-          delivery: item.container.delivery.deliveryName,
+          delivery: item.container.deliverySite.locationName,
           code: item.code,
           phone: item.consignee.phone,
           mark: item.mark,
@@ -209,13 +209,16 @@ export const POST = async (req: NextRequest) => {
       where: {
         id: Number(stuffingRptId),
       },
+      include:{
+        deliverySite:true,
+      }
     });
     if (checkIfStuffingReportCreated) {
       const stuffingreportid = Number(stuffingRptId);
       const consignee = body.consignee;
       const mark = body.mark ?? "";
       const salesAgent = body.salesAgent ?? "";
-      const code = body.code ?? "";
+      const code = checkIfStuffingReportCreated.deliverySite.siteCode ?? "";
       const noOfPkgs = body.noOfPkgs;
       const typeOfPkg = body.typeOfPkg ?? "";
       const weight =body.weight;
@@ -307,7 +310,7 @@ export const POST = async (req: NextRequest) => {
             prepaidFreight: 0,
             prepaidBlFee: 0,
             prepared: false,
-            finaldeliverId: body.destination,
+            finaldeliverId: 1,
             deliveryTerm: "",
             itemId: stuffingreportItem.id,
             portOfdischarge: "",

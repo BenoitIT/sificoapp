@@ -37,27 +37,21 @@ export const GET = async (req: Request) => {
             },
           },
         },
-        {
-          finaldelivery: {
-            country: { contains: searchValue, mode: "insensitive" },
-          },
-        },
-        {
-          finaldelivery: {
-            locationName: { contains: searchValue, mode: "insensitive" },
-          },
-        },
       ],
     },
     orderBy: {
       id: "desc",
     },
     include: {
-      finaldelivery: true,
       stuffingReportItems: {
         include: {
           consignee: true,
           salesAgent: true,
+          container: {
+            include: {
+              deliverySite: true,
+            },
+          },
         },
       },
     },
@@ -70,9 +64,9 @@ export const GET = async (req: Request) => {
       " " +
       instruction.stuffingReportItems.salesAgent.lastName,
     destination:
-      instruction.finaldelivery.country +
+      instruction.stuffingReportItems.container.deliverySite.country +
       "-" +
-      instruction.finaldelivery.locationName,
+      instruction.stuffingReportItems.container.deliverySite.locationName,
     createdAt: convertTimestamp(instruction.createdAt?.toString()),
     updatedAt: convertDate(instruction.updatedAt),
   }));

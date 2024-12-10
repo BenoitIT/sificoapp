@@ -299,9 +299,9 @@ const ShippingInstruction = () => {
                   colSpan={2}
                   className="border-l border-r border-black border-b"
                 >
-                  {data?.finaldelivery?.country +
+                  {data?.stuffingReportItems?.container?.deliverySite?.country +
                     "-" +
-                    data?.finaldelivery?.locationName}
+                    data?.stuffingReportItems?.container?.deliverySite?.locationName}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -398,7 +398,7 @@ const ShippingInstruction = () => {
                   colSpan={2}
                   className="border-l border-r border-black border-b"
                 >
-                  DELEIVERY TERM HOUSE TO HOUSE(CY/CY){" "}
+                  DELEIVERY TERM: HOUSE TO HOUSE(CY/CY){" "}
                   <Checkbox
                     disabled
                     checked={data?.deliveryTerm == "house to house"}

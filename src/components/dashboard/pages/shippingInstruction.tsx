@@ -18,6 +18,7 @@ const ShippingInstruction = () => {
   const { data } = useSWR(cacheKey, () =>
     getStuffingReportsItems(Number(contId))
   );
+  console.log("datat",data)
   const handleAddNew = () => {
     router.push(
       `${currentPath}/newintruction?category=${data?.stuffingRpt?.packagingType}`

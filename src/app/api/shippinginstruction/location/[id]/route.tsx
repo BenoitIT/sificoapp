@@ -13,9 +13,13 @@ export const GET = async (req: Request) => {
     const offset = (currentPage - 1) * pageSize;
     const shippingInstructions = await prisma.shippingInstruction.findMany({
       where: {
-        finaldelivery: {
-          user: {
-            id: Number(locationId),
+        stuffingReportItems: {
+          container: {
+            deliverySite: {
+              user: {
+                id: Number(locationId),
+              },
+            },
           },
         },
         OR: [
@@ -49,30 +53,18 @@ export const GET = async (req: Request) => {
               },
             },
           },
-          {
-            finaldelivery: {
-              country: {
-                contains: searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-          {
-            finaldelivery: {
-              locationName: {
-                contains: searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
         ],
       },
       include: {
-        finaldelivery: true,
         stuffingReportItems: {
           include: {
             consignee: true,
             salesAgent: true,
+            container: {
+              include: {
+                deliverySite: true,
+              },
+            },
           },
         },
       },
@@ -81,9 +73,13 @@ export const GET = async (req: Request) => {
     });
     const instructionCount = await prisma.shippingInstruction.count({
       where: {
-        finaldelivery: {
-          user: {
-            id: Number(locationId),
+        stuffingReportItems: {
+          container: {
+            deliverySite: {
+              user: {
+                id: Number(locationId),
+              },
+            },
           },
         },
         OR: [
@@ -114,22 +110,6 @@ export const GET = async (req: Request) => {
                   contains: searchValue,
                   mode: "insensitive",
                 },
-              },
-            },
-          },
-          {
-            finaldelivery: {
-              country: {
-                contains: searchValue,
-                mode: "insensitive",
-              },
-            },
-          },
-          {
-            finaldelivery: {
-              locationName: {
-                contains: searchValue,
-                mode: "insensitive",
               },
             },
           },
@@ -145,9 +125,9 @@ export const GET = async (req: Request) => {
         " " +
         instruction.stuffingReportItems.salesAgent.lastName,
       destination:
-        instruction.finaldelivery.country +
+        instruction.stuffingReportItems.container.deliverySite.country +
         "-" +
-        instruction.finaldelivery.locationName,
+        instruction.stuffingReportItems.container.deliverySite.locationName,
       createdAt: convertTimestamp(instruction.createdAt?.toString()),
       updatedAt: convertTimestamp(instruction.updatedAt),
     }));

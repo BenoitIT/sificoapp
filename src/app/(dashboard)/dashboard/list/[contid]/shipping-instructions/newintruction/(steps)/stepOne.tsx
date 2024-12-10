@@ -3,10 +3,6 @@ import {
   consigneesEndpoint,
   getAllconsigneesUnPaginated,
 } from "@/app/httpservices/consignee";
-import {
-  deliverySitesEndpoint,
-  getAllsitesUnpaginated,
-} from "@/app/httpservices/deliverySites";
 import { getAllUsers } from "@/app/httpservices/users";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import Loader from "@/appComponents/pageBlocks/loader";
@@ -21,7 +17,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { NewCustomer, NewShipper } from "@/interfaces/shipper";
-import { NewSite } from "@/interfaces/sites";
 import { NewStaff } from "@/interfaces/staff";
 import {
   NewStuffingItem,
@@ -53,31 +48,9 @@ const SetpOneForm = ({
   const customerr = consignees?.find(
     (customer: NewCustomer) => customer?.id == newItemPayload?.consignee
   );
-  const { data: destinations } = useSWR(
-    deliverySitesEndpoint,
-    getAllsitesUnpaginated,
-    {
-      onSuccess: (data: NewSite[]) =>
-        data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
-    }
-  );
-  const locationn = destinations?.find(
-    (site: NewSite) => site?.id == newItemPayload?.destination
-  );
   const salesAgent = staff?.find(
     (staff: NewStaff) => staff.id == newItemPayload?.salesAgent
   );
-  const handleSelectChange = (value: string) => {
-    const location = destinations?.find(
-      (site: NewSite) => site?.id == Number(value)
-    );
-    setItemsData((prevState: NewStuffingItem) => ({
-      ...prevState,
-      destination: Number(value),
-      code: location?.siteCode,
-    }));
-    delete errors.destination;
-  };
   const handleSelectConsigneeChange = (value: string | number) => {
     const customer = consignees?.find(
       (customer: NewShipper) => customer?.id == value
@@ -129,16 +102,11 @@ const SetpOneForm = ({
     const noOfPackages = form.elements.namedItem(
       "noOfPkgs"
     ) as HTMLInputElement;
-    const typeOfPage = form.elements.namedItem("typeOfPkg") as HTMLInputElement;
     const weight = form.elements.namedItem("weight") as HTMLInputElement;
     if (noOfPackages.value === "" || !Number(noOfPackages.value)) {
       ErrorLogger("noOfPkgs", "Number of packages is required.");
-    } else if (typeOfPage.value === "") {
-      ErrorLogger("typeOfPkg", "type of package is required.");
     } else if (!newItemPayload.consignee) {
       ErrorLogger("consignee", "Consignee must be chosen.");
-    } else if (!newItemPayload.destination) {
-      ErrorLogger("destination", "Final delivery place must be chosen.");
     } else if (weight.value == "") {
       ErrorLogger("weight", "weight is required.");
     } else {
@@ -182,54 +150,6 @@ const SetpOneForm = ({
               >
                 {errors?.consignee}
               </span>
-            </div>
-            <div className="grid grid-cols-1 items-center gap-2 mr-4 w-full">
-              <Label>Final destination</Label>
-              <Select onValueChange={handleSelectChange}>
-                <SelectTrigger className="w-full">
-                  {locationn ? (
-                    <SelectValue
-                      placeholder={
-                        locationn
-                          ? locationn?.country + "-" + locationn?.locationName
-                          : ""
-                      }
-                    />
-                  ) : (
-                    <SelectValue placeholder="Select..." />
-                  )}
-                </SelectTrigger>
-                <SelectContent>
-                  {destinations &&
-                    destinations?.map((location: NewSite) => (
-                      <SelectItem
-                        key={location.id!}
-                        value={location.id!.toString()}
-                      >
-                        {location.country + "-" + location.locationName}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              <span
-                className={
-                  errors["destination"] ? "text-xs text-red-500" : "hidden"
-                }
-              >
-                {errors["destination"]}
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="code">Code</Label>
-              <Input
-                id="code"
-                name="code"
-                placeholder="type.."
-                value={newItemPayload?.code || ""}
-                className={"placeholder:text-gray-400"}
-              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="mark">Mark</Label>
@@ -304,7 +224,7 @@ const SetpOneForm = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="typeOfPkg">
-                Type of package<span className="text-red-500">*</span>
+                Type of package
               </Label>
               <Input
                 id="typeOfPkg"
@@ -318,13 +238,7 @@ const SetpOneForm = ({
                     : "placeholder:text-gray-400"
                 }
               />
-              <span
-                className={
-                  errors?.typeOfPkg ? "text-xs text-red-500" : "hidden"
-                }
-              >
-                {errors?.typeOfPkg}
-              </span>
+
             </div>
             <div className="grid gap-2">
               <Label htmlFor="weight">

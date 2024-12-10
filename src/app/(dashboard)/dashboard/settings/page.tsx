@@ -21,7 +21,6 @@ import { withRolesAccess } from "@/components/auth/accessRights";
 const Page = () => {
   const [editAEDValue, setEditAEDValue] = useState(false);
   const [editrate, setEditRate] = useState(false);
-  const [editrate2, setEditRate2] = useState(false);
   const [editTransport1, setEditTransport1] = useState(false);
   const [editTransport2, setEditTransport2] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -188,53 +187,6 @@ const Page = () => {
                   disabled={loading}
                   onClick={() => {
                     setEditRate(false);
-                    setRate(data?.freightRate);
-                  }}
-                >
-                  <RxCross2 />
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex relative gap-2 flex-shrink mp mt-4">
-              <p>
-                Rate (Full container)
-                <span className="text-gray-900 font-semibold ml-2">
-                  {data?.freightRateFullCont}
-                </span>
-              </p>
-              <span
-                className={
-                  editrate2
-                    ? "hidden"
-                    : " text-[#003472] mt-[2px] hover:cursor-pointer"
-                }
-                onClick={() => setEditRate2(true)}
-              >
-                <LuPencilLine />
-              </span>
-              <div
-                className={
-                  editrate2
-                    ? "flex flex-col md:flex-row gap-2 absolute left-[20px] md:left-[180px] bg-white p-2 top-4"
-                    : "hidden"
-                }
-              >
-                <Input
-                  type="number"
-                  placeholder="Enter rate"
-                  onChange={(e) => setRate2(Number(e.target.value))}
-                  value={rate2 || ""}
-                  className="w-full md:w-[270px] placeholder:text-gray-300 outline:border border-gray-400"
-                />
-                <Button onClick={handleUpdateInfo} disabled={loading}>
-                  <FaCheck />
-                </Button>
-                <Button
-                  variant="destructive"
-                  disabled={loading}
-                  onClick={() => {
-                    setEditRate2(false);
                     setRate(data?.freightRate);
                   }}
                 >

@@ -20,11 +20,11 @@ export const GET = async (req: Request) => {
             container: {
               include: {
                 shipper: true,
+                deliverySite:true,
               },
             },
           },
         },
-        finaldelivery: true,
       },
     });
     if (shippingInstruction) {

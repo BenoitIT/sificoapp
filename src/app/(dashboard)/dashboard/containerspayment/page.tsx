@@ -38,7 +38,7 @@ const Page = () => {
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.data, currentPage);
   useEffect(() => {
-    dispatch(setPageTitle("Containers Payments"));
+    dispatch(setPageTitle("Payments"));
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);

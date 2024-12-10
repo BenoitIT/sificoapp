@@ -25,31 +25,27 @@ model User {
   deliverySite        deliverySite[]
   stuffingReportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
-
-  Invoice     Invoice[]
-  Commissions Commissions[]
+  Invoice             Invoice[]
+  Commissions         Commissions[]
 }
 
 model deliverySite {
-  id                  Int                   @id @default(autoincrement())
-  country             String
-  locationName        String
-  user                User                  @relation(fields: [agent], references: [id])
-  agent               Int
-  createdAt           DateTime              @default(now())
-  consignee           consignee[]
-  siteCode            String
-  shippingInstruction shippingInstruction[]
-
+  id             Int              @id @default(autoincrement())
+  country        String
+  locationName   String
+  user           User             @relation(fields: [agent], references: [id])
+  agent          Int
+  createdAt      DateTime         @default(now())
+  consignee      consignee[]
+  siteCode       String
   stuffingreport stuffingreport[]
 }
 
 model deliveries {
-  id             Int              @id @default(autoincrement())
-  country        String
-  deliveryName   String
-  createdAt      DateTime         @default(now())
-  stuffingreport stuffingreport[]
+  id           Int      @id @default(autoincrement())
+  country      String
+  deliveryName String
+  createdAt    DateTime @default(now())
 }
 
 model shipper {
@@ -82,7 +78,6 @@ model shippingInstruction {
   prepaidFreight      Int                 @default(0)
   prepaidBlFee        Int                 @default(0)
   finaldeliverId      Int
-  finaldelivery       deliverySite        @relation(fields: [finaldeliverId], references: [id])
   itemId              Int                 @unique
   stuffingReportItems stuffingreportItems @relation(fields: [itemId], references: [id])
   createdAt           DateTime            @default(now())
@@ -96,15 +91,13 @@ model stuffingreport {
   stuffingstatus      String                @default("preview")
   origin              String
   shipperId           Int
-  delivery            deliveries            @relation(fields: [deliveryId], references: [id])
-  deliveryId          Int
   shipper             shipper               @relation(fields: [shipperId], references: [id])
   stuffingreportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
   packagingType       String
   blCode              String
-  deliverySite        deliverySite?         @relation(fields: [deliverySiteId], references: [id])
-  deliverySiteId      Int?
+  deliverySite        deliverySite          @relation(fields: [deliverySiteId], references: [id])
+  deliverySiteId      Int
   transportFee        Int                   @default(0)
   seaFeee             Int                   @default(3700)
   extraCharges        Int                   @default(0)
