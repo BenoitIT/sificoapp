@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { NewStuffingItem, StepFormProps } from "@/interfaces/stuffingItem";
+import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent } from "react";
 import { toast } from "react-toastify";
@@ -24,6 +25,9 @@ const StepTwoForm = ({
 }: StepFormProps) => {
   const params = useParams();
   const router = useRouter();
+  const session:any=useSession();
+  const userName=session?.data?.firstname;
+  const date=new Date();
   const staffReportId = params?.id;
   const staffReportItmId = params?.itmid;
   const { data, isLoading, error } = useSWR(
@@ -80,6 +84,9 @@ const StepTwoForm = ({
     } else {
       try {
         delete newItemPayload.id;
+        newItemPayload.editedAt=date.toDateString();
+        newItemPayload.editedBy=userName;
+        console.log("hdgdgdgd",newItemPayload)
         const { message, status } = await updateStuffingReportsItemsDetail(
           Number(staffReportId),
           Number(staffReportItmId),

@@ -83,6 +83,8 @@ export const PUT = async (req: Request) => {
         portOfdischarge: body.portOfdischarge,
         totalUsd: totalUsd,
         totalAed: totalAed,
+        editedBy:body.editedBy,
+        updatedAt:body.editedAt
       },
     });
     if (stuffingRptItems) {

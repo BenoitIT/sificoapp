@@ -52,7 +52,6 @@ export const PUT = async (req: Request) => {
       },
     });
     if (invoice) {
-      if (invoice.amountPaid >= invoice.details.totalUsd) {
         const updatedInvoice = await prisma.invoice.update({
           where: {
             id: Number(invoiceId),
@@ -69,12 +68,6 @@ export const PUT = async (req: Request) => {
             message: "Invoice payment is approved.",
           });
         }
-      } else {
-        return NextResponse.json({
-          status: 400,
-          message: "The invoice should be fully paid.",
-        });
-      }
     } else {
       return NextResponse.json({
         status: 404,

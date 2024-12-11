@@ -12,7 +12,8 @@ const ShippingInstruction = () => {
   const params: any = useParams();
   const currentPath = usePathname();
   const session: any = useSession();
-  const role = session?.data?.role;
+  const role = session?.data?.role;;
+  const workPlace = session?.data?.workCountry;
   const contId = params?.contid;
   const cacheKey = `/stuffingreports/${Number(contId)}`;
   const { data } = useSWR(cacheKey, () =>
@@ -31,7 +32,8 @@ const ShippingInstruction = () => {
         <div className="flex gap-2">
           <Button
             onClick={handleAddNew}
-            className={role !== "origin agent" ? "hidden" : ""}
+            className={role == "origin agent"||
+              (role == "admin" && workPlace?.toLowerCase().includes("dubai")) ? "" : "hidden"}
           >
             New instruction
           </Button>

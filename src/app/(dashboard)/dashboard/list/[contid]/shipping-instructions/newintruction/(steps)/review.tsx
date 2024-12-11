@@ -28,7 +28,6 @@ const StepThree = ({
   const staffReportId = params?.contid;
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    console.log("idd",staffReportId)
     e.preventDefault();
     try {
       delete newItemPayload.id;

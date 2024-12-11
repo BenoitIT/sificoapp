@@ -22,11 +22,15 @@ import useSWR from "swr";
 import { StuffingReport } from "@/interfaces/stuffingreport";
 import { useParams } from "next/navigation";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import { useSession } from "next-auth/react";
 const Page = () => {
   const params = useParams();
   const staffReportId = params?.contid;
+  const session: any = useSession();
+  const userName = session?.data?.firstname;
   const [newItemPayload, setItemsData] = useState<NewStuffingItem>({
     type: "lines",
+    preparedBy: userName ?? "",
   });
   const [errors, setValidationErrors] = useState<NewStuffingItemErrors>({});
   const [activeForm, setActiveForm] = useState<number>(1);
@@ -52,13 +56,15 @@ const Page = () => {
       [errorKey]: errorMessage,
     }));
   };
- console.info(isLoading)
- console.info(error)
+  console.info(isLoading);
+  console.info(error);
   return (
     <div className="w-full min-h-[88vh] flex justify-center items-center flex-col gap-2">
       <Card className="mx-auto w-sm md:w-[700px] py-3 border-none">
         <CardHeader>
-          <CardTitle className="text-xl text-center">New shipping instruction</CardTitle>
+          <CardTitle className="text-xl text-center">
+            New shipping instruction
+          </CardTitle>
           <CardDescription className="text-center">
             Enter all details in provided fields. Note that all fields with
             <br />
@@ -99,4 +105,4 @@ const Page = () => {
     </div>
   );
 };
-export default withRolesAccess(Page, ["origin agent"]) as React.FC;
+export default withRolesAccess(Page, ["origin agent","admin"]) as React.FC;

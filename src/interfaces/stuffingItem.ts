@@ -29,10 +29,13 @@ export interface NewStuffingItem {
   shipperId?: number;
   consigneeId?: number;
   totalUsd?:number;
+  preparedBy?:string;
+  editedBy?:string;
   instructionPrepared?: boolean;
   invoiceInfo?:any[]
   portOfdischarge?:string;
   totalinwords?:string;
+  editedAt?:string
 }
 export interface NewStuffingItemErrors {
   shipper?: string | null;

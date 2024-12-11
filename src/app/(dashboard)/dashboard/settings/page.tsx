@@ -17,6 +17,7 @@ import Loader from "@/appComponents/pageBlocks/loader";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { toast } from "react-toastify";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import { useSession } from "next-auth/react";
 
 const Page = () => {
   const [editAEDValue, setEditAEDValue] = useState(false);
@@ -33,6 +34,8 @@ const Page = () => {
   const [fullConatinerSeaFee, setConatinerSeaFee] = useState<number>();
   const [editSeaFee1, setEditSeaFee1] = useState(false);
   const [editSeaFee2, setEditSeaFee2] = useState(false);
+  const session: any = useSession();
+  const workPlace = session?.data?.workCountry;
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
@@ -102,7 +105,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editAEDValue
+                  editAEDValue || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
@@ -157,7 +160,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editrate
+                  editrate || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
@@ -213,7 +216,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editTransport1
+                  editTransport1 || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
@@ -262,7 +265,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editTransport2
+                  editTransport2 || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
@@ -318,7 +321,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editSeaFee1
+                  editSeaFee1 || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
@@ -367,7 +370,7 @@ const Page = () => {
               </p>
               <span
                 className={
-                  editSeaFee2
+                  editSeaFee2 || !workPlace?.toLowerCase().includes("dubai")
                     ? "hidden"
                     : " text-[#003472] mt-[2px] hover:cursor-pointer"
                 }
