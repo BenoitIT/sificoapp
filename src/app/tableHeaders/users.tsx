@@ -5,4 +5,5 @@ export const headers = [
     { header: "Telephone", field: "phone" },
     { header: "Role", field: "role" },
     { header: "Gender", field: "gender" },
+    { header: "Workplace country", field: "workCountry" },
   ];

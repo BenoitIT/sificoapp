@@ -11,6 +11,8 @@ export const GET = async (req: Request) => {
   const currentPage = Number(searchParams?.get("page")) || 1;
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
+  const workPlace = searchParams.get("workplace");
+  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
   const start = startDate
     ? new Date(startDate)
     : new Date(new Date().setDate(new Date().getDate() - 30));
@@ -27,6 +29,14 @@ export const GET = async (req: Request) => {
           gte: start,
           lt: end,
         },
+        ...(isValidWorkPlace ? {
+          deliverySite: {
+            country: {
+              equals: workPlace,
+              mode: "insensitive",
+            },
+          },
+        }:{}),
       },
       include: {
         stuffingreportItems: true,

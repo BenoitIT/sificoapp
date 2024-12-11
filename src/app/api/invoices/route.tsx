@@ -64,11 +64,7 @@ export const GET = async (req: Request) => {
     include: {
       details: {
         include: {
-          consignee: {
-            include: {
-              location: true,
-            },
-          },
+          consignee: true,
           container: true,
         },
       },
@@ -97,9 +93,9 @@ export const GET = async (req: Request) => {
       paymentStatus,
       amountPaid: Intl.NumberFormat("en-US").format(record.amountPaid),
       destination: record.details.consignee?.location
-        ? `${record.details.consignee.location.country}, ${record.details.consignee.location.locationName}`
-        : "Unknown",
+        ?? "Unknown",
       invoiceNo: record.details.invoiceNo || "N/A",
+      balance:Intl.NumberFormat("en-US").format(record.details.totalUsd-record.amountPaid),
       releaseGenerated: record.releaseGenarated,
       totalUsd: Intl.NumberFormat("en-US").format(record.details.totalUsd),
       totalAed: Intl.NumberFormat("en-US").format(record.details.totalAed),

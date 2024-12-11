@@ -22,7 +22,7 @@ export const DELETE = async (req: Request) => {
   } catch (err) {
     return NextResponse.json({
       status: 400,
-      message: "something went wrong",
+      message: "Deletion failed. some data related to this location may loose",
     });
   }
 };
@@ -59,7 +59,7 @@ export const PUT = async (req: Request) => {
       where: {
         id: Number(siteId),
       },
-      data: body
+      data: body,
     });
     if (site) {
       return NextResponse.json({

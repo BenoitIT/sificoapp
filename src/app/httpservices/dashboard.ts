@@ -1,9 +1,16 @@
 import { sifcoApi } from "./axios";
 export const dashboardEndpoint = "/dashboardInfo";
-export const getDashboardinfo = async (startDate: string, endDate: string) => {
+export const getDashboardinfo = async (
+  startDate: string,
+  endDate: string,
+  workplace: string
+) => {
   try {
     const response = await sifcoApi.get(
-      dashboardEndpoint + `?startDate=${startDate}&endDate=${endDate}`
+      dashboardEndpoint +
+        `?startDate=${startDate}&endDate=${endDate}&workplace=${
+          workplace?.toLowerCase().includes("dubai") ? null : workplace
+        }`
     );
     return response.data.data;
   } catch (err) {

@@ -21,6 +21,17 @@ import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
 import { toast } from "react-toastify";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -29,6 +40,7 @@ const Page = () => {
   const session: any = useSession();
   const role = session?.data?.role;
   const userId = session?.data?.id;
+  const workPlace=session?.data?.workCountry;
   const searchValue = searchParams?.get("search") || "";
   const FilterValue = searchParams?.get("filter") || "";
   const addData = searchParams?.get("added") || "";
@@ -37,6 +49,7 @@ const Page = () => {
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
   const [reload, setReload] = useState(false);
+  const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
     [
       stuffingReportEndpoint,
@@ -46,7 +59,7 @@ const Page = () => {
       addData,
       FilterValue,
     ],
-    () => getAllStuffingReports(searchValues, FilterValue, currentPage)
+    () => getAllStuffingReports(searchValues, FilterValue, currentPage,workPlace)
   );
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
@@ -61,8 +74,10 @@ const Page = () => {
       setCurrentPage(activePage);
     }
   }, [activePage]);
-  const handleDelete = async (id: number) => {
-    const response = await deleteStuffingReports(id);
+ 
+  const handleConfirmDelete = async (id: number) => {
+    try {
+      const response = await deleteStuffingReports(id);
     if (response.status == 200) {
       toast.success(response.message);
       mutate(stuffingReportEndpoint);
@@ -70,6 +85,12 @@ const Page = () => {
     } else {
       toast.error(response.message);
     }
+    } catch (err) {
+      toast.error("Failed to delete container.");
+    }
+  };
+  const handleDelete = async (id: number) => {
+    setRowId(id);
   };
   const handleOpenStaffingReport = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
@@ -77,7 +98,32 @@ const Page = () => {
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
     {
-      icon: <FaTrash className={role != "origin agent" ? "hidden" : ""} />,
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <FaTrash className={role != "origin agent" ? "hidden" : ""} />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently container
+                and associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
       Click: handleDelete,
       name: "delete",
     },
@@ -121,4 +167,9 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["origin agent", "admin","finance","head of finance"]);
+export default withRolesAccess(SuspensePage, [
+  "origin agent",
+  "admin",
+  "finance",
+  "head of finance",
+]);

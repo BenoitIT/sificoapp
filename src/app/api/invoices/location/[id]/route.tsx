@@ -54,11 +54,11 @@ export const GET = async (req: Request) => {
         }
       : {
           details: {
-            consignee: {
-              location: {
-                agent: Number(locationId),
-              },
-            },
+            container:{
+              deliverySite:{
+                agent:Number(locationId)
+              }
+            }
           },
         },
   });
@@ -108,22 +108,22 @@ export const GET = async (req: Request) => {
         }
       : {
           details: {
-            consignee: {
-              location: {
-                agent: Number(locationId),
-              },
-            },
+            container:{
+              deliverySite:{
+                agent:Number(locationId)
+              }
+            }
           },
         },
     include: {
       details: {
         include: {
-          consignee: {
-            include: {
-              location: true,
+          container:{
+            include:{
+            deliverySite:true,
             },
           },
-          container: true,
+          consignee:true
         },
       },
       createdBy: true,
@@ -149,9 +149,9 @@ export const GET = async (req: Request) => {
       paymentStatus: paymentStatus,
       amountPaid: Intl.NumberFormat("en-Us").format(record.amountPaid),
       destination:
-        record.details.consignee.location.country +
+        record.details.consignee.location +
         "," +
-        record.details.consignee.location.locationName,
+        record.details.consignee.location,
       invoiceNo: record.details.invoiceNo,
       releaseGenarated: record.releaseGenarated ? true : false,
       totalUsd: Intl.NumberFormat("en-Us").format(record.details.totalUsd),

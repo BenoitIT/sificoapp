@@ -29,6 +29,17 @@ import { toast } from "react-toastify";
 import { mutate } from "swr";
 import useDebounce from "@/app/utilities/debouce";
 import { MdDelete } from "react-icons/md";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Page = () => {
   const router = useRouter();
@@ -44,6 +55,7 @@ const Page = () => {
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowId, setRowId] = useState<any>();
   const contId = param?.contid;
   const fetcher = useCallback(async () => {
     if (role === "operation manager" && userId) {
@@ -85,14 +97,23 @@ const Page = () => {
     router.push(`${currentPath}/edit/${id}`);
   };
   const handleDelete = async (id: number) => {
-    const response = await deleteStuffingReportsItemsDetail(Number(id), id);
-    if (response.status == 200) {
-      toast.success(response.message);
-      mutate(shippinginstructionEndpoint);
-    } else {
-      toast.error(response.message);
+    setRowId(id);
+  };
+  const handleConfirmDelete = async (id: number) => {
+    try {
+      const response = await deleteStuffingReportsItemsDetail(Number(id), id);
+      if (response.status == 200) {
+        toast.success(response.message);
+        mutate(shippinginstructionEndpoint);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete this shipping instruction");
     }
   };
+
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
     {
@@ -101,7 +122,32 @@ const Page = () => {
       name: "edit",
     },
     {
-      icon: <MdDelete className={role !== "origin agent" ? "hidden" : ""} />,
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <MdDelete className={role !== "origin agent" ? "hidden" : ""} />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently delete the
+                location.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
       Click: handleDelete,
       name: "delete",
     },

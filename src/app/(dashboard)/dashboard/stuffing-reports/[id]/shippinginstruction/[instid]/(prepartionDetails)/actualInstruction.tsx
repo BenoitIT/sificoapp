@@ -10,7 +10,6 @@ import useSWR from "swr";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Checkbox } from "@/components/ui/checkbox";
 import { convertDate, formatDate } from "@/app/utilities/dateFormat";
 import Back from "@/components/ui/back";
 import { ShippingReportPreparationDetails } from "./prepartion";
@@ -398,16 +397,6 @@ const ShippingInstruction = () => {
                   colSpan={2}
                   className="border-l border-r border-black border-b"
                 >
-                  DELEIVERY TERM: HOUSE TO HOUSE(CY/CY){" "}
-                  <Checkbox
-                    disabled
-                    checked={data?.deliveryTerm == "house to house"}
-                  />{" "}
-                  PORT TO PORT(CY/CFS){" "}
-                  <Checkbox
-                    disabled
-                    checked={data?.deliveryTerm == "port to port"}
-                  />
                 </TableCell>
               </TableRow>
               <TableRow>

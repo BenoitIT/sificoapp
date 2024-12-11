@@ -18,6 +18,17 @@ import { toast } from "react-toastify";
 import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import useDebounce from "@/app/utilities/debouce";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -26,6 +37,7 @@ const Page = () => {
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
+  const [rowId, setRowId] = useState<any>();
   const {
     data: shippingCompanies,
     isLoading,
@@ -48,6 +60,9 @@ const Page = () => {
     router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
+    setRowId(id);
+  };
+  const handleConfirmDelete = async (id: number) => {
     try {
       const message = await deleteShipper(id);
       toast.success(message);
@@ -59,7 +74,36 @@ const Page = () => {
   };
   const actions = [
     { icon: <FaEdit />, Click: handleEdit },
-    { icon: <FaTrash />, Click: handleDelete, name: "delete" },
+    {
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <FaTrash />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently delete the
+                shipper.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
   if (shippingCompanies) {
     return (
@@ -80,4 +124,7 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["origin agent", "admin"]) as React.FC;
+export default withRolesAccess(SuspensePage, [
+  "origin agent",
+  "admin",
+]) as React.FC;

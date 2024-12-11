@@ -154,6 +154,9 @@ const Page = () => {
             <p>
               Gender: <span className="ml-8 text-gray-900">{data?.gender}</span>
             </p>
+            <p>
+              Workplace country: <span className="ml-8 text-gray-900">{data?.workCountry}</span>
+            </p>
           </div>
           <div className={activeMenu != "editprofile" ? "w-full" : "hidden"}>
             <EditPasswordForm userId={Number(userId)} />

@@ -73,6 +73,13 @@ const Page = () => {
     }));
     ErrorLogger(e.target.name, null);
   };
+  const handleSelectCountryChange = (value: string) => {
+    setStaffData({ ...newStaffPyaload, workCountry: value });
+    setValidationErrors((prevState: newStaffErrors) => ({
+      ...prevState,
+      workCountry: "",
+    }));
+  };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -92,10 +99,7 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const response = await updateUser(
-          Number(staffId),
-          newStaffPyaload
-        );
+        const response = await updateUser(Number(staffId), newStaffPyaload);
         if (response?.status == 200) {
           form.reset();
           toast.success(response?.message);
@@ -185,6 +189,11 @@ const Page = () => {
                         Operation Manager
                       </SelectItem>
                       <SelectItem value="origin agent">Origin agent</SelectItem>
+                      <SelectItem value="finance">Finance</SelectItem>
+                      <SelectItem value="head of finance">
+                        Head of finance
+                      </SelectItem>
+                      <SelectItem value="sales agent">Sales agent</SelectItem>
                     </SelectContent>
                   </Select>
                   <span
@@ -221,7 +230,13 @@ const Page = () => {
                   </span>
                 </div>
               </div>
-              <div className="grid gap-2">
+              <div
+                className={
+                  newStaffPyaload?.role == "sales agent"
+                    ? "hidden"
+                    : "grid gap-2"
+                }
+              >
                 <Label htmlFor="email">
                   Email<span className="text-red-500">*</span>
                 </Label>
@@ -265,6 +280,37 @@ const Page = () => {
                   className={errors?.phone ? "text-xs text-red-500" : "hidden"}
                 >
                   {errors?.phone}
+                </span>
+              </div>
+              <div
+                className={
+                  newStaffPyaload?.role == "sales agent"
+                    ? "hidden"
+                    : "grid gap-2"
+                }
+              >
+                <Select onValueChange={handleSelectCountryChange}>
+                  <Label htmlFor="workCountry" className="mb-2">
+                  Workplace country <span className="text-red-500">*</span>
+                  </Label>
+                  <SelectTrigger className="w-full placeholder:text-gray-300">
+                    <SelectValue placeholder="Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Rwanda">Rwanda</SelectItem>
+                    <SelectItem value="Burundi">Burundi</SelectItem>
+                    <SelectItem value="United Arab Emirates(Dubai)">
+                      United Arab Emirates(Dubai)
+                    </SelectItem>
+                    <SelectItem value="China">China</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span
+                  className={
+                    errors?.workCountry ? "text-xs text-red-500" : "hidden"
+                  }
+                >
+                  {errors?.workCountry}
                 </span>
               </div>
               <div className="flex justify-between gap-4">

@@ -36,8 +36,6 @@ export const POST = async (req: NextRequest) => {
       status: 400,
       message: "A consignee with this phone number already exist.",
     });
-  body.locationid = body.location;
-  delete body.location;
   const shipper = await prisma.consignee.create({ data: body });
   return NextResponse.json({
     status: 201,
@@ -50,6 +48,8 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page")) || 1;
+  const workPlace = searchParams.get("workplace");
+  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const totalCount = await prisma.consignee.count({
@@ -61,6 +61,13 @@ export const GET = async (req: Request) => {
             { email: { contains: searchValue, mode: "insensitive" } },
           ],
         }
+      : isValidWorkPlace
+      ? {
+          location: {
+            contains: workPlace,
+            mode: "insensitive",
+          },
+        }
       : {},
   });
   const consignees = await prisma.consignee.findMany({
@@ -70,24 +77,28 @@ export const GET = async (req: Request) => {
             { name: { contains: searchValue, mode: "insensitive" } },
             { phone: { contains: searchValue, mode: "insensitive" } },
             { email: { contains: searchValue, mode: "insensitive" } },
+            { location: { contains: searchValue, mode: "insensitive" } },
           ],
         }
+      : isValidWorkPlace
+      ? {
+          location: {
+            contains: workPlace,
+            mode: "insensitive",
+          },
+        }
       : {},
-      orderBy:{
-        id:"desc"
-      },
+    orderBy: {
+      id: "desc",
+    },
     take: pageSize,
     skip: offset,
-    include: {
-      location: true,
-    },
   });
   const consigneeData = consignees.map((consignee) => ({
     id: consignee.id,
     name: consignee.name,
     tinnumber: consignee.tinnumber,
-    location:
-      consignee.location.country + "-" + consignee.location.locationName,
+    location: consignee.location,
     email: consignee.email ? consignee.email : "-",
     phone: consignee.phone,
   }));

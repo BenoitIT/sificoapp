@@ -3,11 +3,14 @@ import { sifcoApi } from "./axios";
 export const consigneesEndpoint = "/consignees";
 export const getAllconsignees = async (
   searchValues: string,
-  currentPage: number
+  currentPage: number,
+  workplace:string
 ) => {
   try {
     const response = await sifcoApi.get(
-      consigneesEndpoint + `?search=${searchValues}&page=${currentPage}`
+      consigneesEndpoint + `?search=${searchValues}&page=${currentPage}&workplace=${
+          workplace?.toLowerCase().includes("dubai") ? null : workplace
+        }`
     );
     return response.data.data;
   } catch (err) {

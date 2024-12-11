@@ -10,7 +10,7 @@ import {
 import useSWR, { mutate } from "swr";
 import html2Canvas from "html2canvas";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   getStuffingReportsItemsInvoice,
@@ -34,6 +34,17 @@ import {
 } from "@/components/ui/popover";
 import jsPDF from "jspdf";
 import { GiTakeMyMoney } from "react-icons/gi";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 interface invoiceProps {
   itemsId: number;
   invoiceId: number;
@@ -85,7 +96,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
           unit: "px",
           format: "a4",
         });
-        console.info(isImageLoaded)
+        console.info(isImageLoaded);
         const width = pdf.internal.pageSize.getWidth();
         const height = (canvas.height * width) / canvas.width;
 
@@ -97,8 +108,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
       console.error(err);
     }
   };
-  const handlePayment = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handlePayment = async () => {
     if (paidAmount && paidAmount > 0) {
       const payload = {
         amountPaid: paidAmount,
@@ -199,7 +209,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                   </p>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 mr-4 shadow-md">
-                  <form className="w-full" onSubmit={handlePayment}>
+                  <form className="w-full">
                     <div className="grid gap-4">
                       <div className="space-y-2">
                         <p className="text-sm text-muted-foreground">
@@ -222,7 +232,30 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                         </div>
                       </div>
                       <div className="w-full flex justify-between">
-                        <Button type="submit">save payment</Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button>save payment</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription className="text-sm text-white opacity-65">
+                                This action cannot be undone. This will pay
+                                invoice, the amount should be accurate.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction>
+                                <Button onClick={handlePayment}>
+                                  Continue
+                                </Button>
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </form>
@@ -525,28 +558,32 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                 </TableCell>
                 <TableCell>
                   {vat !== ""
-                    ? Intl.NumberFormat("en-Us").format(data?.freight +
-                      (data?.freight *
-                        (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100 +
-                      data?.blFee +
-                      data?.localCharges +
-                      data?.carHanging +
-                      data?.inspection +
-                      data?.recovery +
-                      data?.insurance +
-                      data?.jb)
-                    : Intl.NumberFormat("en-Us").format(data?.blFee +
-                      data?.localCharges +
-                      data?.carHanging +
-                      data?.inspection +
-                      data?.recovery +
-                      data?.insurance +
-                      data?.jb +
-                      data?.freight +
-                      (data?.freight *
-                        (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
-                        100)}
+                    ? Intl.NumberFormat("en-Us").format(
+                        data?.freight +
+                          (data?.freight *
+                            (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
+                            100 +
+                          data?.blFee +
+                          data?.localCharges +
+                          data?.carHanging +
+                          data?.inspection +
+                          data?.recovery +
+                          data?.insurance +
+                          data?.jb
+                      )
+                    : Intl.NumberFormat("en-Us").format(
+                        data?.blFee +
+                          data?.localCharges +
+                          data?.carHanging +
+                          data?.inspection +
+                          data?.recovery +
+                          data?.insurance +
+                          data?.jb +
+                          data?.freight +
+                          (data?.freight *
+                            (vat !== "" ? Number(vat) : data?.vat ?? 0)) /
+                            100
+                      )}
                 </TableCell>
               </TableRow>
             </TableFooter>

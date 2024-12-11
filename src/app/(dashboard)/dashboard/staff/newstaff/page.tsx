@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { addNewUser } from "@/app/httpservices/users";
 import { toast } from "react-toastify";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import { RegistreSalesAgent } from "@/app/httpservices/users";
 const Page = () => {
   const router = useRouter();
   const [newStaffPyaload, setStaffData] = useState<NewStaff>({});
@@ -45,6 +46,13 @@ const Page = () => {
     setValidationErrors((prevState: newStaffErrors) => ({
       ...prevState,
       role: "",
+    }));
+  };
+  const handleSelectCountryChange = (value: string) => {
+    setStaffData({ ...newStaffPyaload, workCountry: value });
+    setValidationErrors((prevState: newStaffErrors) => ({
+      ...prevState,
+      workCountry: "",
     }));
   };
   const handleSelectGenderChange = (value: string) => {
@@ -70,8 +78,13 @@ const Page = () => {
     const email = form.elements.namedItem("email") as HTMLInputElement;
     if (firstName.value === "") {
       ErrorLogger("firstName", "First name is required.");
-    } else if (email.value === "") {
+    } else if (newStaffPyaload.role !== "sales agent" && email.value === "") {
       ErrorLogger("email", "Email is required.");
+    } else if (
+      newStaffPyaload.role !== "sales agent" &&
+      newStaffPyaload.workCountry === ""
+    ) {
+      ErrorLogger("workCountry", "Work country is required.");
     } else if (phoneNumber.value === "" || !phoneRegx.test(phoneNumber.value)) {
       ErrorLogger("phone", "Valid phone number is required.");
     } else if (!newStaffPyaload.role) {
@@ -81,13 +94,24 @@ const Page = () => {
     } else {
       try {
         delete newStaffPyaload.id;
-        const response = await addNewUser(newStaffPyaload);
-        if (response?.status == 201) {
-          form.reset();
-          toast.success(response?.message);
-          router.back();
+        if (newStaffPyaload.email) {
+          const response = await addNewUser(newStaffPyaload);
+          if (response?.status == 201) {
+            form.reset();
+            toast.success(response?.message);
+            router.back();
+          } else {
+            toast.error(response?.message);
+          }
         } else {
-          toast.error(response?.message);
+          const response = await RegistreSalesAgent(newStaffPyaload);
+          if (response?.status == 201) {
+            form.reset();
+            toast.success(response?.message);
+            router.back();
+          } else {
+            toast.error(response?.message);
+          }
         }
       } catch (err) {
         toast.error("Failed to add new staff");
@@ -194,7 +218,13 @@ const Page = () => {
                   </span>
                 </div>
               </div>
-              <div className="grid gap-2">
+              <div
+                className={
+                  newStaffPyaload?.role == "sales agent"
+                    ? "hidden"
+                    : "grid gap-2"
+                }
+              >
                 <Label htmlFor="email">
                   Email<span className="text-red-500">*</span>
                 </Label>
@@ -236,6 +266,37 @@ const Page = () => {
                   className={errors?.phone ? "text-xs text-red-500" : "hidden"}
                 >
                   {errors?.phone}
+                </span>
+              </div>
+              <div
+                className={
+                  newStaffPyaload?.role == "sales agent"
+                    ? "hidden"
+                    : "grid gap-2"
+                }
+              >
+                <Select onValueChange={handleSelectCountryChange}>
+                  <Label htmlFor="workCountry" className="mb-2">
+                  Workplace country <span className="text-red-500">*</span>
+                  </Label>
+                  <SelectTrigger className="w-full placeholder:text-gray-300">
+                    <SelectValue placeholder="Select..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Rwanda">Rwanda</SelectItem>
+                    <SelectItem value="Burundi">Burundi</SelectItem>
+                    <SelectItem value="United Arab Emirates(Dubai)">
+                      United Arab Emirates(Dubai)
+                    </SelectItem>
+                    <SelectItem value="China">China</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span
+                  className={
+                    errors?.workCountry ? "text-xs text-red-500" : "hidden"
+                  }
+                >
+                  {errors?.workCountry}
                 </span>
               </div>
               <div className="flex justify-between gap-4">
