@@ -25,6 +25,17 @@ import { IoMdDoneAll } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 const Page = () => {
   const dispatch = useDispatch();
   const param = useParams();
@@ -38,6 +49,7 @@ const Page = () => {
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowId, setRowId] = useState<any>();
   const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
     [invoiceEndpoint, searchValues, currentPage, contId],
@@ -75,12 +87,16 @@ const Page = () => {
   const handleOpenInvoice = async (id: number | string) => {
     router.push(`${currentPath}/${id}`);
   };
+  const handleApprove = async (id: number) => {
+    setRowId(id);
+  };
   const handleApprovePayment = async (id: number) => {
     try {
       const response = await updateInvoice(id);
       if (response?.status == 200) {
         toast.success(response?.message);
         mutate(invoiceEndpoint);
+        window.location.reload();
       } else {
         toast.error(response?.message);
       }
@@ -96,13 +112,32 @@ const Page = () => {
     { icon: <FaEye />, Click: handleOpenInvoice, name: "view" },
     {
       icon: (
-        <MdLibraryAddCheck
-          className={
-            role == "head of finance" ? "text-blue-900 text-base" : "hidden"
-          }
-        />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <MdLibraryAddCheck
+              className={
+                role == "head of finance" ? "text-blue-900 text-base" : "hidden"
+              }
+            />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will approve the payment and
+                release letter will be prepared.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => handleApprovePayment(rowId)}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       ),
-      Click: handleApprovePayment,
+      Click: handleApprove,
       name: "Approve payment",
     },
     {

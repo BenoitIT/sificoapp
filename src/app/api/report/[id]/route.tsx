@@ -58,11 +58,7 @@ export const GET = async (req: Request) => {
           shipper: true,
         },
       },
-      consignee: {
-        include: {
-          location: true,
-        },
-      },
+      consignee: true,
       salesAgent: true,
       invoice: true,
     },

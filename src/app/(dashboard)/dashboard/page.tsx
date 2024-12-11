@@ -18,9 +18,12 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import DatePickerWithRange from "@/components/ui/dateSelector";
 import { DateRange } from "react-day-picker";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import { useSession } from "next-auth/react";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
+  const session:any=useSession();
+  const workPlace=session?.data?.workCountry;
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().setDate(new Date().getDate() - 30)),
     to: new Date(),
@@ -33,7 +36,8 @@ const AdminPage = () => {
     () =>
       getDashboardinfo(
         date?.from as unknown as string,
-        date?.to as unknown as string
+        date?.to as unknown as string,
+        workPlace
       )
   );
   if (data) {

@@ -12,13 +12,10 @@ export const GET = async (req: Request) => {
         container: {
           include: {
             shipper: true,
+            deliverySite:true,
           },
         },
-        consignee: {
-          include: {
-            location: true,
-          },
-        },
+        consignee: true,
         salesAgent: true,
         invoice: true,
       },
@@ -27,23 +24,20 @@ export const GET = async (req: Request) => {
     if (stuffingRptItems) {
       const modifiedResponse = {
         delivery:
-          stuffingRptItems.consignee.location.country +
+          stuffingRptItems.container.deliverySite.country +
           "-" +
-          stuffingRptItems.consignee.location.locationName,
+          stuffingRptItems.container.deliverySite.locationName,
         shipperId: stuffingRptItems.container.shipper.name,
         consigneeId: stuffingRptItems.consignee.name,
         consigneeLocation:
-          stuffingRptItems.consignee.location.country +
-          "-" +
-          stuffingRptItems.consignee.location.locationName,
+          stuffingRptItems.consignee.location??"-",
         code: stuffingRptItems.code,
         phone: stuffingRptItems.consignee.phone,
         mark: stuffingRptItems.mark,
         origin: stuffingRptItems.container.origin,
         destination: `${
-          stuffingRptItems.consignee.location.country +
-          "-" +
-          stuffingRptItems.consignee.location.locationName
+          stuffingRptItems.consignee.location??
+          "-" 
         }`,
         salesAgent:
           stuffingRptItems.salesAgent.firstName +

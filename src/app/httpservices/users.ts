@@ -81,6 +81,14 @@ export const getAllAgents = async () => {
     console.log(err);
   }
 };
+export const RegistreSalesAgent = async (data: NewStaff) => {
+  try {
+    const response = await sifcoApi.post(usersBaseEndpoint + `/agents`, data);
+    return { message: response.data.message, status: response.data.status };
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const updatePassword = async (data: passwordUpdate) => {
   try {

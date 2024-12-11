@@ -8,6 +8,8 @@ export const GET = async (request: Request) => {
   const code = url.searchParams.get("code") || "KGL";
   const searchValue = url.searchParams.get("search");
   const currentPage = Number(url.searchParams?.get("page")) || 1;
+  const workPlace = url.searchParams.get("workplace");
+  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const whereClause: any = {
@@ -20,6 +22,14 @@ export const GET = async (request: Request) => {
         ],
       },
     },
+    ...(isValidWorkPlace ? {
+      deliverySite: {
+        country: {
+          equals: workPlace,
+          mode: "insensitive",
+        },
+      },
+    }:{}),
   };
   
   if (searchValue) {

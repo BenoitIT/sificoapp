@@ -18,12 +18,15 @@ import useDebounce from "@/app/utilities/debouce";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
+import { useSession } from "next-auth/react";
 const Page = () => {
   const dispatch = useDispatch();
   const searchParam = useSearchParams();
   const currentPath = usePathname();
   const router = useRouter();
   const searchParams: any = useSearchParams();
+  const session: any = useSession();
+  const workPlace=session?.data?.workCountry;
   const locationCode = searchParam?.get("location") || "KGL";
   const searchValue = searchParams?.get("search") || "";
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +36,7 @@ const Page = () => {
   const { data, isLoading, error } = useSWR(
     [containersPyamentEndpoint, locationCode, searchValues],
     () =>
-      getAllContainerPaymentPerPlace(locationCode, searchValues, currentPage)
+      getAllContainerPaymentPerPlace(locationCode, searchValues, currentPage,workPlace)
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.data, currentPage);

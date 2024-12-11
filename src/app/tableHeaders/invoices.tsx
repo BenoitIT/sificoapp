@@ -8,4 +8,5 @@ export const headers = [
   { header: "Total (USD)", field: "totalUsd" },
   { header: "releaseLettr", field: "releaseGenarated",hidden:true },
   { header: "Amount paid", field: "amountPaid" },
+  { header: "Unpaid balance", field: "balance" },
 ];

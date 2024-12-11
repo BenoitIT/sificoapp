@@ -11,11 +11,7 @@ export const GET = async (req: Request) => {
       include: {
         stuffingReportItems: {
           include: {
-            consignee: {
-              include: {
-                location: true,
-              },
-            },
+            consignee:true,
             salesAgent: true,
             container: {
               include: {

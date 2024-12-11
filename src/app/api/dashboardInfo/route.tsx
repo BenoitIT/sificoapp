@@ -8,6 +8,8 @@ export const GET = async (req: Request) => {
   const currentYear = date.getFullYear();
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
+  const workPlace = searchParams.get("workplace");
+  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
   const start = startDate
     ? new Date(startDate)
     : new Date(
@@ -23,6 +25,18 @@ export const GET = async (req: Request) => {
           .padStart(2, "0")}-01T00:00:00.000Z`
       );
   const totalRevenueMade = await prisma.stuffingreportItems.aggregate({
+    where: isValidWorkPlace
+      ? {
+          container: {
+            deliverySite: {
+              country: {
+                equals: workPlace,
+                mode: "insensitive",
+              },
+            },
+          },
+        }
+      : undefined,
     _sum: {
       totalUsd: true,
     },
@@ -37,13 +51,31 @@ export const GET = async (req: Request) => {
           gte: start,
           lt: end,
         },
+        ...(isValidWorkPlace ? {
+          container: {
+            deliverySite: {
+              country: {
+                equals: workPlace,
+                mode: "insensitive",
+              },
+            },
+          },
+        }:{}),
       },
     });
   const revenuePercentage =
     ((totalRevenueMadeInThisMonth._sum.totalUsd ?? 0) * 100) /
-    (totalRevenueMade._sum.totalUsd ?? 1)||0;
+      (totalRevenueMade._sum.totalUsd ?? 1) || 0;
   const totalMonitaryValue = totalRevenueMade._sum.totalUsd;
   const groupedCustomers = await prisma.consignee.aggregate({
+    where: {
+      ...(isValidWorkPlace ? {
+        location: {
+          contains: workPlace,
+          mode: "insensitive",
+        },
+      }:{}),
+    },
     _count: {
       id: true,
     },
@@ -57,11 +89,28 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
+      ...(isValidWorkPlace ? {
+        location: {
+          contains: workPlace,
+          mode: "insensitive",
+        },
+      }:{}),
     },
   });
   const customerPercentage =
-    (CustomersCountThisMonth._count.id * 100) / (groupedCustomers._count.id ?? 1)||0;
+    (CustomersCountThisMonth._count.id * 100) /
+      (groupedCustomers._count.id ?? 1) || 0;
   const groupedStaffingReport = await prisma.stuffingreport.aggregate({
+    where: {
+      ...(isValidWorkPlace ? {
+        deliverySite: {
+          country: {
+            equals: workPlace,
+            mode: "insensitive",
+          },
+        },
+      }:{}),
+    },
     _count: {
       id: true,
     },
@@ -75,12 +124,34 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
+      ...(isValidWorkPlace ? {
+        deliverySite: {
+          country: {
+            equals: workPlace,
+            mode: "insensitive",
+          },
+        },
+      }:{}),
     },
   });
   const staffingPercentage =
     (groupedStaffingReportThisMonth._count.id * 100) /
-      (groupedStaffingReport._count.id ?? 1)||0;
+      (groupedStaffingReport._count.id ?? 1) || 0;
   const invoicesCount = await prisma.invoice.aggregate({
+    where: {
+      ...(isValidWorkPlace ? {
+        details: {
+          container: {
+            deliverySite: {
+              country: {
+                equals: workPlace,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      }:{}),
+    },
     _count: {
       id: true,
     },
@@ -94,16 +165,39 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
+      ...(isValidWorkPlace ? {
+        details: {
+          container: {
+            deliverySite: {
+              country: {
+                equals: workPlace,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      }:{}),
     },
   });
   const invoiceCountPercentage =
-    (invoiceCountThisMonth._count.id * 100) / (invoicesCount._count.id ?? 1)||0;
+    (invoiceCountThisMonth._count.id * 100) / (invoicesCount._count.id ?? 1) ||
+    0;
   const recentShipping = await prisma.stuffingreportItems.findMany({
     where: {
       createdAt: {
         gte: start,
         lt: end,
       },
+      ...(isValidWorkPlace ?{
+        container: {
+          deliverySite: {
+            country: {
+              equals: workPlace,
+              mode: "insensitive",
+            },
+          },
+        },
+      }:{}),
     },
     include: {
       consignee: true,
@@ -119,6 +213,18 @@ export const GET = async (req: Request) => {
     amountEarned: shipping.totalUsd,
   }));
   const revenueByMonth = await prisma.stuffingreportItems.findMany({
+    where: {
+      ...(isValidWorkPlace ? {
+        container: {
+          deliverySite: {
+            country: {
+              equals: workPlace,
+              mode: "insensitive",
+            },
+          },
+        },
+      }:{}),
+    },
     select: {
       createdAt: true,
       totalUsd: true,

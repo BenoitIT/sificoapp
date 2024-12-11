@@ -22,20 +22,35 @@ import Paginator from "@/components/pagination/paginator";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import usePagination from "@/app/utilities/usePagination";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useSession } from "next-auth/react";
 
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const currentpath: string = usePathname()!;
   const searchParams: any = useSearchParams();
+  const session: any = useSession();
+  const workPlace=session?.data?.workCountry;
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
     [consigneesEndpoint, searchValues, currentPage],
-    () => getAllconsignees(searchValues, currentPage),
+    () => getAllconsignees(searchValues, currentPage,workPlace),
     {
       onSuccess: (data: NewShipper[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
@@ -65,6 +80,9 @@ const Page = () => {
     }
   }, [searchParams, data?.customers, currentPage, router]);
   const handleDelete = async (id: number) => {
+    setRowId(id);
+  };
+  const handleConfirmDelete = async (id: number) => {
     try {
       const message = await deleteConsignee(id);
       toast.success(message);
@@ -74,6 +92,7 @@ const Page = () => {
       toast.error("Failed to delete this customer");
     }
   };
+
   useEffect(() => {
     if (activePage) {
       setCurrentPage(activePage);
@@ -81,7 +100,36 @@ const Page = () => {
   }, [activePage]);
   const actions = [
     { icon: <FaEdit />, Click: handleEdit },
-    { icon: <FaTrash />, Click: handleDelete, name: "delete" },
+    {
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <FaTrash />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently delete the
+                customer.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
 
   if (data?.customers) {
@@ -117,4 +165,7 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["origin agent", "admin"])as React.FC;
+export default withRolesAccess(SuspensePage, [
+  "origin agent",
+  "admin",
+]) as React.FC;

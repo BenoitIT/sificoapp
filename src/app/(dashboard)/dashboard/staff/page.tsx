@@ -18,6 +18,17 @@ import { useSession } from "next-auth/react";
 import useDebounce from "@/app/utilities/debouce";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 const Page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -28,6 +39,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
+  const [rowId, setRowId] = useState<any>();
   const searchValues = useDebounce(search, 1000);
   const {
     data: staff,
@@ -53,10 +65,14 @@ const Page = () => {
     router.push(`${currentpath}/${id}`);
   };
   const handleDelete = async (id: number) => {
+    setRowId(id);
+  };
+  const handleConfirmDelete = async (id: number) => {
     try {
       const message = await deleteUser(id);
       toast.success(message);
       mutate(cacheKey);
+      window.location.reload();
     } catch (err) {
       toast.error("Failed to delete this staff.");
     }
@@ -67,7 +83,32 @@ const Page = () => {
       Click: handleEdit,
     },
     {
-      icon: <FaTrash className={role !== "admin" ? "hidden" : ""} />,
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <FaTrash className={role !== "admin" ? "hidden" : ""} />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently delete user
+                account and any access of their access to the system.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
       Click: handleDelete,
       name: "delete",
     },

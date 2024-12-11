@@ -32,6 +32,7 @@ import {
   generateTableHTML,
   printStyles,
 } from "@/app/utilities/stiffingReportprintFormat";
+import ExportButton from "@/components/ui/exportBtn";
 const Page = () => {
   const router = useRouter();
   const params = useParams();
@@ -174,7 +175,7 @@ const Page = () => {
             generateReprt &&
             data?.shipments?.length > 0 &&
             role == "origin agent"
-              ? "mt-8"
+              ? "mt-8 flex gap-3"
               : "hidden"
           }
         >
@@ -186,6 +187,7 @@ const Page = () => {
           >
             Generate stuffing report
           </Button>
+          <ExportButton />
         </div>
       </div>
     );
@@ -203,7 +205,7 @@ const Page = () => {
             preparedRprt={true}
           />
         </div>
-        <div className="mt-6">
+        <div className="mt-8 flex gap-3">
           <Button
             variant="secondary"
             onClick={printReport}
@@ -212,6 +214,7 @@ const Page = () => {
           >
             Print report
           </Button>
+          <ExportButton />
         </div>
       </>
     );

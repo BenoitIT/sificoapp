@@ -47,10 +47,13 @@ import { Button } from "@/components/ui/button";
 import { updateStuffingReport } from "@/app/httpservices/stuffingReport";
 import { mutate } from "swr";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const Page = () => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
+  const session: any = useSession();
+  const workPlace=session?.data?.workCountry;
   const activePage = searchParams?.get("page");
   const router = useRouter();
   const [amaount, setAmount] = useState(0);
@@ -72,6 +75,7 @@ const Page = () => {
       ],
     () =>
       getFinancialReport(
+        workPlace,
         "",
         currentPage,
         date?.from as unknown as string,
@@ -82,7 +86,7 @@ const Page = () => {
     data: ChartInfo,
     isLoading: loading,
     error: isError,
-  } = useSWR(financialReportEndpoint + "/chart", getFinancialReportchart);
+  } = useSWR(financialReportEndpoint + "/chart", ()=>getFinancialReportchart(workPlace));
   useEffect(() => {
     dispatch(setPageTitle("Financial report"));
   }, [dispatch]);

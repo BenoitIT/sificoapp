@@ -37,6 +37,7 @@ export const POST = async (req: NextRequest) => {
       status: 400,
       message: "Staff with this phone number already exist.",
     });
+  body.lastName = body.lastName ?? "-";
   const unIncryptedPassword =
     body.firstName[0] + body.lastName[0] + body.phone.slice(0, 6);
   body.password = await bcrypt.hash(unIncryptedPassword, 10);
@@ -72,6 +73,7 @@ export const GET = async (req: Request) => {
             { lastName: { contains: searchValue, mode: "insensitive" } },
             { email: { contains: searchValue, mode: "insensitive" } },
             { phone: { contains: searchValue, mode: "insensitive" } },
+            { workCountry: { contains: searchValue, mode: "insensitive" } },
           ],
         }
       : {},

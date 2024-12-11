@@ -31,6 +31,7 @@ const Page = () => {
   const session: any = useSession();
   const role = session?.data?.role;
   const userId = session?.data?.id;
+  const workPlace=session?.data?.workCountry;
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
@@ -38,7 +39,7 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading, error } = useSWR(
     [stuffingReportEndpoint, searchValues, currentPage],
-    () => getAllContainers(searchValues, currentPage)
+    () => getAllContainers(searchValues, currentPage,workPlace)
   );
   useEffect(() => {
     dispatch(setPageTitle("Containers - Invoices"));

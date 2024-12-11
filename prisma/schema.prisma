@@ -22,6 +22,8 @@ model User {
   role                String
   gender              String
   password            String
+  //added
+  workCountry         String                @default("Rwanda")
   deliverySite        deliverySite[]
   stuffingReportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
@@ -36,7 +38,6 @@ model deliverySite {
   user           User             @relation(fields: [agent], references: [id])
   agent          Int
   createdAt      DateTime         @default(now())
-  consignee      consignee[]
   siteCode       String
   stuffingreport stuffingreport[]
 }
@@ -61,13 +62,15 @@ model shipper {
 model consignee {
   id                  Int                   @id @default(autoincrement())
   name                String
-  location            deliverySite          @relation(fields: [locationid], references: [id])
-  locationid          Int
+  //modified
+  location            String                @default("Rwanda,Kigali")
   email               String
   phone               String                @unique
   tinnumber           String
   stuffingreportItems stuffingreportItems[]
   createdAt           DateTime              @default(now())
+  //added
+  updatedAt           DateTime              @default(now())
 }
 
 model shippingInstruction {
@@ -82,6 +85,9 @@ model shippingInstruction {
   stuffingReportItems stuffingreportItems @relation(fields: [itemId], references: [id])
   createdAt           DateTime            @default(now())
   updatedAt           String              @default("")
+  //added
+  preparedBy          String              @default("")
+  editedBy            String              @default("")
 }
 
 model stuffingreport {

@@ -6,6 +6,8 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page")) || 1;
+  const workPlace = searchParams.get("workplace");
+  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.stuffingreport.count({
@@ -17,6 +19,14 @@ export const GET = async (req: Request) => {
           { origin: { contains: searchValue, mode: "insensitive" } },
         ],
       }),
+      ...(isValidWorkPlace ? {
+        deliverySite: {
+          country: {
+            equals: workPlace,
+            mode: "insensitive",
+          },
+        },
+      }:{}),
     },
   });
   const stuffingReports = await prisma.stuffingreport.findMany({
@@ -28,6 +38,14 @@ export const GET = async (req: Request) => {
           { origin: { contains: searchValue, mode: "insensitive" } },
         ],
       }),
+      ...(isValidWorkPlace ? {
+        deliverySite: {
+          country: {
+            equals: workPlace,
+            mode: "insensitive",
+          },
+        },
+      }:{}),
     },
     include: {
       deliverySite: true,

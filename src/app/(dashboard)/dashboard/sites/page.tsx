@@ -21,6 +21,17 @@ import Paginator from "@/components/pagination/paginator";
 import exportDataInExcel from "@/app/utilities/exportdata";
 import usePagination from "@/app/utilities/usePagination";
 import { withRolesAccess } from "@/components/auth/accessRights";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 const Page = () => {
   const dispatch = useDispatch();
   const currentpath: string = usePathname()!;
@@ -31,6 +42,7 @@ const Page = () => {
   const searchValues = useDebounce(search, 1000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
     [deliverySitesEndpoint, searchValues, currentPage],
     () => getAllsites(searchValues, currentPage),
@@ -61,7 +73,7 @@ const Page = () => {
   const handleEdit = async (id: number | string) => {
     router.push(`${currentpath}/${id}`);
   };
-  const handleDelete = async (id: number) => {
+  const handleConfirmDelete = async (id: number) => {
     try {
       const message = await deleteSite(id);
       toast.success(message);
@@ -71,9 +83,41 @@ const Page = () => {
       toast.error("Failed to delete this delivery site");
     }
   };
+  const handleDelete = async (id: number) => {
+    setRowId(id);
+  };
   const actions = [
     { icon: <FaEdit />, Click: handleEdit },
-    { icon: <FaTrash />, Click: handleDelete, name: "delete" },
+    {
+      icon: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <FaTrash />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm text-white opacity-65">
+                This action cannot be undone. This will permanently delete the
+                location.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  handleConfirmDelete(rowId);
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+      Click: handleDelete,
+      name: "delete",
+    },
   ];
   if (data?.sites) {
     return (
@@ -105,4 +149,7 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["origin agent", "admin"]) as React.FC;
+export default withRolesAccess(SuspensePage, [
+  "origin agent",
+  "admin",
+]) as React.FC;

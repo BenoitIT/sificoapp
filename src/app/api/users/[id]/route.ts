@@ -22,7 +22,7 @@ export const DELETE = async (req: Request) => {
   } catch (err) {
     return NextResponse.json({
       status: 400,
-      message: "something went wrong",
+      message: "Could not delet this staff.",
     });
   }
 };

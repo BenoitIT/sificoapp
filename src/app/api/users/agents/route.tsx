@@ -15,3 +15,30 @@ export const GET = async () => {
     data: users,
   });
 };
+export const POST = async (req: Request) => {
+  const body = await req.json();
+  const checkUserPhoneExistance = await prisma.user.findFirst({
+    where: {
+      phone: body.phone,
+    },
+  });
+  body.email = body.firstName + body.firstName[0] + ".agent" + "@" + "fake.com";
+  body.password = body.firstName + body.firstName[0];
+  body.lastName = body.lastName ?? "-";
+  body.workCountry = "-";
+  if (!checkUserPhoneExistance) {
+    const user = await prisma.user.create({
+      data: body,
+    });
+    return NextResponse.json({
+      status: 201,
+      message: "A sales agent is registred",
+      data: user,
+    });
+  } else {
+    return NextResponse.json({
+      status: 400,
+      message: "A sales agent is already registred",
+    });
+  }
+};
