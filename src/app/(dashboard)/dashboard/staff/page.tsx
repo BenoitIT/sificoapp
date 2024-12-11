@@ -41,6 +41,7 @@ const Page = () => {
   const [search, setSearch] = useState(searchValue);
   const [rowId, setRowId] = useState<any>();
   const searchValues = useDebounce(search, 1000);
+  const workPlace = session?.data?.workCountry;
   const {
     data: staff,
     isLoading,
@@ -79,14 +80,28 @@ const Page = () => {
   };
   const actions = [
     {
-      icon: <FaEdit className={role !== "admin" ? "hidden" : ""} />,
+      icon: (
+        <FaEdit
+          className={
+            role !== "admin" || !workPlace?.toLowerCase().includes("rwanda")
+              ? "hidden"
+              : ""
+          }
+        />
+      ),
       Click: handleEdit,
     },
     {
       icon: (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <FaTrash className={role !== "admin" ? "hidden" : ""} />
+            <FaTrash
+              className={
+                role !== "admin" || !workPlace?.toLowerCase().includes("rwanda")
+                  ? "hidden"
+                  : ""
+              }
+            />
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

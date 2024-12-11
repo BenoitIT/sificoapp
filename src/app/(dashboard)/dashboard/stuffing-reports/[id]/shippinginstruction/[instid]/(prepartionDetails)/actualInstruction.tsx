@@ -250,10 +250,7 @@ const ShippingInstruction = () => {
                   {data?.stuffingReportItems?.container?.shipper?.location}
                 </TableCell>
                 <TableCell className="border-l border-r border-black border-b uppercase">
-                  {data?.stuffingReportItems?.consignee?.location?.country +
-                    "-" +
-                    data?.stuffingReportItems?.consignee?.location
-                      ?.locationName}
+                  {data?.stuffingReportItems?.consignee?.location}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -300,7 +297,8 @@ const ShippingInstruction = () => {
                 >
                   {data?.stuffingReportItems?.container?.deliverySite?.country +
                     "-" +
-                    data?.stuffingReportItems?.container?.deliverySite?.locationName}
+                    data?.stuffingReportItems?.container?.deliverySite
+                      ?.locationName}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -396,8 +394,7 @@ const ShippingInstruction = () => {
                 <TableCell
                   colSpan={2}
                   className="border-l border-r border-black border-b"
-                >
-                </TableCell>
+                ></TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="border-l border-r border-black border-b text-black uppercase w-[200px] border-b-white"></TableCell>
@@ -644,6 +641,44 @@ const ShippingInstruction = () => {
               improper packing Super International Freight Services company ltd
               will not be responsible for any damages or claims.
             </p>
+          </div>
+        </div>
+        <div className="bg-white max-w-[1200px] flex justify-center ml-2 p-2">
+          <div className="flex justify-center flex-col text-sm gap-1">
+            <div className="flex flex-wrap gap-6">
+              <p>
+                Created by:
+                <span
+                  className={
+                    data?.stuffingReportItems?.preparedBy
+                      ? "ml-2 font-medium"
+                      : "hidden"
+                  }
+                >
+                  {data?.stuffingReportItems?.preparedBy ?? "-"}
+                </span>
+              </p>
+              <p>
+                Date:
+                <span className={"ml-2 font-medium"}>
+                  {formatDate(data?.stuffingReportItems?.createdAt) ?? "-"}
+                </span>
+              </p>
+            </div>
+            <div className={data?.stuffingReportItems?.editedBy!==""?"flex flex-wrap gap-6":"hidden"}>
+              <p>
+                Last editor:
+                <span className="ml-2 font-medium">
+                  {data?.stuffingReportItems?.editedBy ?? "-"}
+                </span>
+              </p>
+              <p>
+                Date:
+                <span className="ml-2 font-medium">
+                  {data?.stuffingReportItems?.updatedAt ?? "-"}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import {
 import useSWR, { mutate } from "swr";
 import html2Canvas from "html2canvas";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   getStuffingReportsItemsInvoice,
@@ -593,6 +593,30 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
             <p>BANK OF KIGALI</p>
             <p>A/C NO(USD): 100105759775</p>
             <p>A/C NO (RWF): 100105758132</p>
+          </div>
+        </div>
+        <div className="bg-white max-w-[1200px] flex justify-center ml-2 p-2">
+          <div className="flex justify-center flex-col text-sm gap-1">
+            <div className="flex flex-wrap gap-6">
+              <p>
+                Created by:
+                <span
+                  className={
+                    data?.preparedBy
+                      ? "ml-2 font-medium"
+                      : "hidden"
+                  }
+                >
+                  {data?.preparedBy ?? "-"}
+                </span>
+              </p>
+              <p>
+                Date:
+                <span className={"ml-2 font-medium"}>
+                  {formatDate(data?.date) ?? "-"}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

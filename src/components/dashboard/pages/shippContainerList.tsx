@@ -29,11 +29,15 @@ import {
   createStuffingReports,
   stuffingReportEndpoint,
 } from "@/app/httpservices/stuffingReport";
-import { deliverySitesEndpoint, getAllsitesUnpaginated } from "@/app/httpservices/deliverySites";
+import {
+  deliverySitesEndpoint,
+  getAllsitesUnpaginated,
+} from "@/app/httpservices/deliverySites";
 import { NewSite } from "@/interfaces/sites";
 const ContainerListShipp = () => {
   const session: any = useSession();
   const role = session?.data?.role;
+  const workPlace = session?.data?.workCountry;
   const pathname = usePathname();
   const router = useRouter();
   const [payload, setPayload] = useState<StuffingReport>({
@@ -48,6 +52,7 @@ const ContainerListShipp = () => {
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
+
   const { data: destinations } = useSWR(
     deliverySitesEndpoint,
     getAllsitesUnpaginated,
@@ -121,7 +126,8 @@ const ContainerListShipp = () => {
         <div className="flex flex-wrap gap-2 text-sm">
           <div
             className={
-              role == "origin agent"
+              role == "origin agent" ||
+              (role == "admin" && workPlace?.toLowerCase().includes("dubai"))
                 ? "flex gap-2 justify-end w-full"
                 : "hidden"
             }
@@ -143,8 +149,11 @@ const ContainerListShipp = () => {
                     </div>
 
                     <div className="grid gap-2">
-                    <div className="grid gap-2 text-sm text-gray-700">
-                        <Label>Container Number  <span className="text-red-500">*</span></Label>
+                      <div className="grid gap-2 text-sm text-gray-700">
+                        <Label>
+                          Container Number{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           type="text"
                           placeholder="Ex: TFTZ3574483"
@@ -181,7 +190,9 @@ const ContainerListShipp = () => {
                         />
                       </div>
                       <div className="grid gap-2 text-sm text-gray-700">
-                        <Label>Origin  <span className="text-red-500">*</span></Label>
+                        <Label>
+                          Origin <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           type="text"
                           placeholder="Ex: Dubai"
@@ -248,13 +259,15 @@ const ContainerListShipp = () => {
                                   key={location.id!}
                                   value={location.id!.toString()}
                                 >
-                                 {location.country + "-" + location.locationName}
+                                  {location.country +
+                                    "-" +
+                                    location.locationName}
                                 </SelectItem>
                               ))}
                           </SelectContent>
                         </Select>
                       </div>
-                      
+
                       <div className="grid gap-2 text-sm">
                         <Label>Packaging type</Label>
                         <RadioGroup

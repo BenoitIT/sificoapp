@@ -179,8 +179,8 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
     const date = new Date();
     body.noOfPkgs = Number(body.noOfPkgs);
-    body.weight=Number(body.weight);
-    body.handling  = Number(body.handling ?? 0);
+    body.weight = Number(body.weight);
+    body.handling = Number(body.handling ?? 0);
     body.blFee = Number(body.blFee ?? 0);
     body.jb = Number(body.jb ?? 0);
     body.inspection = Number(body.inspection ?? 0);
@@ -188,7 +188,7 @@ export const POST = async (req: NextRequest) => {
     body.localCharges = Number(body.localCharges ?? 0);
     body.recovery = Number(body.recovery ?? 0);
     body.carHanging = Number(body.carHanging ?? 0);
-    body.line=Number(body.line ?? 0);
+    body.line = Number(body.line ?? 0);
     const validation = stuffingItemSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json({
@@ -209,9 +209,9 @@ export const POST = async (req: NextRequest) => {
       where: {
         id: Number(stuffingRptId),
       },
-      include:{
-        deliverySite:true,
-      }
+      include: {
+        deliverySite: true,
+      },
     });
     if (checkIfStuffingReportCreated) {
       const stuffingreportid = Number(stuffingRptId);
@@ -221,7 +221,7 @@ export const POST = async (req: NextRequest) => {
       const code = checkIfStuffingReportCreated.deliverySite.siteCode ?? "";
       const noOfPkgs = body.noOfPkgs;
       const typeOfPkg = body.typeOfPkg ?? "";
-      const weight =body.weight;
+      const weight = body.weight;
       const handling = body.handling ?? 0;
       const cbm = body.cbm ?? 0;
       const description = body.description ?? "";
@@ -301,8 +301,9 @@ export const POST = async (req: NextRequest) => {
             carHanging: carHanging,
             totalUsd: totalUsd,
             totalAed: totalAed,
-            totalinwords:body.totalinwords,
-            portOfdischarge:body.portOfdischarge
+            totalinwords: body.totalinwords,
+            portOfdischarge: body.portOfdischarge,
+            preparedBy: body.preparedBy,
           },
         });
         const shiipingInstruction = await prisma.shippingInstruction.create({

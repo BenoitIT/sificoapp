@@ -127,7 +127,7 @@ export const menuItems = [
         icon: <GearIcon />,
         label: "Settings",
         href: "/dashboard/settings",
-        visible: ["admin", "origin agent"],
+        visible: ["admin"],
       },
     ],
   },
