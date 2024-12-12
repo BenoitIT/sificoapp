@@ -121,6 +121,7 @@ export const menuItems = [
           "operation manager",
           "finance",
           "head of finance",
+          "sales manager"
         ],
       },
       {

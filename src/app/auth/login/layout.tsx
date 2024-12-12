@@ -17,9 +17,12 @@ const Authlayout = ({ children }: { children: React.ReactNode }) => {
     return router.push("/opmanager");
   } else if (accessToken && role?.toLowerCase().includes("finance")) {
     return router.push("/dashboard");
-  } else if (accessToken && role?.toLowerCase().includes("head of finance")||accessToken && role?.toLowerCase().includes("sales manager")) {
+  } else if (accessToken && role?.toLowerCase().includes("head of finance")) {
     return router.push("/dashboard");
-  } else {
+  } else if(accessToken && role?.toLowerCase().includes("sales manager")){
+    return router.push("/dashboard/list");
+  }
+  else {
     return router.push("/");
   }
 };
