@@ -6,13 +6,13 @@ export const getAllStuffingReports = async (
   searchValues: string,
   FilterValue: string,
   currentPage: number,
-  workplace:string
+  workplace: string
 ) => {
   const response = await sifcoApi.get(
     stuffingReportEndpoint +
       `?search=${searchValues}&page=${currentPage}&filter=${FilterValue}&workplace=${
-          workplace?.toLowerCase().includes("dubai") ? null : workplace
-        }`
+        workplace?.toLowerCase().includes("dubai") ? null : workplace
+      }`
   );
   return response.data.data;
 };
@@ -128,13 +128,17 @@ export const PayInvoice = async (
 export const getAllContainers = async (
   searchValues: string,
   currentPage: number,
-  workplace:string
+  workplace: string,
+  role: string
 ) => {
   try {
     const response = await sifcoApi.get(
       stuffingReportEndpoint +
         `/all?search=${searchValues}&page=${currentPage}&workplace=${
-          workplace?.toLowerCase().includes("dubai") ? null : workplace
+          workplace?.toLowerCase().includes("dubai") ||
+          (role == "admin" && workplace?.toLowerCase().includes("rwanda"))
+            ? null
+            : workplace
         }`
     );
     return response.data.data;

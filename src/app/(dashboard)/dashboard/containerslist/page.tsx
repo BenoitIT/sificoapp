@@ -39,7 +39,7 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading, error } = useSWR(
     [stuffingReportEndpoint, searchValues, currentPage],
-    () => getAllContainers(searchValues, currentPage,workPlace)
+    () => getAllContainers(searchValues, currentPage,workPlace,role)
   );
   useEffect(() => {
     dispatch(setPageTitle("Containers - Invoices"));

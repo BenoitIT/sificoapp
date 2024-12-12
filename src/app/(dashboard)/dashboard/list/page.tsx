@@ -50,7 +50,7 @@ const Page = () => {
   const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
     [stuffingReportEndpoint, searchValues, currentPage, reload, addData],
-    () => getAllContainers(searchValues, currentPage,workPlace)
+    () => getAllContainers(searchValues, currentPage,workPlace,role)
   );
   useEffect(() => {
     dispatch(setPageTitle("Containers - Instructions"));
