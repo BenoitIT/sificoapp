@@ -101,7 +101,7 @@ const Page = () => {
       icon: (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <FaTrash className={role != "origin agent" ? "hidden" : ""} />
+            <FaTrash className={role != "senior operation manager" ? "hidden" : ""} />
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -168,7 +168,7 @@ const SuspensePage = () => (
 );
 
 export default withRolesAccess(SuspensePage, [
-  "origin agent",
+  "senior operation manager",
   "admin",
   "finance",
   "head of finance",

@@ -174,7 +174,7 @@ const Page = () => {
           className={
             generateReprt &&
             data?.shipments?.length > 0 &&
-            role == "origin agent"
+            role == "senior operation manager"
               ? "mt-8 flex gap-3"
               : "hidden"
           }
@@ -227,7 +227,7 @@ const Page = () => {
   }
 };
 export default withRolesAccess(Page, [
-  "origin agent",
+  "senior operation manager",
   "admin",
   "finance",
   "head of finance",

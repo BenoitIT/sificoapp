@@ -23,4 +23,4 @@ const Page = () => {
     return <ErrorSection />;
   }
 };
-export default withRolesAccess(Page, ["origin agent", "admin", "finance","head of finance"]) as React.FC;
+export default withRolesAccess(Page, ["senior operation manager", "admin", "finance","head of finance"]) as React.FC;

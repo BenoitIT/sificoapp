@@ -32,7 +32,7 @@ const ShippingInstruction = () => {
         <div className="flex gap-2">
           <Button
             onClick={handleAddNew}
-            className={role == "origin agent"||
+            className={role == "senior operation manager"||
               (role == "admin" && workPlace?.toLowerCase().includes("dubai")) ? "" : "hidden"}
           >
             New instruction

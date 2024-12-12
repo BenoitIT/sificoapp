@@ -112,4 +112,4 @@ const ReportPage = () => {
   }
 };
 
-export default withRolesAccess(ReportPage, ["origin agent", "admin"]) as React.FC;
+export default withRolesAccess(ReportPage, ["senior operation manager", "admin"]) as React.FC;

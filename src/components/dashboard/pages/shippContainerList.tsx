@@ -126,7 +126,7 @@ const ContainerListShipp = () => {
         <div className="flex flex-wrap gap-2 text-sm">
           <div
             className={
-              role == "origin agent" ||
+              role == "senior operation manager" ||
               (role == "admin" && workPlace?.toLowerCase().includes("dubai"))
                 ? "flex gap-2 justify-end w-full"
                 : "hidden"

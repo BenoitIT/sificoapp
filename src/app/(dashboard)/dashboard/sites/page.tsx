@@ -150,6 +150,6 @@ const SuspensePage = () => (
 );
 
 export default withRolesAccess(SuspensePage, [
-  "origin agent",
+  "senior operation manager",
   "admin",
 ]) as React.FC;

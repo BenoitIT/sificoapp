@@ -93,4 +93,4 @@ const AdminPage = () => {
   }
 };
 
-export default withRolesAccess(AdminPage, ["origin agent", "admin","finance","head of finance"])as React.FC;
+export default withRolesAccess(AdminPage, ["senior operation manager", "admin","finance","head of finance"])as React.FC;

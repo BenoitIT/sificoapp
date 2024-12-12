@@ -20,7 +20,7 @@ export const menuItems = [
         icon: <LuLayoutDashboard />,
         label: "Dashboard",
         href: "/dashboard",
-        visible: ["admin", "origin agent", "finance", "head of finance"],
+        visible: ["admin", "senior operation manager", "finance", "head of finance"],
       },
       {
         icon: <LuLayoutDashboard />,
@@ -38,25 +38,25 @@ export const menuItems = [
         icon: <MdOutlineIntegrationInstructions />,
         label: "Shipping instructions",
         href: "/dashboard/list",
-        visible: ["admin", "origin agent", "finance", "head of finance"],
+        visible: ["admin", "senior operation manager", "finance", "head of finance"],
       },
       {
         icon: <BsListUl />,
         label: "Stuffing reports",
         href: "/dashboard/stuffing-reports",
-        visible: ["admin", "origin agent", "finance", "head of finance"],
+        visible: ["admin", "senior operation manager", "finance", "head of finance"],
       },
       {
         icon: <TbUsersGroup />,
         label: "Staff",
         href: "/dashboard/staff",
-        visible: ["admin","origin agent"],
+        visible: ["admin","senior operation manager"],
       },
       {
         icon: <LiaSitemapSolid />,
         label: "Destination sites",
         href: "/dashboard/sites",
-        visible: ["admin", "origin agent"],
+        visible: ["admin", "senior operation manager"],
       },
       {
         icon: <LiaShippingFastSolid />,
@@ -68,7 +68,7 @@ export const menuItems = [
         icon: <MdMoveDown />,
         label: "Customers",
         href: "/dashboard/consignees",
-        visible: ["admin", "origin agent"],
+        visible: ["admin", "senior operation manager"],
       },
       {
         icon: <BsCashCoin />,
@@ -117,7 +117,7 @@ export const menuItems = [
         href: "/dashboard/profile",
         visible: [
           "admin",
-          "origin agent",
+          "senior operation manager",
           "operation manager",
           "finance",
           "head of finance",
