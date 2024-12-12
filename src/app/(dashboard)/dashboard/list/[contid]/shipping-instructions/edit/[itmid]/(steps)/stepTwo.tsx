@@ -70,13 +70,10 @@ const StepTwoForm = ({
     const description = form.elements.namedItem(
       "description"
     ) as HTMLTextAreaElement;
-    const Jb = form.elements.namedItem("jb") as HTMLInputElement;
     const Line = form.elements.namedItem("line") as HTMLInputElement;
     const blFee = form.elements.namedItem("blFee") as HTMLInputElement;
     if (description.value === "") {
       ErrorLogger("description", "Description  is required.");
-    } else if (Jb.value === "" || !Number(Jb.value)) {
-      ErrorLogger("jb", "JB is required.");
     } else if (Line.value == "" || !Number(Line.value)) {
       ErrorLogger("line", "Numerical value for line is required.");
     } else if (blFee.value == "" || !Number(blFee.value)) {
@@ -86,7 +83,6 @@ const StepTwoForm = ({
         delete newItemPayload.id;
         newItemPayload.editedAt=date.toDateString();
         newItemPayload.editedBy=userName;
-        console.log("hdgdgdgd",newItemPayload)
         const { message, status } = await updateStuffingReportsItemsDetail(
           Number(staffReportId),
           Number(staffReportItmId),
