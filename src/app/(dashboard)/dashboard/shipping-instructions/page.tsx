@@ -105,4 +105,5 @@ export default withRolesAccess(SuspensePage, [
   "operation manager",
   "finance",
   "head of finance",
+  "sales manager"
 ]) as React.FC;
