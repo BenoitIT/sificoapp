@@ -50,7 +50,7 @@ export const menuItems = [
         icon: <TbUsersGroup />,
         label: "Staff",
         href: "/dashboard/staff",
-        visible: ["admin"],
+        visible: ["admin","origin agent"],
       },
       {
         icon: <LiaSitemapSolid />,
