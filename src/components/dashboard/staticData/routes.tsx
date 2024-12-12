@@ -38,7 +38,7 @@ export const menuItems = [
         icon: <MdOutlineIntegrationInstructions />,
         label: "Shipping instructions",
         href: "/dashboard/list",
-        visible: ["admin", "senior operation manager", "finance", "head of finance"],
+        visible: ["admin", "senior operation manager", "finance", "head of finance","sales manager"],
       },
       {
         icon: <BsListUl />,

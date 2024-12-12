@@ -194,6 +194,7 @@ const Page = () => {
                         Head of finance
                       </SelectItem>
                       <SelectItem value="sales agent">Sales agent</SelectItem>
+                      <SelectItem value="sales manager">Sales manager</SelectItem>
                     </SelectContent>
                   </Select>
                   <span
