@@ -238,7 +238,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>
+                              <AlertDialogTitle className=" text-white">
                                 Are you absolutely sure?
                               </AlertDialogTitle>
                               <AlertDialogDescription className="text-sm text-white opacity-65">
@@ -247,7 +247,7 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogCancel className=" text-white">Cancel</AlertDialogCancel>
                               <AlertDialogAction>
                                 <Button onClick={handlePayment}>
                                   Continue
