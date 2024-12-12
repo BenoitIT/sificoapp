@@ -37,11 +37,12 @@ import { useSession } from "next-auth/react";
 
 const Page = () => {
   const dispatch = useDispatch();
+  const session: any = useSession();
   const router = useRouter();
   const currentpath: string = usePathname()!;
   const searchParams: any = useSearchParams();
-  const session: any = useSession();
   const workPlace=session?.data?.workCountry;
+  const role=session?.data?.role;
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
@@ -50,7 +51,7 @@ const Page = () => {
   const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
     [consigneesEndpoint, searchValues, currentPage],
-    () => getAllconsignees(searchValues, currentPage,workPlace),
+    () => getAllconsignees(searchValues, currentPage,workPlace,role),
     {
       onSuccess: (data: NewShipper[]) =>
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
@@ -108,14 +109,14 @@ const Page = () => {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle className=" text-white">Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription className="text-sm text-white opacity-65">
                 This action cannot be undone. This will permanently delete the
                 customer.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className=" text-white">Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
                   handleConfirmDelete(rowId);

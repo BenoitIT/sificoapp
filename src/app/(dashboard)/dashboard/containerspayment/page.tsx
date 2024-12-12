@@ -27,6 +27,7 @@ const Page = () => {
   const searchParams: any = useSearchParams();
   const session: any = useSession();
   const workPlace=session?.data?.workCountry;
+  const role = session?.data?.role;
   const locationCode = searchParam?.get("location") || "KGL";
   const searchValue = searchParams?.get("search") || "";
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +37,7 @@ const Page = () => {
   const { data, isLoading, error } = useSWR(
     [containersPyamentEndpoint, locationCode, searchValues],
     () =>
-      getAllContainerPaymentPerPlace(locationCode, searchValues, currentPage,workPlace)
+      getAllContainerPaymentPerPlace(locationCode, searchValues, currentPage,workPlace,role)
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.data, currentPage);

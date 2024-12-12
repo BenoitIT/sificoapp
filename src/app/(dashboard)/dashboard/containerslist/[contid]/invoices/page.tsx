@@ -122,14 +122,14 @@ const Page = () => {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle className=" text-white">Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription className="text-sm text-white opacity-65">
                 This action cannot be undone. This will approve the payment and
                 release letter will be prepared.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className=" text-white">Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={() => handleApprovePayment(rowId)}>
                 Continue
               </AlertDialogAction>
