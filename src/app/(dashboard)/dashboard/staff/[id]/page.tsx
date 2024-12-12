@@ -188,7 +188,7 @@ const Page = () => {
                       <SelectItem value="operation manager">
                         Operation Manager
                       </SelectItem>
-                      <SelectItem value="origin agent">Origin agent</SelectItem>
+                      <SelectItem value="senior operation manager">Senior operation manager</SelectItem>
                       <SelectItem value="finance">Finance</SelectItem>
                       <SelectItem value="head of finance">
                         Head of finance

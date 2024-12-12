@@ -11,4 +11,4 @@ const Page = () => {
     <Invoice itemsId={itemsId as number} invoiceId={invoiceId as number} />
   );
 };
-export default withRolesAccess(Page, ["origin agent", "admin"]) as React.FC;
+export default withRolesAccess(Page, ["senior operation manager", "admin"]) as React.FC;

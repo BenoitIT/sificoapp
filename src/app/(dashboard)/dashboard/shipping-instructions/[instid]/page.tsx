@@ -6,7 +6,7 @@ const Page = () => {
   return <ShippingInstruction />;
 };
 export default withRolesAccess(Page, [
-  "origin agent",
+  "senior operation manager",
   "admin",
   "operation manager",
   "finance",

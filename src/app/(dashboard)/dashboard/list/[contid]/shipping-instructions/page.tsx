@@ -117,7 +117,7 @@ const Page = () => {
   const actions = [
     { icon: <FaEye />, Click: handleOpenStaffingReport, name: "view" },
     {
-      icon: <FaEdit className={role !== "origin agent" ? "hidden" : ""} />,
+      icon: <FaEdit className={role !== "senior operation manager" ? "hidden" : ""} />,
       Click: handleEdit,
       name: "edit",
     },
@@ -125,7 +125,7 @@ const Page = () => {
       icon: (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <MdDelete className={role !== "origin agent" ? "hidden" : ""} />
+            <MdDelete className={role !== "senior operation manager" ? "hidden" : ""} />
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -183,7 +183,7 @@ const SuspensePage = () => (
 );
 
 export default withRolesAccess(SuspensePage, [
-  "origin agent",
+  "senior operation manager",
   "admin",
   "operation manager",
   "finance",
