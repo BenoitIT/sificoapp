@@ -148,4 +148,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["admin"]) as React.FC;
+export default withRolesAccess(SuspensePage, ["admin","origin agent"]) as React.FC;

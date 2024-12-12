@@ -320,4 +320,4 @@ const Page = () => {
     </div>
   );
 };
-export default withRolesAccess(Page, ["admin"]) as React.FC;
+export default withRolesAccess(Page, ["admin","origin agent"]) as React.FC;
