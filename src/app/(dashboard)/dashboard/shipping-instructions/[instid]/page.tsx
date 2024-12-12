@@ -11,4 +11,5 @@ export default withRolesAccess(Page, [
   "operation manager",
   "finance",
   "head of finance",
+  "sales manager"
 ]) as React.FC;
