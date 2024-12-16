@@ -5,12 +5,11 @@ export const getAllconsignees = async (
   searchValues: string,
   currentPage: number,
   workplace:string,
-  role:string
 ) => {
   try {
     const response = await sifcoApi.get(
       consigneesEndpoint + `?search=${searchValues}&page=${currentPage}&workplace=${
-          workplace?.toLowerCase().includes("dubai")||(role=="admin"&&workplace?.toLowerCase().includes("rwanda")) ? null : workplace
+          workplace?.toLowerCase().includes("dubai")? null : workplace
         }`
     );
     return response.data.data;

@@ -30,17 +30,19 @@ export const POST = async (req: NextRequest) => {
       : dependacies?.freightRateFullCont;
     body.blCode = body.blCode ?? "-";
     delete body.shipper;
-    const stuffingReport = await prisma.stuffingreport.create({ data:{
-      packagingType:body.packagingType,
-      code:body.code,
-      origin:body.origin,
-      shipperId:body.shipperId,
-      deliverySiteId:body.finaldeliverId,
-      status:body.status,
-      transportFee:body.transportFee,
-      seaFeee: body.seaFeee,
-      blCode:body.blCode,
-    } });
+    const stuffingReport = await prisma.stuffingreport.create({
+      data: {
+        packagingType: body.packagingType,
+        code: body.code,
+        origin: body.origin,
+        shipperId: body.shipperId,
+        deliverySiteId: body.finaldeliverId,
+        status: body.status,
+        transportFee: body.transportFee,
+        seaFeee: body.seaFeee,
+        blCode: body.blCode,
+      },
+    });
     return NextResponse.json({
       status: 201,
       message: "New stuffing report is initialized",
@@ -60,7 +62,8 @@ export const GET = async (req: Request) => {
   const filteredValue = searchParams.get("filter") || "preview";
   const currentPage = Number(searchParams?.get("page")) || 1;
   const workPlace = searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const itemCount = await prisma.stuffingreport.count({
@@ -73,14 +76,22 @@ export const GET = async (req: Request) => {
           { origin: { contains: searchValue, mode: "insensitive" } },
         ],
       }),
-      ...(isValidWorkPlace ?{
-        deliverySite: {
-          country: {
-            equals: workPlace,
-            mode: "insensitive",
-          },
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? {
+            deliverySite: {
+              country:
+                workPlace?.toLowerCase() == "rwanda"
+                  ? {
+                      in: ["Rwanda", "DRC"],
+                      mode: "insensitive",
+                    }
+                  : {
+                      equals: workPlace,
+                      mode: "insensitive",
+                    },
+            },
+          }
+        : {}),
     },
   });
   const stuffingReports = await prisma.stuffingreport.findMany({
@@ -93,14 +104,22 @@ export const GET = async (req: Request) => {
           { origin: { contains: searchValue, mode: "insensitive" } },
         ],
       }),
-      ...(isValidWorkPlace ? {
-        deliverySite: {
-          country: {
-            equals: workPlace,
-            mode: "insensitive",
-          },
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? {
+            deliverySite: {
+              country:
+                workPlace?.toLowerCase() == "rwanda"
+                  ? {
+                      in: ["Rwanda", "DRC"],
+                      mode: "insensitive",
+                    }
+                  : {
+                      equals: workPlace,
+                      mode: "insensitive",
+                    },
+            },
+          }
+        : {}),
     },
     include: {
       deliverySite: true,

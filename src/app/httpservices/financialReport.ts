@@ -21,14 +21,12 @@ export const getFinancialReport = async (
 };
 export const getFinancialReportchart = async (
   workplace: string,
-  role: string
 ) => {
   try {
     const response = await sifcoApi.get(
       financialReportEndpoint +
         `/chart?workplace=${
-          workplace?.toLowerCase().includes("dubai") ||
-          (role == "admin" && workplace?.toLowerCase().includes("rwanda"))
+          workplace?.toLowerCase().includes("dubai") 
             ? null
             : workplace
         }`

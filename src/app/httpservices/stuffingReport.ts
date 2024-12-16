@@ -129,14 +129,12 @@ export const getAllContainers = async (
   searchValues: string,
   currentPage: number,
   workplace: string,
-  role: string
 ) => {
   try {
     const response = await sifcoApi.get(
       stuffingReportEndpoint +
         `/all?search=${searchValues}&page=${currentPage}&workplace=${
-          workplace?.toLowerCase().includes("dubai") ||
-          (role == "admin" && workplace?.toLowerCase().includes("rwanda"))
+          workplace?.toLowerCase().includes("dubai") 
             ? null
             : workplace
         }`
