@@ -24,7 +24,7 @@ import {
   StepFormProps,
 } from "@/interfaces/stuffingItem";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import useSWR from "swr";
 
 const SetpOneForm = ({
@@ -45,11 +45,19 @@ const SetpOneForm = ({
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
   const { data: staff } = useSWR(usersBaseEndpoint, () => getAllUsers(""));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTermm, setSearchTermm] = useState("");
+  const filteredOptions = consignees?.filter((option: any) =>
+    option?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
   const customerr = consignees?.find(
     (customer: NewCustomer) => customer?.id == newItemPayload?.consignee
   );
   const salesAgent = staff?.find(
     (staff: NewStaff) => staff.id == newItemPayload?.salesAgent
+  );
+  const filteredOptionss = staff?.filter((option: any) =>
+    option?.firstName?.toLowerCase()?.includes(searchTermm?.toLowerCase())
   );
   const handleSelectConsigneeChange = (value: string | number) => {
     const customer = consignees?.find(
@@ -133,12 +141,21 @@ const SetpOneForm = ({
                   )}
                 </SelectTrigger>
                 <SelectContent>
-                  {consignees?.map((consignee: NewShipper) => (
+                  <div className="p-2">
+                    <Input
+                      type="text"
+                      placeholder="Search..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full px-2 py-1 border rounded-md focus:outline-none"
+                    />
+                  </div>
+                  {filteredOptions?.map((consignee: NewShipper) => (
                     <SelectItem
-                      key={consignee.id}
-                      value={consignee.id!.toString()}
+                      key={consignee?.id}
+                      value={consignee?.id!.toString()}
                     >
-                      {consignee.name}
+                      {consignee?.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -182,9 +199,18 @@ const SetpOneForm = ({
                   )}
                 </SelectTrigger>
                 <SelectContent>
-                  {staff?.map((user: NewStaff) => (
+                  <div className="p-2">
+                    <Input
+                      type="text"
+                      placeholder="Search..."
+                      value={searchTermm}
+                      onChange={(e) => setSearchTermm(e.target.value)}
+                      className="w-full px-2 py-1 border rounded-md focus:outline-none"
+                    />
+                  </div>
+                  {filteredOptionss?.map((user: NewStaff) => (
                     <SelectItem key={user.id} value={user.id!.toString()}>
-                      {user.firstName} {user.lastName}
+                      {user?.firstName} {user?.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -223,9 +249,7 @@ const SetpOneForm = ({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="typeOfPkg">
-                Type of package
-              </Label>
+              <Label htmlFor="typeOfPkg">Type of package</Label>
               <Input
                 id="typeOfPkg"
                 name="typeOfPkg"
@@ -238,7 +262,6 @@ const SetpOneForm = ({
                     : "placeholder:text-gray-400"
                 }
               />
-
             </div>
             <div className="grid gap-2">
               <Label htmlFor="weight">

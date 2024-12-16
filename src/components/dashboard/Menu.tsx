@@ -14,7 +14,7 @@ const Menu = () => {
     window.location.href = "/auth/login";
   };
   return (
-    <div className="h-[96vh] flex flex-col justify-between w-full">
+    <div className="h-[96vh] flex flex-col justify-between w-full overflow-y-auto">
       <Link
         href="/"
         className="flex absolute top-4 items-center justify-center lg:justify-start gap-2 ml-1"

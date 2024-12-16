@@ -9,7 +9,8 @@ export const GET = async (req: Request) => {
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
   const workPlace = searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   const start = startDate
     ? new Date(startDate)
     : new Date(
@@ -29,10 +30,16 @@ export const GET = async (req: Request) => {
       ? {
           container: {
             deliverySite: {
-              country: {
-                equals: workPlace,
-                mode: "insensitive",
-              },
+              country:
+                workPlace?.toLowerCase() == "rwanda"
+                  ? {
+                      in: ["Rwanda", "DRC"],
+                      mode: "insensitive",
+                    }
+                  : {
+                      equals: workPlace,
+                      mode: "insensitive",
+                    },
             },
           },
         }
@@ -51,16 +58,24 @@ export const GET = async (req: Request) => {
           gte: start,
           lt: end,
         },
-        ...(isValidWorkPlace ? {
-          container: {
-            deliverySite: {
-              country: {
-                equals: workPlace,
-                mode: "insensitive",
+        ...(isValidWorkPlace
+          ? {
+              container: {
+                deliverySite: {
+                  country:
+                    workPlace?.toLowerCase() == "rwanda"
+                      ? {
+                          in: ["Rwanda", "DRC"],
+                          mode: "insensitive",
+                        }
+                      : {
+                          equals: workPlace,
+                          mode: "insensitive",
+                        },
+                },
               },
-            },
-          },
-        }:{}),
+            }
+          : {}),
       },
     });
   const revenuePercentage =
@@ -69,12 +84,11 @@ export const GET = async (req: Request) => {
   const totalMonitaryValue = totalRevenueMade._sum.totalUsd;
   const groupedCustomers = await prisma.consignee.aggregate({
     where: {
-      ...(isValidWorkPlace ? {
-        location: {
-          contains: workPlace,
-          mode: "insensitive",
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? workPlace.toLowerCase() == "rwanda"
+          ? { location: { in: ["Rwanda", "DRC"], mode: "insensitive" } }
+          : { location: { contains: workPlace, mode: "insensitive" } }
+        : {}),
     },
     _count: {
       id: true,
@@ -89,12 +103,11 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
-      ...(isValidWorkPlace ? {
-        location: {
-          contains: workPlace,
-          mode: "insensitive",
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? workPlace.toLowerCase() == "rwanda"
+          ? { location: { in: ["Rwanda", "DRC"], mode: "insensitive" } }
+          : { location: { contains: workPlace, mode: "insensitive" } }
+        : {}),
     },
   });
   const customerPercentage =
@@ -102,14 +115,16 @@ export const GET = async (req: Request) => {
       (groupedCustomers._count.id ?? 1) || 0;
   const groupedStaffingReport = await prisma.stuffingreport.aggregate({
     where: {
-      ...(isValidWorkPlace ? {
-        deliverySite: {
-          country: {
-            equals: workPlace,
-            mode: "insensitive",
-          },
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? {
+            deliverySite: {
+              country: {
+                equals: workPlace,
+                mode: "insensitive",
+              },
+            },
+          }
+        : {}),
     },
     _count: {
       id: true,
@@ -124,14 +139,22 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
-      ...(isValidWorkPlace ? {
-        deliverySite: {
-          country: {
-            equals: workPlace,
-            mode: "insensitive",
-          },
-        },
-      }:{}),
+      ...(isValidWorkPlace
+        ? {
+            deliverySite: {
+              country:
+                workPlace?.toLowerCase() == "rwanda"
+                  ? {
+                      in: ["Rwanda", "DRC"],
+                      mode: "insensitive",
+                    }
+                  : {
+                      equals: workPlace,
+                      mode: "insensitive",
+                    },
+            },
+          }
+        : {}),
     },
   });
   const staffingPercentage =
@@ -139,18 +162,26 @@ export const GET = async (req: Request) => {
       (groupedStaffingReport._count.id ?? 1) || 0;
   const invoicesCount = await prisma.invoice.aggregate({
     where: {
-      ...(isValidWorkPlace ? {
-        details: {
-          container: {
-            deliverySite: {
-              country: {
-                equals: workPlace,
-                mode: "insensitive",
+      ...(isValidWorkPlace
+        ? {
+            details: {
+              container: {
+                deliverySite: {
+                  country:
+                    workPlace?.toLowerCase() == "rwanda"
+                      ? {
+                          in: ["Rwanda", "DRC"],
+                          mode: "insensitive",
+                        }
+                      : {
+                          equals: workPlace,
+                          mode: "insensitive",
+                        },
+                },
               },
             },
-          },
-        },
-      }:{}),
+          }
+        : {}),
     },
     _count: {
       id: true,
@@ -165,18 +196,26 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
-      ...(isValidWorkPlace ? {
-        details: {
-          container: {
-            deliverySite: {
-              country: {
-                equals: workPlace,
-                mode: "insensitive",
+      ...(isValidWorkPlace
+        ? {
+            details: {
+              container: {
+                deliverySite: {
+                  country:
+                    workPlace?.toLowerCase() == "rwanda"
+                      ? {
+                          in: ["Rwanda", "DRC"],
+                          mode: "insensitive",
+                        }
+                      : {
+                          equals: workPlace,
+                          mode: "insensitive",
+                        },
+                },
               },
             },
-          },
-        },
-      }:{}),
+          }
+        : {}),
     },
   });
   const invoiceCountPercentage =
@@ -188,16 +227,24 @@ export const GET = async (req: Request) => {
         gte: start,
         lt: end,
       },
-      ...(isValidWorkPlace ?{
-        container: {
-          deliverySite: {
-            country: {
-              equals: workPlace,
-              mode: "insensitive",
+      ...(isValidWorkPlace
+        ? {
+            container: {
+              deliverySite: {
+                country:
+                  workPlace?.toLowerCase() == "rwanda"
+                    ? {
+                        in: ["Rwanda", "DRC"],
+                        mode: "insensitive",
+                      }
+                    : {
+                        equals: workPlace,
+                        mode: "insensitive",
+                      },
+              },
             },
-          },
-        },
-      }:{}),
+          }
+        : {}),
     },
     include: {
       consignee: true,
@@ -214,16 +261,24 @@ export const GET = async (req: Request) => {
   }));
   const revenueByMonth = await prisma.stuffingreportItems.findMany({
     where: {
-      ...(isValidWorkPlace ? {
-        container: {
-          deliverySite: {
-            country: {
-              equals: workPlace,
-              mode: "insensitive",
+      ...(isValidWorkPlace
+        ? {
+            container: {
+              deliverySite: {
+                country:
+                  workPlace?.toLowerCase() == "rwanda"
+                    ? {
+                        in: ["Rwanda", "DRC"],
+                        mode: "insensitive",
+                      }
+                    : {
+                        equals: workPlace,
+                        mode: "insensitive",
+                      },
+              },
             },
-          },
-        },
-      }:{}),
+          }
+        : {}),
     },
     select: {
       createdAt: true,

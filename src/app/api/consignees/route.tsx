@@ -49,7 +49,8 @@ export const GET = async (req: Request) => {
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page")) || 1;
   const workPlace = searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const totalCount = await prisma.consignee.count({
@@ -62,12 +63,9 @@ export const GET = async (req: Request) => {
           ],
         }
       : isValidWorkPlace
-      ? {
-          location: {
-            contains: workPlace,
-            mode: "insensitive",
-          },
-        }
+      ? workPlace.toLowerCase() == "rwanda"
+        ? { location: { in: ["Rwanda", "DRC"], mode: "insensitive" } }
+        : { location: { contains: workPlace, mode: "insensitive" } }
       : {},
   });
   const consignees = await prisma.consignee.findMany({
@@ -81,12 +79,9 @@ export const GET = async (req: Request) => {
           ],
         }
       : isValidWorkPlace
-      ? {
-          location: {
-            contains: workPlace,
-            mode: "insensitive",
-          },
-        }
+      ? workPlace.toLowerCase() == "rwanda"
+        ? { location: { in: ["Rwanda", "DRC"], mode: "insensitive" } }
+        : { location: { contains: workPlace, mode: "insensitive" } }
       : {},
     orderBy: {
       id: "desc",
