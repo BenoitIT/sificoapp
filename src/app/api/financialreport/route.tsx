@@ -12,7 +12,8 @@ export const GET = async (req: Request) => {
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
   const workPlace = searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   const start = startDate
     ? new Date(startDate)
     : new Date(new Date().setDate(new Date().getDate() - 30));
@@ -29,14 +30,22 @@ export const GET = async (req: Request) => {
           gte: start,
           lt: end,
         },
-        ...(isValidWorkPlace ? {
-          deliverySite: {
-            country: {
-              equals: workPlace,
-              mode: "insensitive",
-            },
-          },
-        }:{}),
+        ...(isValidWorkPlace
+          ? {
+              deliverySite: {
+                country:
+                  workPlace?.toLowerCase() == "rwanda"
+                    ? {
+                        in: ["Rwanda", "DRC"],
+                        mode: "insensitive",
+                      }
+                    : {
+                        equals: workPlace,
+                        mode: "insensitive",
+                      },
+              },
+            }
+          : {}),
       },
       include: {
         stuffingreportItems: true,
@@ -80,8 +89,8 @@ export const GET = async (req: Request) => {
 
       const handlingTotalAmount = totals.handling * report.freightRate;
       const lessContainer =
-        totals.totalLines- totals.handling < 42
-          ? (42-(totals.totalLines - totals.handling)) * report.freightRate
+        totals.totalLines - totals.handling < 42
+          ? (42 - (totals.totalLines - totals.handling)) * report.freightRate
           : 0;
       const profitAmount =
         totals.totalUsd -

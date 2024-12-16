@@ -57,6 +57,9 @@ const StaffingReportsItems = () => {
   useEffect(() => {
     setPayload(stuffingreport);
   }, [stuffingreport]);
+  useEffect(() => {
+    setPayload({ ...payload, blCode: data?.stuffingRpt?.blCode });
+  }, [data]);
   const ErrorLogger = (errorKey: string, errorMessage: string | null) => {
     setValidationErrors((prevState: StuffingReport) => ({
       ...prevState,
@@ -197,7 +200,7 @@ const StaffingReportsItems = () => {
                         placeholder="write..."
                         name="blCode"
                         onChange={handleChange}
-                        value={payload?.blCode || data?.stuffingRpt?.blCode}
+                        value={payload?.blCode}
                         className={
                           validationErrors.blCode
                             ? "text-xs text-red-500 border-red-500"

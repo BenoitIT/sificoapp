@@ -12,19 +12,28 @@ interface ChartDataItem {
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const workPlace = searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   try {
     const stuffingReports = await prisma.stuffingreport.findMany({
       where: {
         stuffingstatus: "generated",
-        ...(isValidWorkPlace ? {
-          deliverySite: {
-            country: {
-              equals: workPlace,
-              mode: "insensitive",
-            },
-          },
-        }:{}),
+        ...(isValidWorkPlace
+          ? {
+              deliverySite: {
+                country:
+                  workPlace?.toLowerCase() == "rwanda"
+                    ? {
+                        in: ["Rwanda", "DRC"],
+                        mode: "insensitive",
+                      }
+                    : {
+                        equals: workPlace,
+                        mode: "insensitive",
+                      },
+              },
+            }
+          : {}),
       },
       include: {
         stuffingreportItems: true,

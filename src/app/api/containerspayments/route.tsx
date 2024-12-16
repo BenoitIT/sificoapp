@@ -9,7 +9,8 @@ export const GET = async (request: Request) => {
   const searchValue = url.searchParams.get("search");
   const currentPage = Number(url.searchParams?.get("page")) || 1;
   const workPlace = url.searchParams.get("workplace");
-  const isValidWorkPlace = workPlace && workPlace !== "null" && workPlace !== "";
+  const isValidWorkPlace =
+    workPlace && workPlace !== "null" && workPlace !== "";
   const pageSize = 13;
   const offset = (currentPage - 1) * pageSize;
   const whereClause: any = {
@@ -17,21 +18,27 @@ export const GET = async (request: Request) => {
     stuffingreportItems: {
       some: {
         code: code,
-        OR: [
-          { code: { contains: searchValue, mode: "insensitive" } },
-        ],
+        OR: [{ code: { contains: searchValue, mode: "insensitive" } }],
       },
     },
-    ...(isValidWorkPlace ? {
-      deliverySite: {
-        country: {
-          equals: workPlace,
-          mode: "insensitive",
-        },
-      },
-    }:{}),
+    ...(isValidWorkPlace
+      ? {
+          deliverySite: {
+            country:
+              workPlace?.toLowerCase() == "rwanda"
+                ? {
+                    in: ["Rwanda", "DRC"],
+                    mode: "insensitive",
+                  }
+                : {
+                    equals: workPlace,
+                    mode: "insensitive",
+                  },
+          },
+        }
+      : {}),
   };
-  
+
   if (searchValue) {
     whereClause.OR = [{ code: { contains: searchValue, mode: "insensitive" } }];
   }
