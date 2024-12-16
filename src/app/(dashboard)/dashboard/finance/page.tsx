@@ -53,7 +53,6 @@ const Page = () => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const session: any = useSession();
-  const role = session?.data?.role;
   const workPlace=session?.data?.workCountry;
   const activePage = searchParams?.get("page");
   const router = useRouter();
@@ -87,7 +86,7 @@ const Page = () => {
     data: ChartInfo,
     isLoading: loading,
     error: isError,
-  } = useSWR(financialReportEndpoint + "/chart", ()=>getFinancialReportchart(workPlace,role));
+  } = useSWR(financialReportEndpoint + "/chart", ()=>getFinancialReportchart(workPlace));
   useEffect(() => {
     dispatch(setPageTitle("Financial report"));
   }, [dispatch]);
