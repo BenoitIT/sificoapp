@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { NewStuffingItem, StepFormProps } from "@/interfaces/stuffingItem";
 import { useSession } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, FormEvent } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
@@ -25,9 +25,11 @@ const StepTwoForm = ({
 }: StepFormProps) => {
   const params = useParams();
   const router = useRouter();
-  const session:any=useSession();
-  const userName=session?.data?.firstname;
-  const date=new Date();
+  const session: any = useSession();
+  const searchParams = useSearchParams();
+  const shipingMethod = searchParams?.get("category");
+  const userName = session?.data?.firstname;
+  const date = new Date();
   const staffReportId = params?.id;
   const staffReportItmId = params?.itmid;
   const { data, isLoading, error } = useSWR(
@@ -43,9 +45,13 @@ const StepTwoForm = ({
         [e.target.name]: Number(e.target.value),
       }));
       if (e.target.name == "line") {
+        const freightValue =
+          shipingMethod !== "FCL"
+            ? Number(e.target.value) * Number(data?.freightRate ?? 1)
+            : null;
         setItemsData((prevState: NewStuffingItem) => ({
           ...prevState,
-          freight: Number(e.target.value) * Number(data?.freightRate ?? 1),
+          freight: freightValue || newItemPayload?.freight,
         }));
       }
     } else {
@@ -81,8 +87,8 @@ const StepTwoForm = ({
     } else {
       try {
         delete newItemPayload.id;
-        newItemPayload.editedAt=date.toDateString();
-        newItemPayload.editedBy=userName;
+        newItemPayload.editedAt = date.toDateString();
+        newItemPayload.editedBy = userName;
         const { message, status } = await updateStuffingReportsItemsDetail(
           Number(staffReportId),
           Number(staffReportItmId),
@@ -158,7 +164,6 @@ const StepTwoForm = ({
                 name="freight"
                 type="number"
                 placeholder="type.."
-                disabled
                 value={newItemPayload?.freight}
                 onChange={handleChange}
                 className={
@@ -175,8 +180,7 @@ const StepTwoForm = ({
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            
-          <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="noOfPkgs">
                 JB<span className="text-red-500">*</span>
               </Label>

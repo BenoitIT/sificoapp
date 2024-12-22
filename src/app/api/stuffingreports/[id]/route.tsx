@@ -213,6 +213,11 @@ export const POST = async (req: NextRequest) => {
         deliverySite: true,
       },
     });
+    const currentlyRecordedData = await prisma.stuffingreportItems.findFirst({
+      where: {
+        stuffingreportid: Number(stuffingRptId),
+      },
+    });
     if (checkIfStuffingReportCreated) {
       const stuffingreportid = Number(stuffingRptId);
       const consignee = body.consignee;
@@ -273,6 +278,14 @@ export const POST = async (req: NextRequest) => {
           status: 400,
           message:
             "You can not record the same customer twice on single stuffing report. We advice you to edit and extend first details provided on this customer.",
+        });
+      } else if (
+        checkIfStuffingReportCreated.packagingType == "FCL" &&
+        currentlyRecordedData?.id
+      ) {
+        return NextResponse.json({
+          status: 400,
+          message: "You can not insert morethan one record in full container",
         });
       } else {
         const stuffingreportItem = await prisma.stuffingreportItems.create({

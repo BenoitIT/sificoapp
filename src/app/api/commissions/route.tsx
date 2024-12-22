@@ -28,6 +28,9 @@ export const GET = async (req: Request) => {
             },
           ],
         },
+        handling: {
+          gt: 0,
+        },
       },
     });
     const commissions = await prisma.commissions.findMany({
@@ -48,12 +51,15 @@ export const GET = async (req: Request) => {
             },
           ],
         },
+        handling: {
+          gt: 0,
+        },
       },
       include: {
         agent: true,
       },
-      orderBy:{
-        id:"desc"
+      orderBy: {
+        id: "desc",
       },
       skip: offset,
       take: pageSize,
