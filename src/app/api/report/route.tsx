@@ -1,6 +1,6 @@
 import prisma from "../../../../prisma/client";
 import { NextResponse } from "next/server";
-export const revalidate=0;
+export const revalidate = 0;
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const startDate = searchParams.get("startDate");
@@ -27,7 +27,7 @@ export const GET = async (req: Request) => {
   const totalCommission = await prisma.commissions.aggregate({
     _sum: {
       totalAmount: true,
-      amountPaid:true
+      amountPaid: true,
     },
     where: {
       createdAt: {
@@ -85,6 +85,7 @@ export const GET = async (req: Request) => {
         in: customerIds,
       },
     },
+    take: 8,
   });
   const customersResult = {
     totalPaidCommission: totalPaidCommission,
