@@ -87,7 +87,7 @@ const SetpOneForm = ({
     let sanitizedValue = e.target.value;
     if (e.target.type == "number") {
       if (sanitizedValue.startsWith("0") && sanitizedValue.length > 1) {
-        sanitizedValue = sanitizedValue.replace(/^0+/, "");
+        sanitizedValue = sanitizedValue?.replace(/^0+/, "");
       }
       if (Number(sanitizedValue) <= 0) {
         sanitizedValue = "0";
