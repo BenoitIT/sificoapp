@@ -136,8 +136,8 @@ const ContainerListShipp = () => {
               <PopoverTrigger asChild>
                 <Button>Add new</Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 mr-4 shadow-md">
-                <form className="w-full" onSubmit={handleSubmit}>
+              <PopoverContent className="w-80 mr-4 shadow-md  h-fit overflow-auto">
+                <form className="w-full h-fit overflow-auto" onSubmit={handleSubmit}>
                   <div className="grid gap-4">
                     <div className="space-y-2">
                       <h4 className="font-medium leading-none">

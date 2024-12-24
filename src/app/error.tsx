@@ -18,7 +18,10 @@ export default function Error({
         {!error?.message.includes("access this page") ? (
           <button
             className="bg-blue-900 p-2 text-white rounded text-sm"
-            onClick={() => reset()}
+            onClick={() => {
+              reset();
+              window?.location.reload();
+            }}
           >
             Try again
           </button>
