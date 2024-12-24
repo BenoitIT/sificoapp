@@ -47,16 +47,16 @@ const SetpOneForm = ({
   const { data: staff } = useSWR(usersBaseEndpoint, () => getAllUsers(""));
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTermm, setSearchTermm] = useState("");
-  const filteredOptions = consignees?.filter((option: any) =>
+  const filteredOptions = Array.isArray(consignees)&&consignees?.filter((option: any) =>
     option?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
-  const customerr = consignees?.find(
+  const customerr = Array.isArray(consignees)&&consignees?.find(
     (customer: NewCustomer) => customer?.id == newItemPayload?.consignee
   );
-  const salesAgent = staff?.find(
+  const salesAgent = Array.isArray(staff)&&staff?.find(
     (staff: NewStaff) => staff.id == newItemPayload?.salesAgent
   );
-  const filteredOptionss = staff?.filter((option: any) =>
+  const filteredOptionss = Array.isArray(staff)&&staff?.filter((option: any) =>
     option?.firstName?.toLowerCase()?.includes(searchTermm?.toLowerCase())
   );
   const handleSelectConsigneeChange = (value: string | number) => {
@@ -150,7 +150,7 @@ const SetpOneForm = ({
                       className="w-full px-2 py-1 border rounded-md focus:outline-none"
                     />
                   </div>
-                  {filteredOptions?.map((consignee: NewShipper) => (
+                  {Array.isArray(filteredOptions)&&filteredOptions?.map((consignee: NewShipper) => (
                     <SelectItem
                       key={consignee?.id}
                       value={consignee?.id!.toString()}
@@ -208,7 +208,7 @@ const SetpOneForm = ({
                       className="w-full px-2 py-1 border rounded-md focus:outline-none"
                     />
                   </div>
-                  {filteredOptionss?.map((user: NewStaff) => (
+                  {Array.isArray(filteredOptionss)&&filteredOptionss?.map((user: NewStaff) => (
                     <SelectItem key={user.id} value={user.id!.toString()}>
                       {user?.firstName} {user?.lastName}
                     </SelectItem>

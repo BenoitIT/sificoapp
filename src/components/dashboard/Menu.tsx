@@ -17,7 +17,7 @@ const Menu = () => {
     <div className="h-[96vh] flex flex-col justify-between w-full overflow-y-auto">
       <Link
         href="/"
-        className="flex absolute top-4 items-center justify-center lg:justify-start gap-2 ml-1"
+        className="flex absolute top-4 items-center justify-center lg:justify-start gap-2 ml-1 z-10"
       >
         <Image src="/images/logoo.png" alt="logo" width={100} height={100} />
       </Link>
