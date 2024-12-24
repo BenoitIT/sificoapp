@@ -18,8 +18,8 @@ export const POST = async (req: Request) => {
     const body = await req.json();
     const message = await prisma.message.create({
       data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
+        firstName: body.firstName||"",
+        lastName: body.lastName||"",
         email: body.email || "",
         phone: body.phone,
         message: body.message,
