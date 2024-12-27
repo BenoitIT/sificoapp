@@ -19,6 +19,7 @@ import ErrorSection from "@/appComponents/pageBlocks/errorDisplay";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import { useSession } from "next-auth/react";
 import useDebounce from "@/app/utilities/debouce";
+import { sifcoApi } from "@/app/httpservices/axios";
 
 const Page = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const Page = () => {
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState(1);
+  const token = session?.data?.accessToken;
   const fetcher = useCallback(async () => {
     if (role === "operation manager" && userId) {
       return getShippinginstructioninLocation(userId, searchValue, currentPage);
@@ -41,12 +43,13 @@ const Page = () => {
     }
   }, [role, userId, searchValues, currentPage]);
   const { data, isLoading, error } = useSWR(
-    [role ? shippinginstructionEndpoint : null, searchValues, currentPage],
+    [role ? shippinginstructionEndpoint : null, searchValues, currentPage,token],
     fetcher
   );
 
   useEffect(() => {
     dispatch(setPageTitle("Shipping instructions"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
 
   useEffect(() => {
@@ -71,7 +74,7 @@ const Page = () => {
   ];
 
   if (isLoading) return <Loader />;
-  if (error) return <ErrorSection />;
+  if (error) return <ErrorSection message={error.message}/>;
 
   return (
     <div className="w-full">

@@ -23,6 +23,7 @@ import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
 // import { withRolesAccess } from "@/components/auth/accessRights";
 import ContainersList from "@/components/dashboard/pages/containersList";
+import { sifcoApi } from "@/app/httpservices/axios";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -32,17 +33,20 @@ const Page = () => {
   const role = session?.data?.role;
   const userId = session?.data?.id;
   const workPlace=session?.data?.workCountry;
+  const token = session?.data?.accessToken;
   const searchValue = searchParams?.get("search") || "";
   const [search, setSearch] = useState(searchValue);
   const searchValues = useDebounce(search, 1000);
   const activePage = searchParams?.get("page");
   const [currentPage, setCurrentPage] = useState(1);
+  
   const { data, isLoading, error } = useSWR(
-    [stuffingReportEndpoint, searchValues, currentPage],
+    [stuffingReportEndpoint, searchValues, currentPage,token],
     () => getAllContainers(searchValues, currentPage,workPlace)
   );
   useEffect(() => {
     dispatch(setPageTitle("Containers - Invoices"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -90,7 +94,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 const SuspensePage:FC= () => (

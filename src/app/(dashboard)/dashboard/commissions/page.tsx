@@ -29,9 +29,11 @@ import useDebounce from "@/app/utilities/debouce";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import Paginator from "@/components/pagination/paginator";
 import usePagination from "@/app/utilities/usePagination";
+import { sifcoApi } from "@/app/httpservices/axios";
 const Page = () => {
   const dispatch = useDispatch();
   const session: any = useSession();
+  const token = session?.data?.accessToken;
   const currentUserName = session?.data?.firstname;
   const searchParams = useSearchParams();
   const searchValue = searchParams?.get("search") || "";
@@ -43,13 +45,14 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const activePage = searchParams?.get("page");
   const { data, isLoading, error } = useSWR(
-    [commisionsEndpoint, searchValues, currentPage],
+    [commisionsEndpoint, searchValues, currentPage,token],
     () => getAllCommissions(searchValues, currentPage)
   );
   const { handlePageChange, handleNextPage, handlePreviousPage } =
     usePagination(data?.data, currentPage);
   useEffect(() => {
     dispatch(setPageTitle("Commission debursement"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -150,7 +153,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 export default withRolesAccess(Page, [

@@ -95,7 +95,7 @@ const Page = () => {
   }
 
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 

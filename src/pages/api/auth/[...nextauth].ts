@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { sifcoApi } from "@/app/httpservices/axios";
 
 export default NextAuth({
   session: {
@@ -36,8 +37,10 @@ export default NextAuth({
               role: user.role,
               email: user.email,
             },
-            process.env.NEXT_JWT_SECRETE!
+            process.env.NEXT_JWT_SECRETE!,
+            {expiresIn:"1d"}
           );
+          sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           return { user, token };
         } else {
           return null;

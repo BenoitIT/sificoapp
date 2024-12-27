@@ -19,20 +19,23 @@ import DatePickerWithRange from "@/components/ui/dateSelector";
 import { DateRange } from "react-day-picker";
 import { withRolesAccess } from "@/components/auth/accessRights";
 import { useSession } from "next-auth/react";
+import { sifcoApi } from "@/app/httpservices/axios";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
-  const session:any=useSession();
-  const workPlace=session?.data?.workCountry;
+  const session: any = useSession();
+  const workPlace = session?.data?.workCountry;
+  const token = session?.data?.accessToken;
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().setDate(new Date().getDate() - 30)),
     to: new Date(),
   });
   useEffect(() => {
     dispatch(setPageTitle("Home"));
-  }, [dispatch]);
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }, [dispatch,token]);
   const { data, isLoading, error } = useSWR(
-    date?.from && date?.to && [dashboardEndpoint, date.from, date.to],
+    date?.from && date?.to && [dashboardEndpoint, date.from, date.to,token],
     () =>
       getDashboardinfo(
         date?.from as unknown as string,
@@ -89,8 +92,8 @@ const AdminPage = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message} />;
   }
 };
 
-export default withRolesAccess(AdminPage, ["senior operation manager", "admin","finance","head of finance"])as React.FC;
+export default withRolesAccess(AdminPage, ["senior operation manager", "admin", "finance", "head of finance"]) as React.FC;
