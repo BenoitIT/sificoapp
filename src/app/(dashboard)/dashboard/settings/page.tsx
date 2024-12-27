@@ -416,7 +416,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 export default withRolesAccess(Page, ["senior operation manager", "admin"]) as React.FC;

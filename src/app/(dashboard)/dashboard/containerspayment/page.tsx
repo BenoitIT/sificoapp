@@ -81,7 +81,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    <ErrorSection />;
+    <ErrorSection message={error.message}/>;
   }
 };
 export default withRolesAccess(Page, [

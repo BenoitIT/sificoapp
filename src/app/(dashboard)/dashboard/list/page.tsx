@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { sifcoApi } from "@/app/httpservices/axios";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -40,6 +41,7 @@ const Page = () => {
   const role = session?.data?.role;
   const userId = session?.data?.id;
   const workPlace=session?.data?.workCountry;
+  const token = session?.data?.accessToken;
   const searchValue = searchParams?.get("search") || "";
   const addData = searchParams?.get("added") || "";
   const [search, setSearch] = useState(searchValue);
@@ -49,11 +51,12 @@ const Page = () => {
   const [reload, setReload] = useState(false);
   const [rowId, setRowId] = useState<any>();
   const { data, isLoading, error } = useSWR(
-    [stuffingReportEndpoint, searchValues, currentPage, reload, addData],
+    [stuffingReportEndpoint, searchValues, currentPage, reload, addData,token],
     () => getAllContainers(searchValues, currentPage,workPlace)
   );
   useEffect(() => {
     dispatch(setPageTitle("Containers - Instructions"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -148,7 +151,8 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    console.log("errror",error);
+    return <ErrorSection message={error.message}/>;
   }
 };
 const SuspensePage = () => (

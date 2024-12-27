@@ -16,12 +16,14 @@ import { toast } from "react-toastify";
 import useSWR, { mutate } from "swr";
 import { setPageTitle } from "@/redux/reducers/pageTitleSwitching";
 import { useDispatch } from "react-redux";
+import { formatDate } from "@/app/utilities/dateFormat";
 
 interface messageProps {
   id: number;
   email: string;
   phone: string;
   body: string;
+  date:string;
   messageToReply: number;
   onClick: (val: number) => void;
   responded: boolean;
@@ -70,6 +72,7 @@ const Page = () => {
               phone={message?.phone}
               body={message?.message}
               id={message.id}
+              date={message?.createdAt}
               responded={message?.responded}
               messageToReply={messageToReply}
               onClick={setMsgToreply}
@@ -110,6 +113,7 @@ const Message = ({
   email,
   phone,
   body,
+  date,
   id,
   messageToReply,
   responded,
@@ -167,6 +171,8 @@ const Message = ({
         {phone}
       </p>
       <p className="mt-2 text-gray-500 text-sm">{body}</p>
+      <p className="mt-2 text-gray-500 text-xs">{formatDate(date)}</p>
+
       <div className="w-full flex justify-end text-sm gap-2">
         {!responded ? (
           <>

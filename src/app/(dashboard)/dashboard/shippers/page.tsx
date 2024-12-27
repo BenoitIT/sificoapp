@@ -114,7 +114,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 

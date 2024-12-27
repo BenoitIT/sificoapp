@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { sifcoApi } from "@/app/httpservices/axios";
 const Page = () => {
   const router = useRouter();
   const currentPath = usePathname();
@@ -41,6 +42,7 @@ const Page = () => {
   const role = session?.data?.role;
   const userId = session?.data?.id;
   const workPlace=session?.data?.workCountry;
+  const token = session?.data?.accessToken;
   const searchValue = searchParams?.get("search") || "";
   const FilterValue = searchParams?.get("filter") || "";
   const addData = searchParams?.get("added") || "";
@@ -63,6 +65,7 @@ const Page = () => {
   );
   useEffect(() => {
     dispatch(setPageTitle("Stuffing reports"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -158,7 +161,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message}/>;
   }
 };
 const SuspensePage = () => (

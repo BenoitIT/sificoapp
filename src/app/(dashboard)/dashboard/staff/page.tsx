@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR, { mutate } from "swr";
-import { usersBaseEndpoint as cacheKey } from "@/app/httpservices/axios";
+import { usersBaseEndpoint as cacheKey, sifcoApi } from "@/app/httpservices/axios";
 import { headers } from "@/app/tableHeaders/users";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Staff from "@/components/dashboard/pages/staff";
@@ -42,16 +42,18 @@ const Page = () => {
   const [rowId, setRowId] = useState<any>();
   const searchValues = useDebounce(search, 1000);
   const workPlace = session?.data?.workCountry;
+  const token = session?.data?.accessToken;
   const {
     data: staff,
     isLoading,
     error,
-  } = useSWR([cacheKey, searchValues], () => getAllUsers(searchValues), {
+  } = useSWR([cacheKey, searchValues, token], () => getAllUsers(searchValues), {
     onSuccess: (data: NewStaff[]) =>
       data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
   });
   useEffect(() => {
     dispatch(setPageTitle("Staff"));
+    sifcoApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [dispatch]);
   useEffect(() => {
     setSearch(searchValue);
@@ -138,7 +140,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection />;
+    return <ErrorSection message={error.message} />;
   }
 };
 
@@ -148,4 +150,4 @@ const SuspensePage = () => (
   </Suspense>
 );
 
-export default withRolesAccess(SuspensePage, ["admin","senior operation manager"]) as React.FC;
+export default withRolesAccess(SuspensePage, ["admin", "senior operation manager"]) as React.FC;
