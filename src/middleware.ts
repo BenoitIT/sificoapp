@@ -74,7 +74,6 @@ export const config = {
     "/api/users/:path*",
     "/api/commissions/:path*",
     "/api/containerspayments/:path*",
-    "/api/dashboardInfo",
     "/api/financialreport",
     "/api/invoices",
     "/api/shippinginstruction",

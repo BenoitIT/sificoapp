@@ -70,7 +70,7 @@ export const GET = async (req: Request) => {
     take: pageSize,
     skip: offset,
     orderBy: {
-      id: "desc",
+      createdAt: "desc",
     },
   });
   const totalPages = Math.ceil(itemCount / pageSize);
