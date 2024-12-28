@@ -26,6 +26,12 @@ import { getAllshippers, shippersEndpoint } from "@/app/httpservices/shipper";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   createStuffingReports,
   stuffingReportEndpoint,
 } from "@/app/httpservices/stuffingReport";
@@ -34,6 +40,11 @@ import {
   getAllsitesUnpaginated,
 } from "@/app/httpservices/deliverySites";
 import { NewSite } from "@/interfaces/sites";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 const ContainerListShipp = () => {
   const session: any = useSession();
   const role = session?.data?.role;
@@ -43,6 +54,7 @@ const ContainerListShipp = () => {
   const [payload, setPayload] = useState<StuffingReport>({
     packagingType: "LCL",
   });
+  const [date, setDate] = useState<Date>();
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
   const { data: shippingCompanies } = useSWR(
     shippersEndpoint,
@@ -52,7 +64,6 @@ const ContainerListShipp = () => {
         data.sort((a, b) => (b.id ?? 0) - (a.id ?? 0)),
     }
   );
-
   const { data: destinations } = useSWR(
     deliverySitesEndpoint,
     getAllsitesUnpaginated,
@@ -101,11 +112,13 @@ const ContainerListShipp = () => {
       try {
         delete payload.id;
         delete payload.status;
+        payload.createdAt=date;
         const { message, status } = await createStuffingReports(payload);
         if (status == 201) {
           form.reset();
           toast.success(message);
           router.refresh();
+          setDate(new Date())
           mutate(stuffingReportEndpoint);
           return router.push(`${pathname + `?added=true`}`);
         } else {
@@ -121,7 +134,7 @@ const ContainerListShipp = () => {
   };
   return (
     <>
-      <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4 gap-2">
+      <div className="w-full flex flex-col-reverse md:flex-row justify-between mb-4 gap-2 h-fit overflow-auto">
         <SearchBox />
         <div className="flex flex-wrap gap-2 text-sm">
           <div
@@ -137,7 +150,10 @@ const ContainerListShipp = () => {
                 <Button>Add new</Button>
               </PopoverTrigger>
               <PopoverContent className="w-80 mr-4 shadow-md  h-fit overflow-auto">
-                <form className="w-full h-fit overflow-auto" onSubmit={handleSubmit}>
+                <form
+                  className="w-full h-fit overflow-auto"
+                  onSubmit={handleSubmit}
+                >
                   <div className="grid gap-4">
                     <div className="space-y-2">
                       <h4 className="font-medium leading-none">
@@ -285,6 +301,42 @@ const ContainerListShipp = () => {
                           </div>
                         </RadioGroup>
                       </div>
+                      <Accordion type="single" collapsible>
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger className="text-sm font-normal">
+                            For the past containers
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <Label className="text-sm font-normal">Select created date</Label>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-[280px] justify-start text-left font-normal",
+                                    !date && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon />
+                                  {date ? (
+                                    format(date, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={date}
+                                  onSelect={setDate}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
                     <div className="w-full flex justify-between">
                       <Button>save</Button>

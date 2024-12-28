@@ -9,5 +9,6 @@ export interface StuffingReport {
     blCode?:string;
     shipperId?:number|null,
     operatorId?:number,
-    extraCharges?:number
+    extraCharges?:number,
+    createdAt?:any;
   }

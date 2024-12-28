@@ -1,3 +1,4 @@
+
 import prisma from "../../../../../../../prisma/client";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
@@ -83,11 +84,20 @@ export const PUT = async (req: Request) => {
         portOfdischarge: body.portOfdischarge,
         totalUsd: totalUsd,
         totalAed: totalAed,
-        editedBy:body.editedBy,
-        updatedAt:body.editedAt
+        editedBy: body.editedBy,
+        updatedAt: body.editedAt,
+        createdAt: body.createdAt,
       },
     });
     if (stuffingRptItems) {
+      await prisma.shippingInstruction.update({
+        where: {
+          itemId: Number(stuffingRptItemId),
+        },
+        data: {
+          createdAt: body.createdAt,
+        },
+      });
       return NextResponse.json({
         status: 200,
         message: "shipment is update successfully",

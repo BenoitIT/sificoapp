@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { NewStuffingItem, StepFormProps } from "@/interfaces/stuffingItem";
 import { useSearchParams } from "next/navigation";
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -19,6 +19,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 
 const StepTwoForm = ({
   setItemsData,
@@ -29,6 +44,7 @@ const StepTwoForm = ({
 }: StepFormProps) => {
   const searchParams = useSearchParams();
   const shipingMethod = searchParams?.get("category");
+  const [date, setDate] = useState<Date>();
   const { data, isLoading, error } = useSWR(
     dependanceEndpoint,
     getDependancies
@@ -102,6 +118,7 @@ const StepTwoForm = ({
     } else if (blFee.value == "") {
       ErrorLogger("blFee", "Numerical value for blFee is required.");
     } else {
+      newItemPayload.createdAt=date;
       setActiveForm(3);
     }
   };
@@ -355,6 +372,42 @@ const StepTwoForm = ({
               />
             </div>
           </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-sm font-normal">
+                For the past shipping instructions
+              </AccordionTrigger>
+              <AccordionContent>
+                <Label className="text-sm font-normal mr-2">Select created date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {date ? (
+                        format(date, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <div className="flex justify-between gap-4">
             <Button

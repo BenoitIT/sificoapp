@@ -35,7 +35,8 @@ export interface NewStuffingItem {
   invoiceInfo?:any[]
   portOfdischarge?:string;
   totalinwords?:string;
-  editedAt?:string
+  editedAt?:string;
+  createdAt?:any;
 }
 export interface NewStuffingItemErrors {
   shipper?: string | null;

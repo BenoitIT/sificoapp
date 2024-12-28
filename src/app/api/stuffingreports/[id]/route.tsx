@@ -317,6 +317,7 @@ export const POST = async (req: NextRequest) => {
             totalinwords: body.totalinwords,
             portOfdischarge: body.portOfdischarge,
             preparedBy: body.preparedBy,
+            createdAt:body.createdAt
           },
         });
         const shiipingInstruction = await prisma.shippingInstruction.create({
@@ -328,6 +329,7 @@ export const POST = async (req: NextRequest) => {
             deliveryTerm: "",
             itemId: stuffingreportItem.id,
             portOfdischarge: "",
+            createdAt:body.createdAt
           },
         });
         const shippingRate =

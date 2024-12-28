@@ -34,10 +34,21 @@ import {
   deliveryEndpoint,
   getAllDeliveriesUnpaginated,
 } from "@/app/httpservices/deliveries";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 const StaffingReportsItems = () => {
   const params = useParams();
   const [payload, setPayload] = useState<StuffingReport>({});
   const [validationErrors, setValidationErrors] = useState<StuffingReport>({});
+  const [date, setDate] = useState<Date>();
   const staffReportId = params?.id;
   const cacheKey = `/stuffingreports/${Number(staffReportId)}`;
   const { data } = useSWR(cacheKey, () =>
@@ -94,6 +105,7 @@ const StaffingReportsItems = () => {
       try {
         delete payload.id;
         delete payload.destination;
+        payload.createdAt=date;
         const { message, status } = await updateStuffingReport(
           Number(staffReportId),
           payload
@@ -101,6 +113,7 @@ const StaffingReportsItems = () => {
         if (status == 200) {
           toast.success(message);
           mutate(cacheKey);
+          setDate(new Date())
         } else {
           toast.error(message);
         }
@@ -283,6 +296,42 @@ const StaffingReportsItems = () => {
                         </div>
                       </RadioGroup>
                     </div>
+                    <Accordion type="single" collapsible>
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger className="text-sm font-normal">
+                            For the past containers
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <Label className="text-sm font-normal">Select created date</Label>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-[280px] justify-start text-left font-normal",
+                                    !date && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon />
+                                  {date ? (
+                                    format(date, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={date}
+                                  onSelect={setDate}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                   </div>
                   <div className="w-full flex justify-between">
                     <Button>save</Button>
