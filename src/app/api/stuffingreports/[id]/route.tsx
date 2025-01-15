@@ -16,7 +16,7 @@ export const DELETE = async (req: Request) => {
           stuffingreportid: Number(stuffingRptId),
         },
       });
-      if (!someItemsAdded) {
+      if (someItemsAdded.length < 1) {
         const stuffingRpttoDelete = await prisma.stuffingreport.delete({
           where: {
             id: Number(stuffingRptId),
@@ -29,11 +29,24 @@ export const DELETE = async (req: Request) => {
           });
         }
       } else {
-        return NextResponse.json({
-          status: 400,
-          message:
-            "This stuffing report has some clients items. Please remove each and every item",
+        const alldeleted = await prisma.stuffingreportItems.deleteMany({
+          where: {
+            stuffingreportid: Number(stuffingRptId),
+          },
         });
+        console.log("all deleted",alldeleted)
+        if (alldeleted.count<1) {
+          return NextResponse.json({
+            status: 200,
+            message: "Stuffing report is deleted successfully",
+          });
+        } else {
+          return NextResponse.json({
+            status: 400,
+            message:
+              "Confirm deleting.please",
+          });
+        }
       }
     } else if (stuffingRpt?.status?.toLowerCase() !== "available") {
       return NextResponse.json({
@@ -47,6 +60,7 @@ export const DELETE = async (req: Request) => {
       });
     }
   } catch (err) {
+    console.log("errr", err);
     return NextResponse.json({
       status: 400,
       message: "something went wrong",
@@ -317,7 +331,7 @@ export const POST = async (req: NextRequest) => {
             totalinwords: body.totalinwords,
             portOfdischarge: body.portOfdischarge,
             preparedBy: body.preparedBy,
-            createdAt:body.createdAt
+            createdAt: body.createdAt,
           },
         });
         const shiipingInstruction = await prisma.shippingInstruction.create({
@@ -329,7 +343,7 @@ export const POST = async (req: NextRequest) => {
             deliveryTerm: "",
             itemId: stuffingreportItem.id,
             portOfdischarge: "",
-            createdAt:body.createdAt
+            createdAt: body.createdAt,
           },
         });
         const shippingRate =

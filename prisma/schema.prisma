@@ -79,7 +79,7 @@ model shippingInstruction {
   prepaidBlFee        Int                 @default(0)
   finaldeliverId      Int
   itemId              Int                 @unique
-  stuffingReportItems stuffingreportItems @relation(fields: [itemId], references: [id])
+  stuffingReportItems stuffingreportItems @relation(fields: [itemId], references: [id],onDelete: Cascade)
   createdAt           DateTime            @default(now())
   updatedAt           String              @default("")
 }
@@ -92,7 +92,7 @@ model stuffingreport {
   origin              String
   shipperId           Int
   shipper             shipper               @relation(fields: [shipperId], references: [id])
-  stuffingreportItems stuffingreportItems[]
+  stuffingreportItems stuffingreportItems[] @relation("StuffingReportToItems")
   createdAt           DateTime              @default(now())
   packagingType       String
   blCode              String
@@ -106,7 +106,7 @@ model stuffingreport {
 
 model stuffingreportItems {
   id               Int            @id @default(autoincrement())
-  container        stuffingreport @relation(fields: [stuffingreportid], references: [id])
+  container        stuffingreport @relation("StuffingReportToItems", fields: [stuffingreportid], references: [id], onDelete: Cascade)
   stuffingreportid Int
   consignee        consignee      @relation(fields: [consigneeId], references: [id])
   consigneeId      Int
@@ -147,7 +147,7 @@ model stuffingreportItems {
 model Invoice {
   id               Int                 @id @default(autoincrement())
   vat              Float               @default(0)
-  details          stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo])
+  details          stuffingreportItems @relation(fields: [detailsId], references: [invoiceNo],onDelete: Cascade)
   createdBy        User                @relation(fields: [staffid], references: [id])
   staffid          Int
   detailsId        String              @unique
