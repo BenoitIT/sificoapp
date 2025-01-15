@@ -55,6 +55,7 @@ export const GET = async (req: Request) => {
     where: {
       id: { in: salesAgentIds },
     },
+    take:8
   });
 
   const agentsResult = {

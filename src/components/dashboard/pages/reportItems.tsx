@@ -168,7 +168,7 @@ const StaffingReportsItems = () => {
                 Update container Info
               </span>
             </PopoverTrigger>
-            <PopoverContent className="w-80 mr-4 shadow-md">
+            <PopoverContent className="w-80 mr-4 shadow-md md:w-fit">
               <form className="w-full" onSubmit={handleSubmit}>
                 <div className="grid gap-4">
                   <div className="space-y-2">
@@ -179,7 +179,7 @@ const StaffingReportsItems = () => {
                       Edit delivery information for the stuffs
                     </p>
                   </div>
-                  <div className="grid gap-3">
+                  <div className="grid gap-3 grid-cols-2">
                     <div className="grid gap-2 text-sm text-gray-700">
                       <Label>
                         Container Number <span className="text-red-500">*</span>
