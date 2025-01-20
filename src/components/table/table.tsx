@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { TableProps } from "@/interfaces/table";
 import { ItemsSummationTableFooter } from "./summationTFooter";
+import Link from "next/link";
 const DynamicTable = <T extends Record<string, string | number>>({
   headers,
   data,
@@ -91,9 +92,15 @@ const DynamicTable = <T extends Record<string, string | number>>({
                     header.field?.toLowerCase() == "ysf"
                       ? "bg-green-600 text-black  border border-green-600"
                       : ""
+                  } ${
+                    header.field == "containerIdCom"
+                      ? "text-blue-700 hover:cursor-pointer font-medium"
+                      : ""
                   }`}
                 >
-                  {row[header.field] as string | number}
+                  {header.field == "containerIdCom"
+                    ?(<Link href={`/dashboard/commissions/${row[header.field]}`}>Show more in {row[header.field]}</Link>)
+                    : (row[header.field] as string | number)}
                 </TableCell>
               ))}
               <TableCell

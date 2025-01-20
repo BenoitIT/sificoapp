@@ -13,6 +13,20 @@ export const getAllCommissions = async (
     console.log(err);
   }
 };
+export const getAllCommissionPerContainer = async (
+  container:string,
+  searchValues?: string,
+  page?: number,
+) => {
+  try {
+    const response = await sifcoApi.get(
+      commisionsEndpoint + `/container?page=${page}&search=${searchValues}&container=${container}`
+    );
+    return { data: response.data.data, count: response.data.count };
+  } catch (err) {
+    console.log(err);
+  }
+};
 export const updateCommisionInfo = async (
   id: number,
   data: { amountPaid: number; paidBy: string }
