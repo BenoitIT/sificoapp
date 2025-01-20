@@ -359,6 +359,7 @@ export const POST = async (req: NextRequest) => {
             rate: Number(shippingRate),
             agentId: salesAgent,
             totalAmount: totalCommissionTobePaid,
+            containerCode:checkIfStuffingReportCreated.code
           },
         });
         return NextResponse.json({

@@ -7,7 +7,7 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const searchValue = searchParams.get("search");
   const currentPage = Number(searchParams?.get("page")) || 1;
-  const pageSize = 13;
+  const pageSize = 30;
   const offset = (currentPage - 1) * pageSize;
   try {
     const commissionsCount = await prisma.commissions.count({
@@ -65,18 +65,32 @@ export const GET = async (req: Request) => {
       take: pageSize,
     });
     const totalPages = Math.ceil(commissionsCount / pageSize);
-    const modifiedResponse = commissions.map((commission) => ({
-      id: commission.id,
-      date: convertTimestamp(commission.createdAt),
-      agentName: commission.agent.firstName + " " + commission.agent.lastName,
-      handling: commission.handling,
-      rate: commission.rate,
-      commission: commission.totalAmount,
-      commissionPaid: commission.amountPaid,
-      paymentstatus: commission.paymentStatus,
-      paidAt: commission.paidAt ? convertTimestamp(commission.paidAt) : "-",
-      paidBy: commission.paidBy.length > 0 ? commission.paidBy : "-",
-    }));
+    const getUniqueCommissionsByContainer = (commissions: any[]) => {
+      const containerMap = new Map();
+
+      commissions.forEach((commission) => {
+        if (!containerMap.has(commission.containerCode)) {
+          containerMap.set(commission.containerCode, commission);
+        }
+      });
+
+      return Array.from(containerMap.values());
+    };
+    const modifiedResponse = getUniqueCommissionsByContainer(commissions).map(
+      (commission) => ({
+        id: commission.id,
+        date: convertTimestamp(commission.createdAt),
+        containerIdCom: commission.containerCode,
+        agentName: commission.agent.firstName + " " + commission.agent.lastName,
+        handling: commission.handling,
+        rate: commission.rate,
+        commission: commission.totalAmount,
+        commissionPaid: commission.amountPaid,
+        paymentstatus: commission.paymentStatus,
+        paidAt: commission.paidAt ? convertTimestamp(commission.paidAt) : "-",
+        paidBy: commission.paidBy.length > 0 ? commission.paidBy : "-",
+      })
+    );
 
     return NextResponse.json({
       status: 200,
