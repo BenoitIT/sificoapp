@@ -80,7 +80,8 @@ export const GET = async (req: Request) => {
       (commission) => ({
         id: commission.id,
         date: convertTimestamp(commission.createdAt),
-        containerIdCom: commission.containerCode,
+        containerIdCom:
+          commission.containerCode.length > 0 ? commission.containerCode : "-",
         agentName: commission.agent.firstName + " " + commission.agent.lastName,
         handling: commission.handling,
         rate: commission.rate,
