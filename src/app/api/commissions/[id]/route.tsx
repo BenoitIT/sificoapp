@@ -75,6 +75,7 @@ export const GET = async (req: Request) => {
   const currentPage = Number(searchParams?.get("page")) || 1;
   const pageSize = 30;
   const offset = (currentPage - 1) * pageSize;
+  const containerCode=containerid=="-"?"":containerid;
   try {
     const commissionsCount = await prisma.commissions.count({
       where: {
@@ -94,7 +95,7 @@ export const GET = async (req: Request) => {
             },
           ],
         },
-        containerCode:containerid!,
+        containerCode:containerCode!,
         handling: {
           gt: 0,
         },
@@ -118,7 +119,7 @@ export const GET = async (req: Request) => {
             },
           ],
         },
-        containerCode:containerid!,
+        containerCode:containerCode!,
         handling: {
           gt: 0,
         },
