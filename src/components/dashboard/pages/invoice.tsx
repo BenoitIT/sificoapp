@@ -87,26 +87,6 @@ const Invoice = ({ itemsId, invoiceId }: invoiceProps) => {
               img.style.display = "block";
               img.crossOrigin = "anonymous";
             }
-            const tables = document.querySelectorAll("table");
-
-          tables.forEach((table) => {
-            table.style.borderCollapse = "collapse";
-            table.style.width = "100%";
-            const ths = table.querySelectorAll("th");
-            ths.forEach((th) => {
-              th.style.border = "0.5px solid black";
-              th.style.padding = "8px";
-              th.style.fontWeight = "normal";
-              th.style.backgroundColor = "white";
-            });
-            const tds = table.querySelectorAll("td");
-            tds.forEach((td) => {
-              td.style.border = "0.5px solid black";
-              td.style.padding = "8px";
-              td.style.fontWeight = "normal";
-              td.style.textAlign = "left";
-            });
-          });
           },
         });
 
