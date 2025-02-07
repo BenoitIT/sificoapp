@@ -17,6 +17,10 @@ export const GET = async (req: Request) => {
   try {
     const stuffingReports = await prisma.stuffingreport.findMany({
       where: {
+        createdAt: {
+          gte: new Date(new Date().getFullYear(), 0, 1),
+          lte: new Date(new Date().getFullYear(), 11, 31),
+        },
         stuffingstatus: "generated",
         ...(isValidWorkPlace
           ? {

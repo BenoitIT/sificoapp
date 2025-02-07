@@ -53,7 +53,7 @@ const Page = () => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const session: any = useSession();
-  const workPlace=session?.data?.workCountry;
+  const workPlace = session?.data?.workCountry;
   const activePage = searchParams?.get("page");
   const router = useRouter();
   const [amaount, setAmount] = useState(0);
@@ -82,11 +82,14 @@ const Page = () => {
         date?.to as unknown as string
       )
   );
+  const newdate = new Date();
   const {
     data: ChartInfo,
     isLoading: loading,
     error: isError,
-  } = useSWR(financialReportEndpoint + "/chart", ()=>getFinancialReportchart(workPlace));
+  } = useSWR(financialReportEndpoint + "/chart", () =>
+    getFinancialReportchart(workPlace)
+  );
   useEffect(() => {
     dispatch(setPageTitle("Financial report"));
   }, [dispatch]);
@@ -212,10 +215,15 @@ const Page = () => {
           </div>
         </>
         <Card className="mt-4">
-          <CardHeader>
-            <CardTitle>Annual report</CardTitle>
-            <CardDescription>January - December</CardDescription>
-          </CardHeader>
+          <div className="w-full flex justify-between">
+            <CardHeader>
+              <CardTitle>Annual report</CardTitle>
+              <CardDescription>January - December</CardDescription>
+            </CardHeader>
+            <CardHeader>
+              <CardTitle>In year: {newdate.getFullYear()}</CardTitle>
+            </CardHeader>
+          </div>
           <CardContent>
             <ChartContainer config={chartConfig}>
               <BarChart accessibilityLayer data={ChartInfo?.chart}>
@@ -257,7 +265,7 @@ const Page = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorSection message={error.message}/>;
+    return <ErrorSection message={error.message} />;
   }
 };
 export default withRolesAccess(Page, [
