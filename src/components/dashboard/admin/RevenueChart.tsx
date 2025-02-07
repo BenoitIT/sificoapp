@@ -18,11 +18,15 @@ interface chartRecords{
 }
 
 const RevenueChart = ({data}:chartRecords) => {
+  const date=new Date();
   return (
     <div className="flex flex-col lg:h-full h-[60vh] bg-white lg:w-[60%] w-full pb-2 rounded-md text-sm">
       <div className="flex justify-between items-center p-4">
         <h2 className="text-lg font-semibold text-gray-700">
           Revenue generated (USD)
+        </h2>
+        <h2 className="text-base font-semibold text-gray-700">
+          {date.getFullYear()}
         </h2>
       </div>
       <ResponsiveContainer width="100%" className="text-sm">
