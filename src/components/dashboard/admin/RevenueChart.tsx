@@ -26,7 +26,7 @@ const RevenueChart = ({data}:chartRecords) => {
           Revenue generated (USD)
         </h2>
         <h2 className="text-base font-semibold text-gray-700">
-          {date.getFullYear()}
+          Year: {date.getFullYear()}
         </h2>
       </div>
       <ResponsiveContainer width="100%" className="text-sm">
