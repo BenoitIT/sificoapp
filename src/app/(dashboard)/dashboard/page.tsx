@@ -55,7 +55,7 @@ const AdminPage = () => {
             amount={`$ ${Intl.NumberFormat("en-Us").format(
               data?.totalRevenueMade
             )}`}
-            perMonth={`+${data?.revenuePercentagethisMonth}% from this month`}
+            perMonth={`+${Math.round(data?.revenuePercentagethisMonth)}% from this month`}
             icon={<GiTakeMyMoney className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
@@ -63,7 +63,7 @@ const AdminPage = () => {
             amount={`${Intl.NumberFormat("en-Us").format(
               data?.totalCustomers
             )}`}
-            perMonth={`+${data?.customerPercentageThisMonth}% from this month`}
+            perMonth={`+${Math.round(data?.customerPercentageThisMonth)}% from this month`}
             icon={<TbUsersGroup className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
@@ -71,13 +71,13 @@ const AdminPage = () => {
             amount={`${Intl.NumberFormat("en-Us").format(
               data?.totalStuffingReport
             )}`}
-            perMonth={`+${data?.staffingReportPercentage}% from this month`}
+            perMonth={`+${Math.round(data?.staffingReportPercentage)}% from this month`}
             icon={<BsListUl className="flex my-auto text-lg" />}
           />
           <DashboardCardWrapper
             header="Invoices count"
             amount={`${Intl.NumberFormat("en-Us").format(data?.totalInvoice)}`}
-            perMonth={`+${data?.invoiceCountPercentage}% from this month`}
+            perMonth={`+${Math.round(data?.invoiceCountPercentage)}% from this month`}
             icon={<BsCashCoin className="flex my-auto text-lg" />}
           />
         </div>
