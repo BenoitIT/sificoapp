@@ -261,6 +261,10 @@ export const GET = async (req: Request) => {
   }));
   const revenueByMonth = await prisma.stuffingreportItems.findMany({
     where: {
+      createdAt: {
+        gte: new Date(new Date().getFullYear(), 0, 1),
+        lte: new Date(new Date().getFullYear(), 11, 31),
+      },
       ...(isValidWorkPlace
         ? {
             container: {
@@ -285,11 +289,13 @@ export const GET = async (req: Request) => {
       totalUsd: true,
     },
   });
+
   const monthlyRevenue = revenueByMonth.reduce((acc, item) => {
     const month = new Date(item.createdAt).getMonth()!;
     acc[month] = (acc[month] || 0) + (item.totalUsd || 0);
     return acc;
   }, {} as { [key: number]: number });
+
   const chartData = Array.from({ length: 12 }, (_, monthIndex) => {
     const monthNames = [
       "Jan",
